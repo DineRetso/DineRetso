@@ -20,13 +20,17 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className='bg-main w-full'>
+    <nav className='bg-main w-full text-RatingColor text-xl font-semibold font-italiana'>
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2'>
         <div className='flex items-center justify-between'>
           <div className='flex items-center'>
             <div className='flex-shrink-0'>
-              <a href='/' className='text-yellow-400 hover:text-hover-text'>
-                <img src='../bg.png' alt='DineLogo' className='h-32 w-auto' />
+              <a href='/' className=''>
+                <img
+                  src='../dlogo.png'
+                  alt='DineLogo'
+                  className='h-20 w-auto'
+                />
               </a>
             </div>
           </div>
