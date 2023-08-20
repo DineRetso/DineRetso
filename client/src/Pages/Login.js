@@ -6,7 +6,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   return (
-    <div className='relative flex flex-col lg:flex-row font-sans'>
+    <div className='relative bg-BackgroundGray flex flex-col lg:flex-row font-sans'>
       <div
         className='w-full lg:w-1/2 h-screen lg:h-auto bg-cover bg-left relative rounded-full transform -translate-x-1/2'
         style={{
