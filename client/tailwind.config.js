@@ -10,7 +10,10 @@ module.exports = {
       DropDownColor: "#0A777E",
       RatingColor: "#EEF217",
       BackgroundGray: "#8F8787",
+      TextColor: "#ffce00",
       main: "#08353B",
+      green: "#38b000",
+      warning: "#da2c38",
     },
     fontFamily: {
       italiana: ["Italiana", "serif"],

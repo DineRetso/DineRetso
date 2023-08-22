@@ -7,6 +7,7 @@ import Navbar from "./Components/Navbar";
 import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
 import VerifyOTP from "./Pages/VerifyOTP";
+import ResetPassword from "./Pages/ResetPassword";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<Signup />} />
           <Route path='/verifyOTP' element={<VerifyOTP />} />
+          <Route path='/reset-password' element={<ResetPassword />} />
         </Routes>
       </BrowserRouter>
     </div>

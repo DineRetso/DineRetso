@@ -38,7 +38,7 @@ export default function VerifyOTP() {
     if (bcrypt.compareSync(enteredOTP, userInfo.otp)) {
       try {
         const response = await Axios.post(
-          `http://localhost:5000/api/users/signup`,
+          `/api/users/signup`,
           {
             fName: userInfo.fName,
             lName: userInfo.lName,
@@ -57,9 +57,9 @@ export default function VerifyOTP() {
         }
       } catch (error) {
         if (error.response && error.response.status === 400) {
-          alert(error.data.message);
+          alert(error.message);
         } else {
-          alert(error.data.message);
+          alert(error.message);
         }
       }
     } else {

@@ -43,7 +43,7 @@ const Signup = () => {
   const sendOTPEmail = async () => {
     try {
       setLoading(true);
-      await axios.post(`http://localhost:5000/api/users/send-otp`, {
+      await axios.post(`/api/users/send-otp`, {
         email,
         otp,
       });
@@ -116,7 +116,7 @@ const Signup = () => {
   return (
     <div className='flex items-center font-sans justify-center h-auto'>
       {loading ? (
-        <LoadingSpinner />
+        <LoadingSpinner type='OTP' />
       ) : (
         <div className='bg-main w-1/2 rounded-md p-8'>
           <form>
@@ -225,12 +225,10 @@ const Signup = () => {
                   onChange={(e) => setPassword(e.target.value)}
                 />
                 {password && isPasswordValid(password) && (
-                  <span className='text-sm text-green-500'>
-                    Password Valid!
-                  </span>
+                  <span className='text-sm text-green'>Password Valid!</span>
                 )}
                 {password && !isPasswordValid(password) && (
-                  <span className='text-sm text-red-500'>
+                  <span className='text-sm text-warning'>
                     Password must have at least 8 characters and contain a
                     symbol, number and Capital.
                   </span>

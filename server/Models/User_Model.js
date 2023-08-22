@@ -8,6 +8,8 @@ const userSchema = new mongoose.Schema(
     address: { type: String, required: true },
     mobileNo: { type: String, required: true },
     role: { type: String, default: "User" },
+    resetToken: { type: String },
+    resetTokenExpires: { type: Date },
   },
   {
     timestamps: true,

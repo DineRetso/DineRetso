@@ -1,12 +1,20 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { Store } from "../Store";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { userInfo } = state;
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+  const signoutHandler = () => {
+    ctxDispatch({ type: "USER_SIGNOUT" });
+    localStorage.removeItem("userInfo");
+    window.location.href = "/login";
   };
 
   // Example menu options
@@ -16,11 +24,16 @@ const Navbar = () => {
     { text: "Menu", link: "/about" },
     { text: "Services", link: "/about" },
     { text: "About", link: "/about" },
-    { text: "Login", link: "/login" },
+    ...(userInfo
+      ? [
+          { text: userInfo.fName, link: "/profile" },
+          { text: "Logout", onClick: signoutHandler, isButton: true },
+        ]
+      : [{ text: "Login", link: "/login" }]),
   ];
 
   return (
-    <nav className='bg-main w-full text-RatingColor text-xl font-semibold font-italiana'>
+    <nav className='bg-main w-full text-TextColor opacity-90 text-xl font-semibold font-italiana'>
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2'>
         <div className='flex items-center justify-between'>
           <div className='flex items-center'>
@@ -48,7 +61,10 @@ const Navbar = () => {
                     <a
                       key={index}
                       href={option.link}
-                      className='block px-4 py-2 hover:bg-gray-100'
+                      onClick={option.onClick}
+                      className={`block px-4 py-2 hover:bg-green ${
+                        option.isButton ? "cursor-pointer" : ""
+                      }`}
                     >
                       {option.text}
                     </a>
@@ -60,7 +76,14 @@ const Navbar = () => {
           <div className='hidden md:block'>
             <div className='ml-10 space-x-4 text-cyan-950 font-sans'>
               {menuOptions.map((option, index) => (
-                <a key={index} href={option.link} className='hover:underline'>
+                <a
+                  key={index}
+                  href={option.link}
+                  onClick={option.onClick}
+                  className={`hover:underline, ${
+                    option.isButton ? "cursor-pointer" : ""
+                  }`}
+                >
                   {option.text}
                 </a>
               ))}
