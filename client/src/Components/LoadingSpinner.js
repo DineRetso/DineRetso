@@ -8,7 +8,11 @@ const LoadingSpinner = ({ type }) => {
       );
     } else if (type === "OTP") {
       return (
-        <div className='animate-spin rounded-full h-16 w-16 border-t-4 border-SecondaryColor border-opacity-75 mb-2'></div>
+        <div className='animate-spin rounded-full h-16 w-16 border-t-4 border-ButtonColor border-opacity-75 mb-2'></div>
+      );
+    } else if (type === "uploading") {
+      return (
+        <div className='animate-spin rounded-full h-16 w-16 border-t-4 border-ButtonColor border-opacity-75 mb-2'></div>
       );
     }
     // Add more cases for different spinner types if needed
@@ -19,6 +23,8 @@ const LoadingSpinner = ({ type }) => {
       return "Sending reset password link to your email...";
     } else if (type === "OTP") {
       return "Sending OTP number in your email...";
+    } else if (type === "uploading") {
+      return "Processing Image...";
     }
   };
 

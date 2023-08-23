@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Store } from "../Store";
 import Axios from "axios";
@@ -7,23 +7,24 @@ import bcrypt from "bcryptjs";
 export default function VerifyOTP() {
   const [enteredOTP, setEnteredOTP] = useState("");
   const [remainingTime, setRemain] = useState(0);
-  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { state } = useContext(Store);
   const { userInfo } = state;
   const navigate = useNavigate();
 
-  const calculateRemainingTime = () => {
+  const calculateRemainingTime = useCallback(() => {
     const now = new Date().getTime();
     const expirationTime = userInfo.expiration;
     const timeDiff = expirationTime - now;
     return Math.max(0, Math.floor(timeDiff / 1000));
-  };
+  }, [userInfo.expiration]);
+  
   useEffect(() => {
     const interval = setInterval(() => {
       const timeLeft = calculateRemainingTime();
       setRemain(timeLeft);
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [calculateRemainingTime]);
 
   const verifyOTP = async (e) => {
     e.preventDefault();
@@ -37,23 +38,22 @@ export default function VerifyOTP() {
 
     if (bcrypt.compareSync(enteredOTP, userInfo.otp)) {
       try {
-        const response = await Axios.post(
-          `/api/users/signup`,
-          {
-            fName: userInfo.fName,
-            lName: userInfo.lName,
-            address: userInfo.address,
-            mobileNo: userInfo.mobileNo,
-            email: userInfo.email,
-            password: userInfo.password,
-          }
-        );
+        const response = await Axios.post(`/api/users/signup`, {
+          fName: userInfo.fName,
+          lName: userInfo.lName,
+          address: userInfo.address,
+          mobileNo: userInfo.mobileNo,
+          email: userInfo.email,
+          password: userInfo.password,
+        });
         if (response.status === 201) {
           alert(response.data.message);
-          localStorage.removeItem("userInfo"); // Remove user data from local storage
+          localStorage.removeItem("userInfo");
           navigate("/login");
         } else {
           alert("Failed to create account.");
+          localStorage.removeItem("userInfo");
+          navigate("/login");
         }
       } catch (error) {
         if (error.response && error.response.status === 400) {

@@ -1,5 +1,5 @@
 import React from "react";
-const Main_Dashboard = () => {
+const MainDashboard = () => {
   return (
     <div>
       <center>
@@ -9,4 +9,4 @@ const Main_Dashboard = () => {
   );
 };
 
-export default Main_Dashboard;
+export default MainDashboard;

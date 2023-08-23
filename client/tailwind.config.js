@@ -2,7 +2,6 @@
 module.exports = {
   mode: "jit",
   purge: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
-  darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {},
     colors: {
@@ -14,6 +13,7 @@ module.exports = {
       main: "#08353B",
       green: "#38b000",
       warning: "#da2c38",
+      "nav-text": "#ffffff",
     },
     fontFamily: {
       italiana: ["Italiana", "serif"],

@@ -44,6 +44,7 @@ userRouter.post(
     const { fName, lName, address, mobileNo, email, password } = req.body;
     // Check if email already exists
     const existingUser = await User.findOne({ email });
+    const role = bcrypt.hashSync("User", 10);
     if (existingUser) {
       res.status(400).json({ message: "Email already exists" });
       return;
@@ -56,6 +57,7 @@ userRouter.post(
         mobileNo,
         email,
         password,
+        role,
       });
       const user = await newUser.save();
       res.status(201).json({ message: "Your account has been saved!" });

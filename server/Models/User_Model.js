@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema(
     lName: { type: String, required: true },
     address: { type: String, required: true },
     mobileNo: { type: String, required: true },
-    role: { type: String, default: "User" },
+    role: { type: String, required: true },
     resetToken: { type: String },
     resetTokenExpires: { type: Date },
   },
