@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Store } from "../Store";
 import Axios from "axios";
 import bcrypt from "bcryptjs";
+import { toast } from "react-toastify";
 
 export default function VerifyOTP() {
   const [enteredOTP, setEnteredOTP] = useState("");
@@ -12,25 +13,27 @@ export default function VerifyOTP() {
   const navigate = useNavigate();
 
   const calculateRemainingTime = useCallback(() => {
-    const now = new Date().getTime();
-    const expirationTime = userInfo.expiration;
-    const timeDiff = expirationTime - now;
-    return Math.max(0, Math.floor(timeDiff / 1000));
-  }, [userInfo.expiration]);
-  
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const timeLeft = calculateRemainingTime();
-      setRemain(timeLeft);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [calculateRemainingTime]);
+    if (userInfo) {
+      const now = new Date().getTime();
+      const expirationTime = userInfo.expiration;
+      const timeDiff = expirationTime - now;
+      return Math.max(0, Math.floor(timeDiff / 1000));
+    }
+    return 0;
+  }, [userInfo]);
 
   const verifyOTP = async (e) => {
     e.preventDefault();
-
+    if (!userInfo) {
+      toast.error(
+        "User information is missing or expired. Please fill out the signup form again."
+      );
+      localStorage.removeItem("userInfo");
+      navigate("/signup");
+      return;
+    }
     if (remainingTime <= 0) {
-      alert("OTP has expired. Please sign up again.");
+      toast.error("OTP has expired. Please sign up again.");
       localStorage.removeItem("userInfo");
       navigate("/signup");
       return;
@@ -47,27 +50,37 @@ export default function VerifyOTP() {
           password: userInfo.password,
         });
         if (response.status === 201) {
-          alert(response.data.message);
+          toast.success(response.data.message);
           localStorage.removeItem("userInfo");
-          navigate("/login");
+          window.location.href = "/login";
         } else {
-          alert("Failed to create account.");
+          toast.error("Failed to create account.");
           localStorage.removeItem("userInfo");
-          navigate("/login");
+          window.location.href = "/login";
         }
       } catch (error) {
         if (error.response && error.response.status === 400) {
-          alert(error.message);
+          toast.error(error.message);
         } else {
-          alert(error.message);
+          toast.error(error.message);
         }
       }
     } else {
-      alert("Invalid OTP Verification!");
+      toast.error("Invalid OTP Verification!");
       localStorage.removeItem("userInfo");
       navigate("/signup");
     }
   };
+
+  useEffect(() => {
+    if (userInfo) {
+      const interval = setInterval(() => {
+        const timeLeft = calculateRemainingTime();
+        setRemain(timeLeft);
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [calculateRemainingTime]);
 
   return (
     <div className='flex items-center justify-center h-screen font-sans'>

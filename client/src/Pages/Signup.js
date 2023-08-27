@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Store } from "../Store";
 import bcrypt from "bcryptjs";
 import LoadingSpinner from "../Components/LoadingSpinner";
+import { toast } from "react-toastify";
 
 const Signup = () => {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -48,12 +49,12 @@ const Signup = () => {
         otp,
       });
       setLoading(false);
-      alert("OTP sent successfully to your email.");
+      toast.info("OTP sent successfully to your email.");
       navigate("/verifyOTP");
     } catch (error) {
       console.error("Error sending OTP:", error);
       setLoading(false);
-      alert("Error sending OTP. Please try again later.");
+      toast.error("Error sending OTP. Please try again later.");
       navigate("/signup");
     }
   };
@@ -64,19 +65,19 @@ const Signup = () => {
     e.preventDefault();
 
     if (!isPasswordValid(password)) {
-      alert("Password must contain symbol, number and capital letter!");
+      toast.error("Password must contain symbol, number and capital letter!");
       return;
     }
     if (!isValidMobileNo(mobileNo)) {
-      alert("Please enter a valid Philippine mobile number.");
+      toast.error("Please enter a valid Philippine mobile number.");
       return;
     }
     if (!isChecked) {
-      alert("Please agree to the Terms and Conditions.");
+      toast.info("Please agree to the Terms and Conditions.");
       return;
     }
     if (password !== confirm) {
-      alert("Password does not match!");
+      toast.error("Password does not match!");
       setConfirm("");
       cofirm.current.focus();
       return;
@@ -99,7 +100,7 @@ const Signup = () => {
     if (email) {
       sendOTPEmail();
     } else {
-      alert("Please enter a valid email address.");
+      toast.error("Please enter a valid email address.");
     }
   };
   const backgroundImageStyle = {

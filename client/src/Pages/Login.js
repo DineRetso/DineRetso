@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Store } from "../Store";
 import Axios from "axios";
 import LoadingSpinner from "../Components/LoadingSpinner";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -29,9 +30,9 @@ const Login = () => {
       navigate(redirect || "/");
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
-        alert(err.response.data.message);
+        toast.error(err.response.data.message);
       } else {
-        alert("An error occurred. Please try again.");
+        toast.error("An error occurred. Please try again.");
       }
     }
   };
@@ -43,11 +44,11 @@ const Login = () => {
         email,
       });
       setLoading(false);
-      alert("Password Reset Link has been send to your email.");
+      toast.success("Password Reset Link has been send to your email.");
     } catch (err) {
       console.error(err);
       setLoading(false);
-      alert(err.response.data.message);
+      toast.error(err.response.data.message);
       navigate("/login");
     }
   };
@@ -111,7 +112,7 @@ const Login = () => {
                 type='submit'
                 onClick={resetPassword}
               >
-                Forget Password
+                Forgot Password
               </button>
 
               <div className='text-center'>
