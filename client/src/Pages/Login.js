@@ -64,64 +64,66 @@ const Login = () => {
       {loading ? (
         <LoadingSpinner type='resetPass' />
       ) : (
-        <div className='flex flex-col lg:flex-row'>
+        <div className='relative'>
           <div
-            className='w-full lg:w-1/2 h-screen lg:h-auto bg-cover bg-left relative rounded-t-lg lg:rounded-l-lg lg:rounded-t-none transform lg:translate-x-0'
+            className='absolute z-0 w-full h-full bg-cover rounded-full lg:right-96 md:right-96 sm:right-60 right-60 bg-left'
             style={{
               backgroundImage: 'url("../loginbg.jpg")',
             }}
           ></div>
-          <div className='w-full bg-white p-8 flex flex-col justify-center items-center space-y-5'>
-            <div className='rounded-full bg-white w-32 h-32 flex items-center justify-center border border-cyan-950'>
-              <FontAwesomeIcon
-                icon={faUser}
-                className='text-cyan-950 text-6xl'
-              />
-            </div>
-            <form className='w-full md:w-3/4'>
-              <input
-                type='text'
-                className='mt-2 p-2 border w-full bg-gray-200 rounded-xl'
-                placeholder='Email'
-                id='email'
-                required
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
-              />
-              <input
-                type='password'
-                className='mt-2 p-2 border w-full bg-gray-200 rounded-xl'
-                placeholder='Password'
-                id='password'
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                }}
-              />
-              <button
-                className='mt-4 text-TextColor bg-ButtonColor px-4 py-2 rounded-xl w-full'
-                type='submit'
-                onClick={LoginHandler}
-              >
-                Login
-              </button>
-              <button
-                className='mt-4 text-TextColor bg-ButtonColor px-4 py-2 rounded-xl w-full'
-                type='submit'
-                onClick={resetPassword}
-              >
-                Forgot Password
-              </button>
-
-              <div className='text-center'>
-                <p className='mt-2'>Don't have an account?</p>
-                <a href='/signup' className='text-blue-500'>
-                  <p>Sign up here!</p>
-                </a>
+          <div className='flex flex-col pt-20 lg:ml-60 justify-center items-center relative h-screen z-20'>
+            <div className='w-3/4 bg-trans-background md:w-3/4 lg:w-1/2 bg-white p-8 lg:px-1 space-y-5 rounded-xl flex flex-col  justify-center items-center'>
+              <div className='rounded-full w-32 h-32 flex items-center justify-center border border-ButtonColor'>
+                <FontAwesomeIcon
+                  icon={faUser}
+                  className='text-ButtonColor text-6xl'
+                />
               </div>
-            </form>
+              <form className='w-full md:w-3/4'>
+                <input
+                  type='text'
+                  className='mt-2 p-2 w-full bg-gray-200 rounded-xl'
+                  placeholder='Email'
+                  id='email'
+                  required
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
+                />
+                <input
+                  type='password'
+                  className='mt-2 p-2 w-full bg-gray-200 rounded-xl'
+                  placeholder='Password'
+                  id='password'
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
+                />
+                <button
+                  className='mt-4 text-TextColor bg-ButtonColor px-4 py-2 rounded-xl w-full'
+                  type='submit'
+                  onClick={LoginHandler}
+                >
+                  Login
+                </button>
+                <button
+                  className='mt-4 text-TextColor bg-ButtonColor px-4 py-2 rounded-xl w-full'
+                  type='submit'
+                  onClick={resetPassword}
+                >
+                  Forgot Password
+                </button>
+
+                <div className='text-center'>
+                  <p className='mt-2'>Don't have an account?</p>
+                  <a href='/signup' className='text-blue-500'>
+                    <p>Sign up here!</p>
+                  </a>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}
