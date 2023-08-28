@@ -69,8 +69,26 @@ userRouter.post(
   "/signin",
   expressAsyncHandler(async (req, res) => {
     const user = await User.findOne({ email: req.body.email });
+
     if (user) {
+      const lockoutDuration = 5 * 60 * 1000;
+      const currentTime = new Date();
+      const lockoutEndTime = user.lastFailedLogin
+        ? new Date(user.lastFailedLogin.getTime() + lockoutDuration)
+        : currentTime;
+
+      if (user.attempt >= 3 && lockoutEndTime > currentTime) {
+        return res
+          .status(401)
+          .send({ message: "Account locked. Try again later." });
+      }
+
       if (bcrypt.compareSync(req.body.password, user.password)) {
+        if (user.attempt >= 3 && lockoutEndTime <= currentTime) {
+          user.attempt = 0;
+          user.lastFailedLogin = undefined;
+        }
+        await user.save();
         res.json({
           _id: user._id,
           fName: user.fName,
@@ -83,10 +101,15 @@ userRouter.post(
           password: user.password,
           token: generateToken(user),
         });
-        return;
+      } else {
+        user.attempt += 1;
+        user.lastFailedLogin = new Date();
+        await user.save();
+        res.status(401).send({ message: "Invalid Password!" });
       }
+    } else {
+      res.status(401).send({ message: "Invalid Email or password!" });
     }
-    res.status(401).send({ message: "Invalid Email or password!" });
   })
 );
 userRouter.post(

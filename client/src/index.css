@@ -15,4 +15,28 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+} /* Add this CSS to your stylesheet */
+/* Add this CSS to your stylesheet */
+@keyframes loadingAnimation {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+/* Apply the animation to the step elements */
+.animate-step {
+  background-image: linear-gradient(
+    to right,
+    #e8d73d 0%,
+    #e8d73d 50%,
+    transparent 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  animation: loadingAnimation 1s ease-in-out;
+  animation-fill-mode: forwards;
 }

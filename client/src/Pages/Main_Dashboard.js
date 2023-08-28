@@ -2,7 +2,7 @@ import React from "react";
 import Popup from "reactjs-popup";
 const MainDashboard = () => {
   return (
-    <div>
+    <div className="mt-28">
       <center>
         <p class='text-6xl font-semibold'>DineRetso</p>
         <Popup trigger={<button> Trigger</button>} position='right center'>

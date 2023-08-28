@@ -57,10 +57,12 @@ const Navbar = () => {
           </div>
           <div
             className={`${
-              isMobileMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-            } transition-all duration-300 ease-in-out absolute w-full lg:h-screen md:h-screen h-auto top-20 left-0 bg-main text-nav-text font-helvetica rounded-lg shadow-lg z-10`}
+              isMobileMenuOpen
+                ? "opacity-100"
+                : "opacity-0 pointer-events-none"
+            }  transition-all duration-300 ease-in-out absolute w-full h-auto top-20 left-0 bg-main text-nav-text font-helvetica rounded-lg shadow-lg z-10`}
           >
-            <div className='flex flex-col-reverse md:flex-row lg:flex-row w-full h-full bg-gradient-to-r from-main via-main1 to-main1 '>
+            <div className=' flex flex-col-reverse md:flex-row lg:flex-row w-full h-full bg-gradient-to-r from-main via-main1 to-main1 '>
               <div className='lg:w-3/4 md:w-3/4 flex justify-center items-center'>
                 <div className='bg-trans-background p-6'>
                   <p className='text-xl text-white'>
@@ -75,7 +77,7 @@ const Navbar = () => {
                 </div>
               </div>
               <div className='lg:w-1/4 md:w-1/4'>
-                <div className='flex flex-col justify-center items-center lg:ml-10 md:text-2xl lg:text-3xl font-bold py-5 space-y-2 md:space-y-5 lg:space-y-10 border-l'>
+                <div className='flex flex-col justify-center items-center lg:ml-10 md:text-3xl lg:text-3xl font-bold py-5 space-y-2 md:space-y-5 lg:space-y-10 border-l'>
                   {menuOptions.map((option, index) => (
                     <a
                       key={index}

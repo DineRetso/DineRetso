@@ -2,6 +2,8 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import RegisterSteps from "../../../Components/RegisterSteps";
+import { toast } from "react-toastify";
+import LoadingSpinner from "../../../Components/LoadingSpinner";
 
 export default function ConfirmRegister() {
   const [loading, setLoading] = useState(false);
@@ -9,6 +11,10 @@ export default function ConfirmRegister() {
   const rData = JSON.parse(localStorage.getItem("resData"));
   const sendRegistration = async (e) => {
     e.preventDefault();
+    if (!rData) {
+      toast.error("Registration data not found!");
+      return;
+    }
     try {
       setLoading(true);
       const response = await axios.post(`/api/restaurant/send-registration`, {
@@ -22,42 +28,46 @@ export default function ConfirmRegister() {
       });
       if (response.status === 201) {
         setLoading(false);
-        alert("Registration has been sent to DineRetso!");
+        toast.success("Registration has been sent to DineRetso!");
         localStorage.removeItem("resData");
         navigate("/register-restaurant");
       } else {
         setLoading(false);
-        alert("Failed to sent registration! Please try again later!");
+        toast.error("Failed to send registration! Please try again later!");
         localStorage.removeItem("resData");
         navigate("/register-restaurant");
       }
     } catch (error) {
       setLoading(false);
-      alert(error.response.data.message);
+      toast.error(error.response.data.message);
       localStorage.removeItem("resData");
       navigate("/register-restaurant");
     }
   };
 
   return (
-    <div>
-      <RegisterSteps step1 step2 />
-      <div className='flex items-center justify-center min-h-screen bg-BackgroundGray font-sans'>
-        <div className='bg-white p-8 rounded-lg shadow-md max-w-md w-full'>
-          <h2 className='text-2xl font-semibold text-main mb-4'>
-            Enter Your Email Password
-          </h2>
-          <form>
-            <button
-              type='submit'
-              className='bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded w-full'
-              onClick={sendRegistration}
-            >
-              Confirm
-            </button>
-          </form>
+    <div className='pt-24'>
+      <RegisterSteps step1Completed step2 />
+      {loading ? (
+        <LoadingSpinner />
+      ) : (
+        <div className='flex  justify-center items-center h-96 font-sans'>
+          <div className='bg-white p-8 rounded-lg shadow-md max-w-md w-full'>
+            <h2 className='text-2xl font-semibold text-main mb-4'>
+              Enter Your Email Password
+            </h2>
+            <form>
+              <button
+                type='submit'
+                className='bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded w-full'
+                onClick={sendRegistration}
+              >
+                Confirm
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
