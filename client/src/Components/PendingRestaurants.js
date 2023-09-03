@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 
 export default function PendingRestaurants(props) {
   const { pending } = props;
-  console.log(pending);
   const navigate = useNavigate();
   return (
     <div className='border rounded p-4 my-2 border-main space-y-2'>

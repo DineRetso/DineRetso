@@ -22,7 +22,7 @@ const Navbar = () => {
     { text: "Home", link: "/" },
     { text: "Restaurants", link: "/about" },
     { text: "Menu", link: "/about" },
-    { text: "Services", link: "/about" },
+    { text: "Services", link: "/our-services" },
     { text: "About", link: "/about" },
     ...(userInfo
       ? [
@@ -51,16 +51,14 @@ const Navbar = () => {
             <button onClick={toggleMobileMenu}>
               <FontAwesomeIcon
                 icon={faBars}
-                className='text-nav-text text-4xl'
+                className='text-ButtonColor text-4xl'
               />
             </button>
           </div>
           <div
             className={`${
-              isMobileMenuOpen
-                ? "opacity-100"
-                : "opacity-0 pointer-events-none"
-            }  transition-all duration-300 ease-in-out absolute w-full h-auto top-20 left-0 bg-main text-nav-text font-helvetica rounded-lg shadow-lg z-10`}
+              isMobileMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+            }  transition-all duration-300 ease-in-out absolute w-full h-auto top-20 left-0 bg-main text-ButtonColor font-helvetica rounded-lg shadow-lg z-10`}
           >
             <div className=' flex flex-col-reverse md:flex-row lg:flex-row w-full h-full bg-gradient-to-r from-main via-main1 to-main1 '>
               <div className='lg:w-3/4 md:w-3/4 flex justify-center items-center'>

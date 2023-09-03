@@ -13,7 +13,9 @@ import ResetPassword from "./Pages/ResetPassword";
 import Register from "./Pages/Restaurants/Register/Register";
 import ConfirmRegister from "./Pages/Restaurants/Register/ConfirmRegister";
 import ManageRestaurant from "./Pages/Restaurants/ManageResto/ManageRestaurant";
-import ShowPendingResto from "./ShowPendingResto";
+import ShowPendingResto from "./Pages/Restaurants/ManageResto/ShowPendingResto";
+import AdminRoute from "./Components/AdminRoute";
+import Service_Dashboard from "./Pages/Restaurants/Register/Service_Dashboard";
 
 function App() {
   return (
@@ -27,9 +29,18 @@ function App() {
           <Route path='/signup' element={<Signup />} />
           <Route path='/verifyOTP' element={<VerifyOTP />} />
           <Route path='/reset-password' element={<ResetPassword />} />
+          <Route path='/our-services' element={<Service_Dashboard />} />
           <Route path='/register-restaurant' element={<Register />} />
           <Route path='/confirm-register' element={<ConfirmRegister />} />
-          <Route path='/manage-restaurants' element={<ManageRestaurant />} />
+          <Route
+            path='/admin/manage-restaurants'
+            element={
+              <AdminRoute>
+                {" "}
+                <ManageRestaurant />
+              </AdminRoute>
+            }
+          />
           <Route
             path='/manage-restaurant/pendingResto/:id'
             element={<ShowPendingResto />}

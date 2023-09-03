@@ -3,12 +3,13 @@ const multer = require("multer");
 const streamifier = require("streamifier");
 const cloudinary = require("cloudinary").v2;
 const dotenv = require("dotenv");
+const { isAuth } = require("../utils");
 
 dotenv.config();
 const imageRouter = express.Router();
 const upload = multer();
 
-imageRouter.post("/", upload.single("file"), async (req, res) => {
+imageRouter.post("/", isAuth, upload.single("file"), async (req, res) => {
   cloudinary.config({
     cloud_name: process.env.CLOUDINARY_NAME,
     api_key: process.env.CLOUDINARY_KEY,
@@ -31,7 +32,7 @@ imageRouter.post("/", upload.single("file"), async (req, res) => {
   res.send(result);
 });
 
-imageRouter.delete("/:public_id", async (req, res) => {
+imageRouter.delete("/:public_id", isAuth, async (req, res) => {
   const public_id = req.params.public_id; // Extract the public_id from the URL parameter
 
   cloudinary.config({

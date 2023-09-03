@@ -1,11 +1,12 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useContext, useEffect, useReducer } from "react";
 import PendingRestaurants from "../../../Components/PendingRestaurants";
 import axios from "axios";
 import LoadingSpinner from "../../../Components/LoadingSpinner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-
-const reducer = (state, action) => {
+import { faSearch, faLink } from "@fortawesome/free-solid-svg-icons";
+import RestaurantView1 from "../../../Components/RestaurantView1";
+import { Store } from "../../../Store";
+const pendingReducer = (state, action) => {
   switch (action.type) {
     case "FETCH_REQUEST":
       return { ...state, loading: true };
@@ -17,28 +18,84 @@ const reducer = (state, action) => {
       return state;
   }
 };
-
+const registeredReducer = (state, action) => {
+  switch (action.type) {
+    case "GET_RESTO":
+      return { ...state, loading: true };
+    case "GET_SUCCESS":
+      return { ...state, Resto: action.payload, loading: false };
+    case "GET_FAILED":
+      return { ...state, loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+const initialPendingState = {
+  pendingResto: [],
+  loading: true,
+  error: "",
+};
+const initialRegisteredState = {
+  Resto: [],
+  loading: true,
+  error: "",
+};
 export default function ManageRestaurant() {
-  const [{ loading, error, pendingResto }, dispatch] = useReducer(reducer, {
-    pendingResto: [],
-    loading: true,
-    error: "",
-  });
+  const [pendingState, pendingDispatch] = useReducer(
+    pendingReducer,
+    initialPendingState
+  );
+  const [registeredState, registeredDispatch] = useReducer(
+    registeredReducer,
+    initialRegisteredState
+  );
+  const { loading, error, pendingResto } = pendingState;
+  const { Resto } = registeredState;
+  const { state } = useContext(Store);
+  const { userInfo } = state;
 
   useEffect(() => {
     const fetchPendingResto = async () => {
-      dispatch({ type: "FETCH_REQUEST" });
+      pendingDispatch({ type: "FETCH_REQUEST" });
       try {
-        const response = await axios.get("/api/restaurant/pendingResto");
-        dispatch({ type: "FETCH_SUCCESS", payload: response.data });
+        const response = await axios.get("/api/restaurant/pendingResto", {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        pendingDispatch({ type: "FETCH_SUCCESS", payload: response.data });
       } catch (error) {
-        dispatch({ type: "FETCH_FAIL", payload: error.message });
+        if (error.response && error.response.status === 401) {
+          const errorMessage =
+            error.response.data.message || "No Pending Restaurants!";
+          pendingDispatch({ type: "FETCH_FAIL", payload: errorMessage });
+        } else {
+          pendingDispatch({ type: "FETCH_FAIL", payload: error.message });
+        }
       }
     };
     fetchPendingResto();
   }, []);
+  useEffect(() => {
+    const fetchRestaurants = async () => {
+      registeredDispatch({ type: "GET_RESTO" });
+      try {
+        const response = await axios.get("/api/restaurant/getRestaurants", {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        registeredDispatch({ type: "GET_SUCCESS", payload: response.data });
+      } catch (error) {
+        if (error.response && error.response.status === 401) {
+          const errorMessage =
+            error.response.data.message || "No Restaurant Registered!";
+          registeredDispatch({ type: "GET_FAILED", payload: errorMessage });
+        } else {
+          registeredDispatch({ type: "GET_FAILED", payload: error.message });
+        }
+      }
+    };
+    fetchRestaurants();
+  }, []);
   return (
-    <div className='w-full font-sans flex flex-row'>
+    <div className='w-full font-sans flex flex-row mt-24'>
       <div className='lg:w-1/4 md:w-1/2 w-full px-4 mb-4 md:mb-0 border-r border-main h-screen overflow-y-auto'>
         <div>
           <select className='w-full bg-white border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-indigo-500'>
@@ -56,6 +113,10 @@ export default function ManageRestaurant() {
             <LoadingSpinner type='getpending' />
           ) : error ? (
             <div className='text-center'>{error}</div>
+          ) : pendingResto.length === 0 ? ( // Check if pendingResto array is empty
+            <div className='text-center text-red-500'>
+              No Pending Restaurants!
+            </div>
           ) : (
             pendingResto.map((pending) => (
               <div key={pending._id}>
@@ -65,7 +126,7 @@ export default function ManageRestaurant() {
           )}
         </div>
       </div>
-      <div className='lg:w-3/4 md:w-1/2 w-full px-4'>
+      <div className='flex flex-col lg:w-3/4 md:w-1/2 w-full px-4  space-y-5'>
         <div className='flex flex-col md:flex-row space-y-1 md:space-y-0 justify-between'>
           <div className='flex flex-row w-full md:w-3/4'>
             <input
@@ -81,10 +142,33 @@ export default function ManageRestaurant() {
             </div>
           </div>
           <div className='flex'>
-            <button className='bg-ButtonColor text-white rounded-r px-4 py-2 ml-1 hover:bg-opacity-80 transition duration-300'>
-              Add Restaurant
-            </button>
+            <select>
+              <option value=''>Sort Restaurant</option>
+              <option value='1'>Premium</option>
+              <option value='0'>Basic</option>
+            </select>
           </div>
+        </div>
+        <div className=''>
+          <div className='text-2xl'>
+            <span>List of Restaurants</span>
+          </div>
+          <hr className='border border-main'></hr>
+        </div>
+        <div>
+          {loading ? (
+            <LoadingSpinner type='getpending' />
+          ) : Resto.length === 0 ? (
+            <div className='text-center text-red-500'>
+              No Restaurants Registered!
+            </div>
+          ) : (
+            Resto.map((resto) => (
+              <div key={resto._id}>
+                <RestaurantView1 resto={resto} />
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>

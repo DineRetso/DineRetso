@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema(
     mobileNo: { type: String, required: true },
     isAdmin: { type: Boolean, default: false, required: true },
     isOwner: { type: Boolean, default: false, required: true },
+    myRestaurant: { type: String },
     attempt: { type: Number, default: 0, required: true },
     lastFailedLogin: { type: Date },
     resetToken: { type: String },

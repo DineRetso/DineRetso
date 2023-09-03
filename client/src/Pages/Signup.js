@@ -5,6 +5,8 @@ import { Store } from "../Store";
 import bcrypt from "bcryptjs";
 import LoadingSpinner from "../Components/LoadingSpinner";
 import { toast } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 
 const Signup = () => {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -103,124 +105,93 @@ const Signup = () => {
       toast.error("Please enter a valid email address.");
     }
   };
-  const backgroundImageStyle = {
-    backgroundImage: "url('')",
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    minHeight: "100vh",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "center",
-  };
 
   return (
-    <div className='flex items-center font-sans justify-center h-auto'>
-      {loading ? (
-        <LoadingSpinner type='OTP' />
-      ) : (
-        <div className='bg-main w-1/2 rounded-md p-8'>
-          <form>
-            <div className='bg-main w-full rounded-md'>
-              <div className='lg:flex md:flex w-full space-x-2'>
+    <div
+      className='w-full bg-cover relative bg-opacity-25'
+      style={{
+        backgroundImage: 'url("../bgsignup.png")',
+      }}
+    >
+      <div className='flex font-sans justify-center items-center h-auto'>
+        {loading ? (
+          <LoadingSpinner type='OTP' />
+        ) : (
+          <div className='flex justify-center items-center mt-24 mb-8 bg-TextColor bg-opacity-30 lg:w-1/2 md:w-1/2 sm:w-3/4 w-full rounded-3xl p-11'>
+            <form
+              onSubmit={signuphandler}
+              className='flex flex-col justify-center items-center'
+            >
+              <div className='rounded-full bg-white w-32 h-32 flex items-center justify-center border border-cyan-950'>
+                <FontAwesomeIcon
+                  icon={faUser}
+                  className='text-cyan-950 text-6xl'
+                />
+              </div>
+
+              <div className='flex justify-center items-center lg:flex mt-6 md:flex w-full space-x-2'>
                 <div className='mb-4 lg:w-1/2 md:w-1/2'>
-                  <label
-                    className='block text-first-text font-bold mb-2'
-                    htmlFor='fName'
-                  >
-                    First Name
-                  </label>
                   <input
-                    className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+                    className='shadow appearance-none border rounded-3xl w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
                     id='fName'
                     type='text'
-                    placeholder='Enter your First Name'
+                    placeholder='First Name'
                     required
                     value={fName}
                     onChange={(e) => setfName(e.target.value)}
                   />
                 </div>
                 <div className='mb-4 lg:w-1/2 md:w-1/2'>
-                  <label
-                    className='block text-first-text font-bold mb-2'
-                    htmlFor='lName'
-                  >
-                    Last Name
-                  </label>
                   <input
-                    className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+                    className='shadow appearance-none border rounded-3xl w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
                     id='lName'
                     type='text'
-                    placeholder='Enter your Last Name'
+                    placeholder='Last Name'
                     required
                     value={lName}
                     onChange={(e) => setlName(e.target.value)}
                   />
                 </div>
               </div>
-              <div className='mb-4'>
-                <label
-                  className='block text-first-text font-bold mb-2'
-                  htmlFor='address'
-                >
-                  Address
-                </label>
+              <div className='flex mb-4 w-full'>
                 <input
-                  className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+                  className='shadow appearance-none border rounded-3xl w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
                   id='address'
                   type='text'
-                  placeholder='Enter your Address'
+                  placeholder='Address'
                   required
                   value={address}
                   onChange={(e) => setAdd(e.target.value)}
                 />
               </div>
-              <div className='mb-4'>
-                <label
-                  className='block text-first-text font-bold mb-2'
-                  htmlFor='mobileNo'
-                >
-                  Mobile Number
-                </label>
+              <div className='flex w-full mb-4'>
                 <input
-                  className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+                  className='shadow appearance-none border rounded-3xl w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
                   id='mobileNo'
                   type='number'
-                  placeholder='Enter your Mobile No'
+                  placeholder='Mobile No'
                   required
                   value={mobileNo}
                   onChange={(e) => setMob(e.target.value)}
                 />
               </div>
-              <div className='mb-4'>
-                <label
-                  className='block text-first-text font-bold mb-2'
-                  htmlFor='email'
-                >
-                  Email
-                </label>
+              <div className='flex w-full mb-4'>
                 <input
-                  className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+                  className='shadow appearance-none border rounded-3xl w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
                   id='username'
                   type='email'
-                  placeholder='Enter your Email'
+                  placeholder='Email'
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
-              <div className='mb-6'>
-                <label
-                  className='block text-gray-700 font-bold mb-2'
-                  htmlFor='password'
-                >
-                  Password
-                </label>
+              <div className='flex w-full mb-4'>
                 <input
-                  className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+                  className='shadow appearance-none border rounded-3xl w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
                   id='password'
                   type='password'
-                  placeholder='Enter your password'
+                  placeholder='Password'
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -235,16 +206,10 @@ const Signup = () => {
                   </span>
                 )}
               </div>
-              <div className='mb-6'>
-                <label
-                  className='block text-gray-700 font-bold mb-2'
-                  htmlFor='confirmpassword'
-                >
-                  Password
-                </label>
+              <div className='flex w-full mb-6'>
                 <input
                   ref={cofirm}
-                  className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+                  className='shadow appearance-none border rounded-3xl w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
                   id='confirm'
                   type='password'
                   placeholder='Confirm password'
@@ -254,13 +219,13 @@ const Signup = () => {
                 />
               </div>
               {/* ... (terms and conditions checkbox) */}
-              <div className='mb-6'>
-                <label className='block text-gray-700 font-bold mb-2'>
-                  Terms and Conditions
-                </label>
-                <div className='text-sm text-gray-700'>
+              <label className='block text-gray-700 font-bold mb-2 text-BlackColor'>
+                Terms and Conditions
+              </label>
+              <div className='flex w-full mb-6'>
+                <div className='text-sm text-gray-700 w-full'>
                   <div
-                    className='overflow-y-scroll max-h-40 border bg-BackgroundGray border-gray-300 p-2 rounded'
+                    className='overflow-y-scroll max-h-40 border bg-TextColor border-gray-300 p-2 rounded'
                     style={{ maxHeight: "160px" }}
                   >
                     <p>
@@ -402,25 +367,24 @@ const Signup = () => {
                       onChange={handleCheckBox}
                       required
                     />
-                    <label htmlFor='terms'>
+                    <label htmlFor='terms' className='text-BlackColor'>
                       I agree to the Terms and Conditions.
                     </label>
                   </div>
                 </div>
               </div>
-              <div className='flex items-center justify-center'>
+              <div className='flex items-center justify-center rounded-2xl bg-green w-40 '>
                 <button
-                  className='bg-green-200 hover:bg-blue-700 text-ButtonColor font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
+                  className='w-40 text-TextColor font-bold py-2 px-4  focus:outline-none focus:shadow-outline'
                   type='submit'
-                  onClick={signuphandler}
                 >
                   Signup
                 </button>
               </div>
-            </div>
-          </form>
-        </div>
-      )}
+            </form>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

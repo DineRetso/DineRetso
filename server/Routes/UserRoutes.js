@@ -38,6 +38,19 @@ userRouter.post(
     }
   })
 );
+userRouter.post("/userInfo", async (req, res) => {
+  try {
+    const user = await User.findById({ _id: req.body._id });
+    if (!user) {
+      return res.sendStatus(404);
+    }
+    res.setHeader("Content-Type", "application/json");
+    res.status(200).json({ isAdmin: user.isAdmin });
+  } catch (error) {
+    console.error("Error fetching user info:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 userRouter.post(
   "/signup",
   expressAsyncHandler(async (req, res) => {
@@ -95,10 +108,7 @@ userRouter.post(
           lName: user.lName,
           address: user.address,
           mobileNo: user.mobileNo,
-          isAdmin: user.isAdmin,
-          isOwner: user.isOwner,
           email: user.email,
-          password: user.password,
           token: generateToken(user),
         });
       } else {

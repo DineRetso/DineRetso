@@ -1,9 +1,10 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import LoadingSpinner from "../../../Components/LoadingSpinner";
 import RegisterSteps from "../../../Components/RegisterSteps";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Store } from "../../../Store";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -16,8 +17,12 @@ export default function Register() {
   const [address, setAddress] = useState("");
   const [category, setCategory] = useState("");
   const [imagePublicId, setImagePublicId] = useState("");
+  const { state } = useContext(Store);
+  const { userInfo } = state;
 
   const registerHandler = async (e) => {
+    e.preventDefault();
+    console.log("Restaurant Name:", resName);
     const resData = {
       image,
       resName,
@@ -38,7 +43,7 @@ export default function Register() {
     try {
       setLoading(true);
       const { data } = await axios.post(`/api/image`, bodyFormData, {
-        headers: {},
+        headers: { Authorization: `Bearer ${userInfo.token}` },
       });
       setImage(data.secure_url);
       setImagePublicId(data.public_id);
@@ -66,10 +71,18 @@ export default function Register() {
   };
   useEffect(() => {
     const rData = localStorage.getItem("resData");
-    if (rData) {
-      navigate("");
+    if (!userInfo) {
+      navigate("/login");
+    } else {
+      if (rData) {
+        navigate("/confirm-register");
+      } else {
+        setEmail(userInfo.email);
+        setOwner(userInfo.fName + " " + userInfo.lName);
+        setPhoneNo(userInfo.mobileNo);
+      }
     }
-  });
+  }, [navigate, userInfo]);
 
   return (
     <div className='pt-24 bg-cover'>
@@ -80,7 +93,7 @@ export default function Register() {
             Register Your Restaurant
           </h2>
           <hr className='mb-2' />
-          <form>
+          <form onSubmit={registerHandler}>
             <div className='flex flex-col md:flex-row'>
               <div className='flex justify-center items-center flex-col md:w-1/2 mb-4 md:mb-0 md:mr-4'>
                 <div className='relative w-full h-auto'>
@@ -132,9 +145,7 @@ export default function Register() {
                   id='image'
                   type='text'
                   placeholder='Image name'
-                  disabled
                   value={image}
-                  required
                   onChange={(e) => setImage(e.target.value)}
                   style={{ cursor: "not-allowed" }}
                 />
@@ -146,9 +157,9 @@ export default function Register() {
                     placeholder='Restaurant Name'
                     className='mb-3 border-b w-full border-lg outline-0 focus:shadow-md focus:shadow-ButtonColor p-3 rounded-md shadow-BackgroundGray text-main'
                     id='resName'
-                    required
                     value={resName}
                     onChange={(e) => setResName(e.target.value)}
+                    required
                   />
                 </div>
                 <input
@@ -156,56 +167,58 @@ export default function Register() {
                   placeholder='Owner'
                   className='mb-3 shadow-md w-full p-3  focus-within:shadow-ButtonColor shadow-BackgroundGray text-main'
                   id='owner'
-                  required
                   value={owner}
                   onChange={(e) => setOwner(e.target.value)}
+                  required
                 />
                 <input
                   type='email'
                   placeholder='Email'
                   className='mb-3 shadow-md w-full p-3 rounded-md shadow-BackgroundGray text-main'
                   id='email'
-                  required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  disabled
+                  required
                 />
                 <input
                   type='number'
                   placeholder='Phone Number'
                   className='mb-3 shadow-md w-full p-3 rounded-md shadow-BackgroundGray text-main'
                   id='phoneNo'
-                  required
                   value={phoneNo}
                   onChange={(e) => setPhoneNo(e.target.value)}
+                  required
                 />
                 <input
                   type='text'
                   placeholder='Complete Address'
                   className='mb-3 shadow-md w-full p-3 rounded-md shadow-BackgroundGray text-main'
                   id='address'
-                  required
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
+                  required
                 />
                 <select
                   className='mb-3 shadow-md w-full p-3 rounded-md shadow-BackgroundGray text-main'
                   id='category'
-                  required
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
+                  required
                 >
                   <option value=''>Select Category</option>
                   <option value='Famous'>Famous</option>
                   <option value='Local'>Local</option>
                   <option value='Unique'>Unique</option>
                 </select>
-
-                <button
-                  className='bg-ButtonColor text-white py-2 px-4 rounded'
-                  onClick={registerHandler}
-                >
-                  Register
-                </button>
+                <div className='flex justify-center items-center bg-ButtonColor rounded w-auto '>
+                  <button
+                    className=' text-main py-2 px-4 rounded'
+                    type='submit'
+                  >
+                    Register
+                  </button>
+                </div>
               </div>
             </div>
           </form>

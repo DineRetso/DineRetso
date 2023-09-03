@@ -9,6 +9,7 @@ const resSchema = new mongoose.Schema(
     address: { type: String, required: true },
     category: { type: String, required: true },
     isConfirmed: { type: String, default: "NotConfirmed" },
+    reasonCancelled: { type: String },
   },
   {
     timestamps: true,

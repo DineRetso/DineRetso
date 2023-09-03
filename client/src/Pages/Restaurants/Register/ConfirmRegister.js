@@ -1,14 +1,17 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import RegisterSteps from "../../../Components/RegisterSteps";
 import { toast } from "react-toastify";
 import LoadingSpinner from "../../../Components/LoadingSpinner";
+import { Store } from "../../../Store";
 
 export default function ConfirmRegister() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const rData = JSON.parse(localStorage.getItem("resData"));
+  const { state } = useContext(Store);
+  const { userInfo } = state;
   const sendRegistration = async (e) => {
     e.preventDefault();
     if (!rData) {
@@ -17,15 +20,21 @@ export default function ConfirmRegister() {
     }
     try {
       setLoading(true);
-      const response = await axios.post(`/api/restaurant/send-registration`, {
-        image: rData.image,
-        resName: rData.resName,
-        owner: rData.owner,
-        email: rData.email,
-        phoneNo: rData.phoneNo,
-        address: rData.address,
-        category: rData.category,
-      });
+      const response = await axios.post(
+        `/api/restaurant/send-registration`,
+        {
+          image: rData.image,
+          resName: rData.resName,
+          owner: rData.owner,
+          email: rData.email,
+          phoneNo: rData.phoneNo,
+          address: rData.address,
+          category: rData.category,
+        },
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
       if (response.status === 201) {
         setLoading(false);
         toast.success("Registration has been sent to DineRetso!");
@@ -43,6 +52,11 @@ export default function ConfirmRegister() {
       localStorage.removeItem("resData");
       navigate("/register-restaurant");
     }
+  };
+  const cancelRegistration = async (e) => {
+    e.preventDefault();
+    localStorage.removeItem("resData");
+    navigate("/register-restaurant");
   };
 
   return (
@@ -63,6 +77,13 @@ export default function ConfirmRegister() {
                 onClick={sendRegistration}
               >
                 Confirm
+              </button>
+              <button
+                type='submit'
+                className='bg-ButtonColor hover:bg-hover-text py-2 px-4 rounded w-full'
+                onClick={cancelRegistration}
+              >
+                Cancel
               </button>
             </form>
           </div>
