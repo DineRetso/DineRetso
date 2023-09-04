@@ -45,7 +45,7 @@ export default function ShowPendingResto() {
       try {
         dispatch({ type: "FETCH_REQUEST" });
         const { data } = await axios.get(
-          `/api/restaurant/pendingRestoInfo/${pendingID}`,
+          `/api/admin/pendingRestoInfo/${pendingID}`,
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
@@ -75,7 +75,7 @@ export default function ShowPendingResto() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "/api/restaurant/cancelRegistration",
+        "/api/admin/cancelRegistration",
         {
           _id: pendingID,
           reasonCancelled: reasonCancelled,
@@ -86,7 +86,7 @@ export default function ShowPendingResto() {
       );
       if (response.status === 201) {
         toast.success(response.data.message);
-        navigate("/manage-restaurants");
+        navigate("/admin/manage-restaurants");
       } else {
         toast.error("Cancellation Failed!");
       }
@@ -102,9 +102,10 @@ export default function ShowPendingResto() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "/api/restaurant/confirmRegistration",
+        "/api/admin/confirmRegistration",
         {
           _id: pendingID,
+          email: email,
         },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -112,7 +113,7 @@ export default function ShowPendingResto() {
       );
       if (response.status === 201) {
         toast.success(response.data.message);
-        navigate("/manage-restaurants");
+        navigate("/admin/manage-restaurants");
       } else {
         toast.error("Cancellation Failed!");
       }

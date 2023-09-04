@@ -22,11 +22,11 @@ const Navbar = () => {
     { text: "Home", link: "/" },
     { text: "Restaurants", link: "/about" },
     { text: "Menu", link: "/about" },
-    { text: "Services", link: "/our-services" },
+    { text: "Services", link: "/dineretso-services" },
     { text: "About", link: "/about" },
     ...(userInfo
       ? [
-          { text: userInfo.fName, link: "/profile" },
+          { text: userInfo.fName, link: `/user/profile/${userInfo._id}` },
           { text: "Logout", onClick: signoutHandler, isButton: true },
         ]
       : [{ text: "Login", link: "/login" }]),

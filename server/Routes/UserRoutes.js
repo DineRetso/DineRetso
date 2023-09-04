@@ -4,10 +4,36 @@ const User = require("../Models/User_Model.js");
 const expressAsyncHandler = require("express-async-handler");
 const dotenv = require("dotenv");
 const bcrypt = require("bcryptjs");
-const { generateToken, generateResetToken } = require("../utils.js");
+const { generateToken, generateResetToken, isAuth } = require("../utils.js");
 
 dotenv.config();
 const userRouter = express.Router();
+
+userRouter.get(
+  "/get-user/:id",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const requestedUserId = req.params.id;
+    const authorizedUserId = req.user._id;
+    // Check if the authorized user matches the requested user
+    if (requestedUserId !== authorizedUserId) {
+      return res.status(403).send({ message: "Unauthorized access" });
+    }
+    const user = await User.findById(requestedUserId);
+    try {
+      if (user) {
+        res.send(user);
+      } else {
+        res.status(200).send({ message: "No User Found!" });
+      }
+    } catch (error) {
+      res
+        .status(500)
+        .send({ message: "Internal Server Error! Please Try again later!" });
+    }
+  })
+);
+
 userRouter.post(
   "/send-otp",
   expressAsyncHandler(async (req, res) => {
@@ -38,19 +64,22 @@ userRouter.post(
     }
   })
 );
-userRouter.post("/userInfo", async (req, res) => {
-  try {
-    const user = await User.findById({ _id: req.body._id });
-    if (!user) {
-      return res.sendStatus(404);
+userRouter.post(
+  "/userInfo",
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const user = await User.findById({ _id: req.body._id });
+      if (!user) {
+        return res.sendStatus(404);
+      }
+      res.setHeader("Content-Type", "application/json");
+      res.status(200).json({ isAdmin: user.isAdmin, isOwner: user.isOwner });
+    } catch (error) {
+      console.error("Error fetching user info:", error);
+      res.status(500).json({ message: "Internal Server Error" });
     }
-    res.setHeader("Content-Type", "application/json");
-    res.status(200).json({ isAdmin: user.isAdmin });
-  } catch (error) {
-    console.error("Error fetching user info:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-});
+  })
+);
 userRouter.post(
   "/signup",
   expressAsyncHandler(async (req, res) => {
@@ -179,28 +208,31 @@ userRouter.post(
   })
 );
 
-userRouter.post("/reset-password", async (req, res) => {
-  const { token, password } = req.body;
-  try {
-    const user = await User.findOne({
-      resetToken: token,
-      resetTokenExpires: { $gt: Date.now() },
-    });
+userRouter.post(
+  "/reset-password",
+  expressAsyncHandler(async (req, res) => {
+    const { token, password } = req.body;
+    try {
+      const user = await User.findOne({
+        resetToken: token,
+        resetTokenExpires: { $gt: Date.now() },
+      });
 
-    if (!user) {
-      return res.status(404).json({ message: "Invalid or expired token" });
+      if (!user) {
+        return res.status(404).json({ message: "Invalid or expired token" });
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user.password = hashedPassword;
+      user.resetToken = undefined;
+      user.resetTokenExpires = undefined;
+      await user.save();
+
+      res.json({ message: "Password reset successful" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Server error" });
     }
-    const hashedPassword = await bcrypt.hash(password, 10);
-    user.password = hashedPassword;
-    user.resetToken = undefined;
-    user.resetTokenExpires = undefined;
-    await user.save();
-
-    res.json({ message: "Password reset successful" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
-  }
-});
+  })
+);
 
 module.exports = userRouter;

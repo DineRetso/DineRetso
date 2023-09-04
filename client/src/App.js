@@ -16,6 +16,9 @@ import ManageRestaurant from "./Pages/Restaurants/ManageResto/ManageRestaurant";
 import ShowPendingResto from "./Pages/Restaurants/ManageResto/ShowPendingResto";
 import AdminRoute from "./Components/AdminRoute";
 import Service_Dashboard from "./Pages/Restaurants/Register/Service_Dashboard";
+import ProtectedRoute from "./Components/ProtectedRoute";
+import UserProfile from "./Pages/Profile/UserProfile";
+import QRCodeGenerator from "./Pages/QRCodeGenerrator";
 
 function App() {
   return (
@@ -25,25 +28,52 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<MainDashboard />} />
+          <Route path='/qr' element={<QRCodeGenerator />} />
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<Signup />} />
           <Route path='/verifyOTP' element={<VerifyOTP />} />
           <Route path='/reset-password' element={<ResetPassword />} />
-          <Route path='/our-services' element={<Service_Dashboard />} />
-          <Route path='/register-restaurant' element={<Register />} />
-          <Route path='/confirm-register' element={<ConfirmRegister />} />
+          <Route path='/dineretso-services' element={<Service_Dashboard />} />
+          <Route
+            path='/user/profile/:id'
+            element={
+              <ProtectedRoute>
+                <UserProfile />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path='/register-restaurant'
+            element={
+              <ProtectedRoute>
+                <Register />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/confirm-register'
+            element={
+              <ProtectedRoute>
+                <ConfirmRegister />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path='/admin/manage-restaurants'
             element={
               <AdminRoute>
-                {" "}
                 <ManageRestaurant />
               </AdminRoute>
             }
           />
           <Route
-            path='/manage-restaurant/pendingResto/:id'
-            element={<ShowPendingResto />}
+            path='/admin/manage-restaurant/pendingResto/:id'
+            element={
+              <AdminRoute>
+                <ShowPendingResto />
+              </AdminRoute>
+            }
           />
         </Routes>
       </BrowserRouter>

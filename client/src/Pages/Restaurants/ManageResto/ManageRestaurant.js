@@ -58,7 +58,7 @@ export default function ManageRestaurant() {
     const fetchPendingResto = async () => {
       pendingDispatch({ type: "FETCH_REQUEST" });
       try {
-        const response = await axios.get("/api/restaurant/pendingResto", {
+        const response = await axios.get("/api/admin/pendingResto", {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         pendingDispatch({ type: "FETCH_SUCCESS", payload: response.data });
@@ -78,7 +78,7 @@ export default function ManageRestaurant() {
     const fetchRestaurants = async () => {
       registeredDispatch({ type: "GET_RESTO" });
       try {
-        const response = await axios.get("/api/restaurant/getRestaurants", {
+        const response = await axios.get("/api/admin/getRestaurants", {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         registeredDispatch({ type: "GET_SUCCESS", payload: response.data });
@@ -126,49 +126,53 @@ export default function ManageRestaurant() {
           )}
         </div>
       </div>
-      <div className='flex flex-col lg:w-3/4 md:w-1/2 w-full px-4  space-y-5'>
-        <div className='flex flex-col md:flex-row space-y-1 md:space-y-0 justify-between'>
-          <div className='flex flex-row w-full md:w-3/4'>
-            <input
-              type='text'
-              placeholder='Search'
-              className='w-full bg-white border border-gray-300 rounded-l px-3 py-2 focus:outline-none focus:border-indigo-500 pr-10'
-            />
-            <div className='h-full flex items-center p-3 border justify-center'>
-              <FontAwesomeIcon
-                icon={faSearch}
-                className='text-cyan-950 text-2xl'
-              />
-            </div>
-          </div>
-          <div className='flex'>
-            <select>
-              <option value=''>Sort Restaurant</option>
-              <option value='1'>Premium</option>
-              <option value='0'>Basic</option>
-            </select>
-          </div>
-        </div>
-        <div className=''>
-          <div className='text-2xl'>
-            <span>List of Restaurants</span>
-          </div>
-          <hr className='border border-main'></hr>
-        </div>
-        <div>
-          {loading ? (
-            <LoadingSpinner type='getpending' />
-          ) : Resto.length === 0 ? (
-            <div className='text-center text-red-500'>
-              No Restaurants Registered!
-            </div>
-          ) : (
-            Resto.map((resto) => (
-              <div key={resto._id}>
-                <RestaurantView1 resto={resto} />
+      <div className='lg:w-3/4 md:w-1/2 w-full'>
+        <div className='h-screen overflow-y-auto'>
+          <div className='flex flex-col  px-4 space-y-5'>
+            <div className='flex flex-col md:flex-row space-y-1 md:space-y-0 justify-between'>
+              <div className='flex flex-row w-full md:w-3/4'>
+                <input
+                  type='text'
+                  placeholder='Search'
+                  className='w-full bg-white border border-gray-300 rounded-l px-3 py-2 focus:outline-none focus:border-indigo-500 pr-10'
+                />
+                <div className='h-full flex items-center p-3 border justify-center'>
+                  <FontAwesomeIcon
+                    icon={faSearch}
+                    className='text-cyan-950 text-2xl'
+                  />
+                </div>
               </div>
-            ))
-          )}
+              <div className='flex'>
+                <select>
+                  <option value=''>Sort Restaurant</option>
+                  <option value='1'>Premium</option>
+                  <option value='0'>Basic</option>
+                </select>
+              </div>
+            </div>
+            <div className=''>
+              <div className='text-2xl'>
+                <span>List of Restaurants</span>
+              </div>
+              <hr className='border border-main'></hr>
+            </div>
+            <div className='space-y-5'>
+              {loading ? (
+                <LoadingSpinner type='getpending' />
+              ) : Resto.length === 0 ? (
+                <div className='text-center text-red-500'>
+                  No Restaurants Registered!
+                </div>
+              ) : (
+                Resto.map((resto) => (
+                  <div key={resto._id}>
+                    <RestaurantView1 resto={resto} />
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

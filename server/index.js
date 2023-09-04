@@ -6,6 +6,7 @@ const dotenv = require("dotenv");
 const UserRoutes = require("./Routes/UserRoutes.js");
 const ImageRoutes = require("./Routes/ImageRoutes.js");
 const ResRoutes = require("./Routes/ResRoutes.js");
+const AdminRoutes = require("./Routes/AdminRoutes.js");
 
 dotenv.config();
 mongoose
@@ -24,6 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/users", UserRoutes);
 app.use("/api/image", ImageRoutes);
 app.use("/api/restaurant", ResRoutes);
+app.use("/api/admin", AdminRoutes);
 
 const port = process.env.PORT;
 app.listen(port, () => {

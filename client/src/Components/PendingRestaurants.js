@@ -25,7 +25,7 @@ export default function PendingRestaurants(props) {
           <button
             className='bg-ButtonColor text-white px-3 py-1 text-center rounded hover:bg-main'
             onClick={() =>
-              navigate(`/manage-restaurant/pendingResto/${pending._id}`)
+              navigate(`/admin/manage-restaurant/pendingResto/${pending._id}`)
             }
           >
             View Details

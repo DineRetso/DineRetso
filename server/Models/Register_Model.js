@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const resSchema = new mongoose.Schema(
   {
-    image: { type: String, required: true },
+    image: { type: String },
     resName: { type: String, required: true },
     owner: { type: String, required: true },
     email: { type: String, required: true },

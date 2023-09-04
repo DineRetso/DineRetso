@@ -186,7 +186,7 @@ const Signup = () => {
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
-              <div className='flex w-full mb-4'>
+              <div className='flex flex-col w-full mb-4'>
                 <input
                   className='shadow appearance-none border rounded-3xl w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
                   id='password'
