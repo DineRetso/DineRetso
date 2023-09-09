@@ -17,6 +17,7 @@ export default function Register() {
   const [address, setAddress] = useState("");
   const [category, setCategory] = useState("");
   const [imagePublicId, setImagePublicId] = useState("");
+  const [description, setDescription] = useState("");
   const { state } = useContext(Store);
   const { userInfo } = state;
   const [message, setMessage] = useState("");
@@ -26,7 +27,6 @@ export default function Register() {
 
   const registerHandler = async (e) => {
     e.preventDefault();
-    console.log("Restaurant Name:", resName);
     const resData = {
       image,
       resName,
@@ -35,6 +35,7 @@ export default function Register() {
       phoneNo,
       address,
       category,
+      description,
     };
     localStorage.setItem("resData", JSON.stringify(resData));
     navigate("/confirm-register");
@@ -120,7 +121,9 @@ export default function Register() {
           ).length;
 
           if (isConfirmed) {
-            setMessage("Your submission is already confirmed.");
+            setMessage(
+              "Your submission is already confirmed. Please Logout and try to login again to reload your Restaurant Profile"
+            );
             setProceed(false);
           } else if (NotConfirmedCount >= 1) {
             setMessage(
@@ -294,6 +297,14 @@ export default function Register() {
                       <option value='Local'>Local</option>
                       <option value='Unique'>Unique</option>
                     </select>
+                    <textarea
+                      className='mb-3 p-3 w-full rounded-md shadow-md text-main'
+                      id='description'
+                      placeholder='Description'
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      required
+                    ></textarea>
                     {cancelledNo >= 1 && (
                       <div className='mb-3'>
                         <div className='text-justify'>

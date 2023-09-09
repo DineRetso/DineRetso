@@ -15,7 +15,7 @@ resRouter.post(
   "/send-registration",
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    const { image, resName, owner, email, phoneNo, address, category } =
+    const { image, resName, owner, email, phoneNo, address, category, description } =
       req.body;
     const newRes = new RegRestaurants({
       image,
@@ -25,6 +25,7 @@ resRouter.post(
       phoneNo,
       address,
       category,
+      description,
     });
     try {
       const transporter = nodemailer.createTransport({
@@ -46,6 +47,7 @@ resRouter.post(
         <p>Phone Number: ${phoneNo}</p>
         <p>Address: ${address}</p>
         <p>Category: ${category}</p>
+        <p>Description: ${description}</p>
       `,
       };
       const info = await transporter.sendMail(mailOption);

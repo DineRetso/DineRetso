@@ -4,8 +4,8 @@ import { useParams } from "react-router-dom";
 import { Store } from "../../Store";
 import { toast } from "react-toastify";
 import LoadingSpinner from "../../Components/LoadingSpinner";
-import AdminNavbar from "../../Components/AdminNavbar";
-import OwnerNavbar from "../../Components/OwnerNavbar";
+import AdminNavbar from "../../Components/Dine/AdminNavbar";
+import OwnerNavbar from "../../Components/Owner/OwnerNavbar";
 
 const pendingReducer = (state, action) => {
   switch (action.type) {
@@ -70,7 +70,7 @@ export default function UserProfile() {
       ) : user ? (
         <div>
           {user.isAdmin && <AdminNavbar />}
-          {user.isOwner && <OwnerNavbar />}
+          {user.isOwner && <OwnerNavbar user={user} />}
           <h1>User Profile</h1>
           <p>Name: {user.fName}</p>
           {/* Add other user details you want to display */}

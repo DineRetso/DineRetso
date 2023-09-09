@@ -12,52 +12,29 @@ import VerifyOTP from "./Pages/VerifyOTP";
 import ResetPassword from "./Pages/ResetPassword";
 import Register from "./Pages/Restaurants/Register/Register";
 import ConfirmRegister from "./Pages/Restaurants/Register/ConfirmRegister";
-import ManageRestaurant from "./Pages/Restaurants/ManageResto/ManageRestaurant";
-import ShowPendingResto from "./Pages/Restaurants/ManageResto/ShowPendingResto";
-import AdminRoute from "./Components/AdminRoute";
+import ManageRestaurant from "./Dine-Secret/ManageResto/ManageRestaurant";
+import ShowPendingResto from "./Dine-Secret/ManageResto/ShowPendingResto";
+import AdminRoute from "./Components/Routes/AdminRoute";
+import OwnerRoute from "./Components/Routes/OwnerRoute";
 import Service_Dashboard from "./Pages/Restaurants/Register/Service_Dashboard";
-import ProtectedRoute from "./Components/ProtectedRoute";
+import ProtectedRoute from "./Components/Routes/ProtectedRoute";
 import UserProfile from "./Pages/Profile/UserProfile";
 import QRCodeGenerator from "./Pages/QRCodeGenerrator";
+import OwnerView from "./Pages/Restaurants/Restaurant View/OwnerView";
+import AdminLogin from "./Dine-Secret/AdminLogin";
+import Dashboard from "./Dine-Secret/Dashboard";
+import Restaurant from "./Pages/Restaurant";
 
 function App() {
   return (
     <div>
       <ToastContainer position='top-center' limit={1} />
-      <Navbar />
       <BrowserRouter>
         <Routes>
-          <Route path='/' element={<MainDashboard />} />
-          <Route path='/qr' element={<QRCodeGenerator />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/signup' element={<Signup />} />
-          <Route path='/verifyOTP' element={<VerifyOTP />} />
-          <Route path='/reset-password' element={<ResetPassword />} />
-          <Route path='/dineretso-services' element={<Service_Dashboard />} />
+          <Route path='/dine-admin/secret/login' element={<AdminLogin />} />
           <Route
-            path='/user/profile/:id'
-            element={
-              <ProtectedRoute>
-                <UserProfile />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path='/register-restaurant'
-            element={
-              <ProtectedRoute>
-                <Register />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/confirm-register'
-            element={
-              <ProtectedRoute>
-                <ConfirmRegister />
-              </ProtectedRoute>
-            }
+            path='/dine-admin/secret/admin-dashboard'
+            element={<Dashboard />}
           />
           <Route
             path='/admin/manage-restaurants'
@@ -73,6 +50,59 @@ function App() {
               <AdminRoute>
                 <ShowPendingResto />
               </AdminRoute>
+            }
+          />
+          <Route
+            path='/*'
+            element={
+              <div>
+                <Navbar />
+                <Routes>
+                  <Route path='/' element={<MainDashboard />} />
+                  <Route path='/qr' element={<QRCodeGenerator />} />
+                  <Route path='/login' element={<Login />} />
+                  <Route path='/signup' element={<Signup />} />
+                  <Route path='/verifyOTP' element={<VerifyOTP />} />
+                  <Route path='/reset-password' element={<ResetPassword />} />
+                  <Route path='/Restaurants' element={<Restaurant />} />
+                  <Route
+                    path='/dineretso-services'
+                    element={<Service_Dashboard />}
+                  />
+                  <Route
+                    path='/dineretso-restaurants/:owner/:restaurantID'
+                    element={
+                      <OwnerRoute>
+                        <OwnerView />
+                      </OwnerRoute>
+                    }
+                  />
+                  <Route
+                    path='/user/profile/:id'
+                    element={
+                      <ProtectedRoute>
+                        <UserProfile />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path='/register-restaurant'
+                    element={
+                      <ProtectedRoute>
+                        <Register />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path='/confirm-register'
+                    element={
+                      <ProtectedRoute>
+                        <ConfirmRegister />
+                      </ProtectedRoute>
+                    }
+                  />
+                </Routes>
+              </div>
             }
           />
         </Routes>

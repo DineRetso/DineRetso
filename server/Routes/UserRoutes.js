@@ -138,6 +138,8 @@ userRouter.post(
           address: user.address,
           mobileNo: user.mobileNo,
           email: user.email,
+          isOwner: user.isOwner,
+          myRestaurant: user.myRestaurant,
           token: generateToken(user),
         });
       } else {

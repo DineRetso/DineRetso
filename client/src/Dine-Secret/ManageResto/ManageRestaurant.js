@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useReducer } from "react";
-import PendingRestaurants from "../../../Components/PendingRestaurants";
+import PendingRestaurants from "../../Components/Dine/PendingRestaurants";
 import axios from "axios";
-import LoadingSpinner from "../../../Components/LoadingSpinner";
+import LoadingSpinner from "../../Components/LoadingSpinner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faLink } from "@fortawesome/free-solid-svg-icons";
-import RestaurantView1 from "../../../Components/RestaurantView1";
-import { Store } from "../../../Store";
+import RestaurantView1 from "../../Components/Dine/RestaurantView1";
 const pendingReducer = (state, action) => {
   switch (action.type) {
     case "FETCH_REQUEST":
@@ -51,15 +50,14 @@ export default function ManageRestaurant() {
   );
   const { loading, error, pendingResto } = pendingState;
   const { Resto } = registeredState;
-  const { state } = useContext(Store);
-  const { userInfo } = state;
+  const dineInfo = JSON.parse(localStorage.getItem("dineInfo"));
 
   useEffect(() => {
     const fetchPendingResto = async () => {
       pendingDispatch({ type: "FETCH_REQUEST" });
       try {
         const response = await axios.get("/api/admin/pendingResto", {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
+          headers: { Authorization: `Bearer ${dineInfo.token}` },
         });
         pendingDispatch({ type: "FETCH_SUCCESS", payload: response.data });
       } catch (error) {
@@ -73,13 +71,13 @@ export default function ManageRestaurant() {
       }
     };
     fetchPendingResto();
-  }, []);
+  }, [dineInfo.token, pendingDispatch]);
   useEffect(() => {
     const fetchRestaurants = async () => {
       registeredDispatch({ type: "GET_RESTO" });
       try {
         const response = await axios.get("/api/admin/getRestaurants", {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
+          headers: { Authorization: `Bearer ${dineInfo.token}` },
         });
         registeredDispatch({ type: "GET_SUCCESS", payload: response.data });
       } catch (error) {
@@ -93,7 +91,7 @@ export default function ManageRestaurant() {
       }
     };
     fetchRestaurants();
-  }, []);
+  }, [dineInfo.token]);
   return (
     <div className='w-full font-sans flex flex-row mt-24'>
       <div className='lg:w-1/4 md:w-1/2 w-full px-4 mb-4 md:mb-0 border-r border-main h-screen overflow-y-auto'>

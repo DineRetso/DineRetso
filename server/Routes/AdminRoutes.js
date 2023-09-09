@@ -6,14 +6,71 @@ const bcrypt = require("bcryptjs");
 const RegRestaurants = require("../Models/Register_Model.js");
 const Restaurant = require("../Models/Restaurant_Model.js");
 const User = require("../Models/User_Model.js");
-const { isAuth, isAdmin } = require("../utils.js");
+const Dine = require("../Models/AdminModel.js");
+const { generateAdminToken, isAdminAuth, isAdmin } = require("../utils.js");
 
 dotenv.config();
 const adminRouter = express.Router();
 
+adminRouter.post(
+  "/dineInfo",
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const dine = await Dine.findById({ _id: req.body._id });
+      if (!dine) {
+        return res.sendStatus(404);
+      }
+      res.setHeader("Content-Type", "application/json");
+      res.status(200).json({ isAdmin: dine.isAdmin });
+    } catch (error) {
+      console.error("Error fetching user info:", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  })
+);
+
+adminRouter.post(
+  "/admin-login",
+  expressAsyncHandler(async (req, res) => {
+    const dine = await Dine.findOne({ username: req.body.username });
+    if (dine) {
+      const lockoutDuration = 5 * 60 * 1000;
+      const currentTime = new Date();
+      const lockoutEndTime = dine.lastFailedLogin
+        ? new Date(dine.lastFailedLogin.getTime() + lockoutDuration)
+        : currentTime;
+      if (dine.attempt >= 3 && lockoutEndTime > currentTime) {
+        return res
+          .status(401)
+          .send({ message: "Account locked. Try again later." });
+      }
+      if (bcrypt.compareSync(req.body.password, dine.password)) {
+        if (dine.attempt >= 3 && lockoutEndTime <= currentTime) {
+          dine.attempt = 0;
+          dine.lastFailedLogin = undefined;
+        }
+        await dine.save();
+        res.json({
+          _id: dine._id,
+          name: dine.name,
+          username: dine.username,
+          email: dine.email,
+          token: generateAdminToken(dine),
+        });
+      } else {
+        dine.attempt += 1;
+        dine.lastFailedLogin = new Date();
+        await dine.save();
+        res.status(401).send({ message: "Invalid Password!" });
+      }
+    } else {
+      res.status(401).send({ message: "Invalid Email or password!" });
+    }
+  })
+);
 adminRouter.get(
   "/pendingResto",
-  isAuth,
+  isAdminAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const pendingResto = await RegRestaurants.find({
@@ -29,7 +86,7 @@ adminRouter.get(
 
 adminRouter.get(
   "/pendingRestoInfo/:id",
-  isAuth,
+  isAdminAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const id = req.params.id;
@@ -48,7 +105,7 @@ adminRouter.get(
 
 adminRouter.post(
   "/cancelRegistration",
-  isAuth,
+  isAdminAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const { _id } = req.body;
@@ -71,7 +128,7 @@ adminRouter.post(
 
 adminRouter.post(
   "/confirmRegistration",
-  isAuth,
+  isAdminAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const { _id, email } = req.body;
@@ -96,6 +153,7 @@ adminRouter.post(
         phoneNo: resto.phoneNo,
         address: resto.address,
         category: resto.category,
+        description: resto.description
       });
       //update user info
       await newResto.save();
@@ -118,7 +176,7 @@ adminRouter.post(
 
 adminRouter.get(
   "/getRestaurants",
-  isAuth,
+  isAdminAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const Resto = await Restaurant.find();
@@ -134,3 +192,40 @@ adminRouter.get(
   })
 );
 module.exports = adminRouter;
+
+// adminRouter.post(
+//   "/admin-signup",
+//   expressAsyncHandler(async (req, res) => {
+//     const { name, username, email, password, phoneNo, address } = req.body;
+
+//     // Check if the username or email already exists in the database.
+//     const existingUser = await Dine.findOne({
+//       userName,
+//     });
+
+//     if (existingUser) {
+//       return res
+//         .status(400)
+//         .json({ message: "Username or email already exists." });
+//     }
+
+//     // Hash the password before storing it in the database.
+//     const hashedPassword = bcrypt.hashSync(password, 10);
+
+//     // Create a new admin user.
+//     const adminUser = new Dine({
+//       name,
+//       username,
+//       email,
+//       password: hashedPassword,
+//       phoneNo,
+//       address,
+//     });
+
+//     // Save the new admin user to the database.
+//     await adminUser.save();
+
+//     // Respond with a success message or user data.
+//     res.status(201).json({ message: "Admin user created successfully." });
+//   })
+// );

@@ -30,6 +30,7 @@ export default function ConfirmRegister() {
           phoneNo: rData.phoneNo,
           address: rData.address,
           category: rData.category,
+          description: rData.description,
         },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },

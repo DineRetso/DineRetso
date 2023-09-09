@@ -1,9 +1,9 @@
 import axios from "axios";
 import React, { useContext, useEffect, useReducer, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getError } from "../../../utils";
-import { Store } from "../../../Store";
-import LoadingSpinner from "../../../Components/LoadingSpinner";
+import { getError } from "../../utils";
+import { Store } from "../../Store";
+import LoadingSpinner from "../../Components/LoadingSpinner";
 import { toast } from "react-toastify";
 
 const reducer = (state, action) => {
@@ -32,13 +32,13 @@ export default function ShowPendingResto() {
   const [address, setAddress] = useState("");
   const [category, setCategory] = useState("");
   const [createdAt, setCreatedAt] = useState("");
+  const [description, setDescription] = useState("");
   const [showCancelReason, setShowCancelReason] = useState(false);
   const [reasonCancelled, setReason] = useState("");
   const navigate = useNavigate();
   const params = useParams();
   const { id: pendingID } = params;
-  const { state } = useContext(Store);
-  const { userInfo } = state;
+  const dineInfo = JSON.parse(localStorage.getItem("dineInfo"));
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,7 +47,7 @@ export default function ShowPendingResto() {
         const { data } = await axios.get(
           `/api/admin/pendingRestoInfo/${pendingID}`,
           {
-            headers: { Authorization: `Bearer ${userInfo.token}` },
+            headers: { Authorization: `Bearer ${dineInfo.token}` },
           }
         );
         setImage(data.image);
@@ -58,6 +58,7 @@ export default function ShowPendingResto() {
         setAddress(data.address);
         setCategory(data.category);
         setCreatedAt(data.createdAt);
+        setDescription(data.description);
         dispatch({ type: "FETCH_SUCCESS", payload: data });
       } catch (err) {
         dispatch({
@@ -70,7 +71,7 @@ export default function ShowPendingResto() {
     };
 
     fetchData();
-  }, [pendingID]);
+  }, [pendingID, dineInfo.token]);
   const cancelRegistration = async (e) => {
     e.preventDefault();
     try {
@@ -81,7 +82,7 @@ export default function ShowPendingResto() {
           reasonCancelled: reasonCancelled,
         },
         {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
+          headers: { Authorization: `Bearer ${dineInfo.token}` },
         }
       );
       if (response.status === 201) {
@@ -108,7 +109,7 @@ export default function ShowPendingResto() {
           email: email,
         },
         {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
+          headers: { Authorization: `Bearer ${dineInfo.token}` },
         }
       );
       if (response.status === 201) {
@@ -194,6 +195,12 @@ export default function ShowPendingResto() {
                 <div className='w-full'>
                   <p className='block text-first-text font-bold mb-2'>
                     Category: <span className='font-thin'>{category}</span>
+                  </p>
+                </div>
+                <div className='w-full'>
+                  <p className='block text-first-text font-bold mb-2'>
+                    Description:{" "}
+                    <span className='font-thin'>{description}</span>
                   </p>
                 </div>
               </div>

@@ -3,10 +3,13 @@ const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const bcrypt = require("bcryptjs");
 const UserRoutes = require("./Routes/UserRoutes.js");
 const ImageRoutes = require("./Routes/ImageRoutes.js");
 const ResRoutes = require("./Routes/ResRoutes.js");
 const AdminRoutes = require("./Routes/AdminRoutes.js");
+const OwnerRoutes = require("./Routes/OwnerRoutes.js");
+const Dine = require("./Models/AdminModel.js");
 
 dotenv.config();
 mongoose
@@ -26,7 +29,30 @@ app.use("/api/users", UserRoutes);
 app.use("/api/image", ImageRoutes);
 app.use("/api/restaurant", ResRoutes);
 app.use("/api/admin", AdminRoutes);
+app.use("/api/owner", OwnerRoutes);
 
+// // Add sample admin user data.
+// const createSampleAdminUser = async () => {
+//   const sampleAdminUserData = {
+//     name: "Admin User",
+//     username: "admin",
+//     email: "johnaxelcortez21@gmail.com",
+//     phoneNo: "09771530826",
+//     address: "Bagabag, Nueva Vizcaya",
+//     password: bcrypt.hashSync("#Sevirtoz21", 10), // Replace with a secure password hash.
+//   };
+
+//   const existingUser = await Dine.findOne({
+//     userName: sampleAdminUserData.userName,
+//   });
+//   if (!existingUser) {
+//     const adminUser = new Dine(sampleAdminUserData);
+//     await adminUser.save();
+//     console.log("Sample admin user created successfully.");
+//   }
+// };
+
+// createSampleAdminUser();
 const port = process.env.PORT;
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

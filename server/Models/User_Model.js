@@ -7,13 +7,29 @@ const userSchema = new mongoose.Schema(
     lName: { type: String, required: true },
     address: { type: String, required: true },
     mobileNo: { type: String, required: true },
-    isAdmin: { type: Boolean, default: false, required: true },
     isOwner: { type: Boolean, default: false, required: true },
     myRestaurant: { type: String, unique: true },
     attempt: { type: Number, default: 0, required: true },
     lastFailedLogin: { type: Date },
     resetToken: { type: String },
     resetTokenExpires: { type: Date },
+    subscriptionStatus: {
+      type: String,
+      enum: ["subscribed", "not subscribed", "expired"],
+      default: "not subscribed",
+    },
+    subscriptionPlan: {
+      type: String, // You can store the name or ID of the subscribed plan
+      default: null, // Set to null if user is not subscribed
+    },
+    subscriptionStartDate: {
+      type: Date,
+      default: null, // Set to null if user is not subscribed
+    },
+    subscriptionEndDate: {
+      type: Date,
+      default: null, // Set to null if user is not subscribed
+    },
   },
   {
     timestamps: true,

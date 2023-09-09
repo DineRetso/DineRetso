@@ -70,6 +70,11 @@ const newSchema = new mongoose.Schema(
     restoReview: [reviewSchema],
     visits: { type: Number, default: 0 },
     menu: [menuSchema],
+    subscriptionStatus: {
+      type: String,
+      enum: ["subscribed", "not subscribed", "expired"],
+      default: "not subscribed",
+    },
   },
   { timestamps: true, collection: "Restaurants" }
 );

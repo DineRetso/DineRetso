@@ -27,7 +27,11 @@ const Login = () => {
       });
       ctxDispatch({ type: "USER_SIGNIN", payload: data });
       localStorage.setItem("userInfo", JSON.stringify(data));
-      navigate(redirect || "/");
+      if (!data.isOwner) {
+        navigate(redirect || "/");
+      } else {
+        navigate(`/dineretso-restaurants/${data.isOwner}/${data.myRestaurant}`);
+      }
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         toast.error(err.response.data.message);

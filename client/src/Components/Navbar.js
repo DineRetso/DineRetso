@@ -20,7 +20,7 @@ const Navbar = () => {
   // Example menu options
   const menuOptions = [
     { text: "Home", link: "/" },
-    { text: "Restaurants", link: "/about" },
+    { text: "Restaurants", link: "/Restaurants" },
     { text: "Menu", link: "/about" },
     { text: "Services", link: "/dineretso-services" },
     { text: "About", link: "/about" },
