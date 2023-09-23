@@ -30,8 +30,8 @@ code {
 .animate-step {
   background-image: linear-gradient(
     to right,
-    #e8d73d 0%,
-    #e8d73d 50%,
+    #4fc1b0 0%,
+    #4fc1b0 50%,
     transparent 50%,
     transparent 100%
   );
@@ -57,20 +57,10 @@ code {
   animation: fadeIn 0.5s ease-in-out;
 }
 
-button {
-  display: inline-block;
-  padding: 50px 100px;
-  font-size: 16px;
-  background-color: #15b43d;
-  color: #ffffff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
+.active {
+  text-decoration: underline;
 }
-
-/* Hover animation */
-button:hover {
-  background-color: #15b43d;
-  transform: scale(1.05); /* Increase the button size on hover */
+.shadow-bottom {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }

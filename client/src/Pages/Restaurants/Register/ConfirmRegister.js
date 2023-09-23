@@ -44,13 +44,11 @@ export default function ConfirmRegister() {
       } else {
         setLoading(false);
         toast.error("Failed to send registration! Please try again later!");
-        localStorage.removeItem("resData");
         navigate("/register-restaurant");
       }
     } catch (error) {
       setLoading(false);
       toast.error(error.response.data.message);
-      localStorage.removeItem("resData");
       navigate("/register-restaurant");
     }
   };
@@ -61,31 +59,33 @@ export default function ConfirmRegister() {
   };
 
   return (
-    <div className='pt-24'>
+    <div className='p-10'>
       <RegisterSteps step1Completed step2 />
       {loading ? (
         <LoadingSpinner />
       ) : (
         <div className='flex  justify-center items-center h-96 font-sans'>
           <div className='bg-white p-8 rounded-lg shadow-md max-w-md w-full'>
-            <h2 className='text-2xl font-semibold text-main mb-4'>
-              Enter Your Email Password
-            </h2>
-            <form>
-              <button
-                type='submit'
-                className='bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded w-full'
-                onClick={sendRegistration}
-              >
-                Confirm
-              </button>
-              <button
-                type='submit'
-                className='bg-ButtonColor hover:bg-hover-text py-2 px-4 rounded w-full'
-                onClick={cancelRegistration}
-              >
-                Cancel
-              </button>
+            <h2 className='text-2xl font-semibold text-main mb-4'>hehe</h2>
+            <form className='flex flex-row justify-evenly'>
+              <div className='border border-primary-500 flex justify-center items-center w-40 hover:bg-primary-500 text-primary-500 hover:text-TextColor transition-all duration-300 p-2 rounded-md mt-2'>
+                <button
+                  type='submit'
+                  className='bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded w-full'
+                  onClick={sendRegistration}
+                >
+                  Confirm
+                </button>
+              </div>
+              <div className='border border-red-200 flex justify-center items-center w-40 hover:bg-red-200 text-red-200 hover:text-TextColor transition-all duration-300 p-2 rounded-md mt-2'>
+                <button
+                  type='submit'
+                  className='w-full'
+                  onClick={cancelRegistration}
+                >
+                  Cancel
+                </button>
+              </div>
             </form>
           </div>
         </div>

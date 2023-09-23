@@ -4,6 +4,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const bcrypt = require("bcryptjs");
+const helmet = require("helmet");
 const UserRoutes = require("./Routes/UserRoutes.js");
 const ImageRoutes = require("./Routes/ImageRoutes.js");
 const ResRoutes = require("./Routes/ResRoutes.js");
@@ -24,6 +25,7 @@ mongoose
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(helmet());
 
 app.use("/api/users", UserRoutes);
 app.use("/api/image", ImageRoutes);

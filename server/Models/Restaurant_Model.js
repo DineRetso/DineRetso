@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const reviewSchema = new mongoose.Schema(
   {
-    index: { type: Number, required: true },
     image: { type: String },
     name: { type: String, required: true },
     comment: { type: String, required: true },
@@ -13,48 +12,26 @@ const reviewSchema = new mongoose.Schema(
 );
 const menuSchema = new mongoose.Schema(
   {
-    index: { type: Number, required: true },
     menuImage: { type: String },
+    imagePublicId: { type: String },
     menuName: { type: String, required: true },
     description: { type: String },
-    isAvailable: { type: Boolean, default: true, required: true },
+    isAvailable: { type: Boolean, default: true },
     price: { type: Number, required: true },
     menuReview: [reviewSchema],
     classification: { type: String },
+    isFeatured: { type: Boolean, default: false },
   },
   {
     timestamps: true,
   }
 );
-reviewSchema.pre("save", async function (next) {
-  if (this.isNew) {
-    const maxIndexReview = await this.constructor
-      .findOne({}, { index: 1 })
-      .sort({ index: -1 })
-      .exec();
-
-    this.index = maxIndexReview ? maxIndexReview.index + 1 : 1;
-  }
-  next();
-});
-
-menuSchema.pre("save", async function (next) {
-  if (this.isNew) {
-    const maxIndexMenu = await this.constructor
-      .findOne({}, { index: 1 })
-      .sort({ index: -1 })
-      .exec();
-
-    this.index = maxIndexMenu ? maxIndexMenu.index + 1 : 1;
-  }
-  next();
-});
 
 const newSchema = new mongoose.Schema(
   {
     profileImage: { type: String, required: true },
     bgPhoto: { type: String },
-    resName: { type: String, required: true },
+    resName: { type: String, required: true, unique: true },
     owner: { type: String, required: true },
     email: { type: String, required: true },
     phoneNo: { type: String, required: true },
@@ -69,12 +46,9 @@ const newSchema = new mongoose.Schema(
     closeAt: { type: Date },
     restoReview: [reviewSchema],
     visits: { type: Number, default: 0 },
+    isSubscribed: { type: String, default: "not subscribed" },
     menu: [menuSchema],
-    subscriptionStatus: {
-      type: String,
-      enum: ["subscribed", "not subscribed", "expired"],
-      default: "not subscribed",
-    },
+    tags: [{ type: String }],
   },
   { timestamps: true, collection: "Restaurants" }
 );

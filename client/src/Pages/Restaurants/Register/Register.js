@@ -77,12 +77,20 @@ export default function Register() {
     }
   };
   useEffect(() => {
-    const rData = localStorage.getItem("resData");
+    const rData = JSON.parse(localStorage.getItem("resData"));
     if (!userInfo) {
       navigate("/login");
     } else {
       if (rData) {
-        navigate("/confirm-register");
+        setEmail(rData.email);
+        setImage(rData.image);
+        setResName(rData.resName);
+        setOwner(rData.owner);
+        setEmail(rData.email);
+        setPhoneNo(rData.phoneNo);
+        setAddress(rData.address);
+        setCategory(rData.category);
+        setDescription(rData.description);
       } else {
         setEmail(userInfo.email);
         setOwner(userInfo.fName + " " + userInfo.lName);
@@ -164,7 +172,7 @@ export default function Register() {
   }, [userInfo.token, userInfo.email]);
 
   return (
-    <div className='pt-24 bg-cover'>
+    <div className='p-10 bg-cover'>
       {!proceed && (
         <div className='font-sans flex justify-center items-center text-2xl font-semi-bold animate-fade-in'>
           <p>{message}</p>
@@ -196,9 +204,9 @@ export default function Register() {
                               className='w-full h-full object-cover rounded-md'
                             />
                           </div>
-                          <div>
+                          <div className='border border-red-200 flex justify-center items-center w-40 hover:bg-red-200 text-red-200 hover:text-TextColor transition-all duration-300 p-2 rounded-md mt-2'>
                             <button
-                              className='mt-2 text-sm bg-ButtonColor p-3 rounded-md w-auto text-warning'
+                              className='text-sm rounded-md w-full'
                               onClick={removeImage}
                             >
                               Remove Image
@@ -210,8 +218,8 @@ export default function Register() {
                           <div className='w-full h-44 flex items-center justify-center rounded-md border border-main shadow-md shadow-main'>
                             No Image
                           </div>
-                          <div>
-                            <label className='cursor-pointer bg-ButtonColor p-3 rounded-md text-main mt-3'>
+                          <div className='border border-primary-500 flex justify-center items-center w-40 hover:bg-primary-500 text-primary-500 hover:text-TextColor transition-all duration-300 p-2 rounded-md'>
+                            <label className='cursor-pointer bg-ButtonColor p-1 rounded-md text-main'>
                               Add Image
                               <input
                                 type='file'
@@ -241,7 +249,7 @@ export default function Register() {
                       <input
                         type='text'
                         placeholder='Restaurant Name'
-                        className='mb-3 border-b w-full border-lg outline-0 focus:shadow-md focus:shadow-ButtonColor p-3 rounded-md shadow-BackgroundGray text-main'
+                        className='mt-2 p-3 w-full rounded-md text-sm border outline-primary-500 shadow-md'
                         id='resName'
                         value={resName}
                         onChange={(e) => setResName(e.target.value)}
@@ -251,7 +259,7 @@ export default function Register() {
                     <input
                       type='text'
                       placeholder='Owner'
-                      className='mb-3 shadow-md w-full p-3  focus-within:shadow-ButtonColor shadow-BackgroundGray text-main'
+                      className='mt-2 p-3 w-full rounded-md text-sm border outline-primary-500 shadow-md'
                       id='owner'
                       value={owner}
                       onChange={(e) => setOwner(e.target.value)}
@@ -260,7 +268,7 @@ export default function Register() {
                     <input
                       type='email'
                       placeholder='Email'
-                      className='mb-3 shadow-md w-full p-3 rounded-md shadow-BackgroundGray text-main'
+                      className='mt-2 p-3 w-full rounded-md text-sm border outline-primary-500 shadow-md'
                       id='email'
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
@@ -270,7 +278,7 @@ export default function Register() {
                     <input
                       type='number'
                       placeholder='Phone Number'
-                      className='mb-3 shadow-md w-full p-3 rounded-md shadow-BackgroundGray text-main'
+                      className='mt-2 p-3 w-full rounded-md text-sm border outline-primary-500 shadow-md'
                       id='phoneNo'
                       value={phoneNo}
                       onChange={(e) => setPhoneNo(e.target.value)}
@@ -279,14 +287,14 @@ export default function Register() {
                     <input
                       type='text'
                       placeholder='Complete Address'
-                      className='mb-3 shadow-md w-full p-3 rounded-md shadow-BackgroundGray text-main'
+                      className='mt-2 p-3 w-full rounded-md text-sm border outline-primary-500 shadow-md'
                       id='address'
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
                       required
                     />
                     <select
-                      className='mb-3 shadow-md w-full p-3 rounded-md shadow-BackgroundGray text-main'
+                      className='mt-2 p-3 w-full rounded-md text-sm border outline-primary-500 shadow-md'
                       id='category'
                       value={category}
                       onChange={(e) => setCategory(e.target.value)}
@@ -298,7 +306,7 @@ export default function Register() {
                       <option value='Unique'>Unique</option>
                     </select>
                     <textarea
-                      className='mb-3 p-3 w-full rounded-md shadow-md text-main'
+                      className='mt-2 p-3 w-full rounded-md text-sm border outline-primary-500 shadow-md'
                       id='description'
                       placeholder='Description'
                       value={description}
@@ -329,13 +337,15 @@ export default function Register() {
                         </div>
                       </div>
                     )}
-                    <div className='flex justify-center items-center bg-ButtonColor rounded w-auto '>
-                      <button
-                        className=' text-main py-2 px-4 rounded'
-                        type='submit'
-                      >
-                        Register
-                      </button>
+                    <div className='w-full flex justify-center items-center mt-3'>
+                      <div className='border border-primary-500 flex justify-center items-center w-3/4 hover:bg-primary-500 text-primary-500 hover:text-TextColor transition-all duration-300 p-2 rounded-md'>
+                        <button
+                          className=' w-full py-2 px-4 rounded'
+                          type='submit'
+                        >
+                          Register
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import React, { useContext, useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Store } from "../Store";
 import Axios from "axios";
 import LoadingSpinner from "../Components/LoadingSpinner";
@@ -30,7 +30,7 @@ const Login = () => {
       if (!data.isOwner) {
         navigate(redirect || "/");
       } else {
-        navigate(`/dineretso-restaurants/${data.isOwner}/${data.myRestaurant}`);
+        navigate(`/dineretso-restaurant/${data.myRestaurant}/dashboard`);
       }
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
@@ -64,69 +64,78 @@ const Login = () => {
   }, [navigate, redirect, userInfo]);
 
   return (
-    <div className='relative font-sans'>
+    <div className='font-inter flex w-full justify-center items-center lg:p-28 md:p-20 sm:p-14 p-10 h-screen bg-neutrals-700'>
       {loading ? (
         <LoadingSpinner type='resetPass' />
       ) : (
-        <div className='relative'>
-          <div
-            className='absolute z-0 w-full h-full bg-cover rounded-full lg:right-96 md:right-96 sm:right-60 right-60 bg-left'
-            style={{
-              backgroundImage: 'url("../loginbg.jpg")',
-            }}
-          ></div>
-          <div className='flex flex-col pt-20 lg:ml-60 justify-center items-center relative h-screen z-20'>
-            <div className='w-3/4 bg-trans-background md:w-3/4 lg:w-1/2 bg-white p-8 lg:px-1 space-y-5 rounded-xl flex flex-col  justify-center items-center'>
-              <div className='rounded-full w-32 h-32 flex items-center justify-center border border-ButtonColor'>
-                <FontAwesomeIcon
-                  icon={faUser}
-                  className='text-ButtonColor text-6xl'
-                />
-              </div>
-              <form className='w-full md:w-3/4'>
-                <input
-                  type='text'
-                  className='mt-2 p-2 w-full bg-gray-200 rounded-xl'
-                  placeholder='Email'
-                  id='email'
-                  required
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                  }}
-                />
-                <input
-                  type='password'
-                  className='mt-2 p-2 w-full bg-gray-200 rounded-xl'
-                  placeholder='Password'
-                  id='password'
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                  }}
-                />
-                <button
-                  className='mt-4 text-TextColor bg-ButtonColor px-4 py-2 rounded-xl w-full'
-                  type='submit'
-                  onClick={LoginHandler}
-                >
-                  Login
-                </button>
-                <button
-                  className='mt-4 text-TextColor bg-ButtonColor px-4 py-2 rounded-xl w-full'
-                  type='submit'
-                  onClick={resetPassword}
-                >
-                  Forgot Password
-                </button>
-
-                <div className='text-center'>
-                  <p className='mt-2'>Don't have an account?</p>
-                  <a href='/signup' className='text-blue-500'>
-                    <p>Sign up here!</p>
-                  </a>
+        <div className='flex w-full h-full justify-center items-center'>
+          <div className='flex w-full h-auto border-TextColor justify-center items-center'>
+            <div className='flex flex-row justify-center lg:p-20 md:p-4 w-full rounded-md'>
+              <div className='flex flex-col w-[600px] bg-cover border border-primary-700 bg-TextColor justify-center items-center py-10 lg:px-8 md:p-5 p-2 lg:rounded-l-md md:rounded-l-md sm:rounded-l-md rounded-md'>
+                <div className='w-full h-auto justify-start pt-24 border-b border-primary-700 pb-5'>
+                  <h1 className='text-primary-200 text-3xl font-bold'>Login</h1>
                 </div>
-              </form>
+                <form className='flex flex-col w-full justify-center items-center space-y-5'>
+                  <input
+                    type='text'
+                    className='mt-2 p-3 w-full rounded-md text-sm border outline-primary-500'
+                    placeholder='Email'
+                    id='email'
+                    required
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                    }}
+                  />
+                  <input
+                    type='password'
+                    className='mt-2 p-3 w-full rounded-md text-sm border outline-primary-500'
+                    placeholder='Password'
+                    id='password'
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                    }}
+                  />
+                  <div className='border border-primary-500 flex justify-center items-center w-3/4 hover:bg-primary-500 text-primary-500 hover:text-TextColor transition-all duration-300 p-2 rounded-md'>
+                    <button
+                      className=' rounded-xl w-full'
+                      type='submit'
+                      onClick={LoginHandler}
+                    >
+                      Login
+                    </button>
+                  </div>
+                  <button
+                    className='text-sm text-red-200 hover:text-lg transition-all duration-200 bg-ButtonColor px-4 rounded-xl w-full'
+                    type='submit'
+                    onClick={resetPassword}
+                  >
+                    Forgot Password
+                  </button>
+
+                  <div className='text-center'>
+                    <p className='mt-2'>Don't have an account?</p>
+                    <a href='/signup' className=''>
+                      <p className='text-primary-500 text-sm hover:text-lg transition-all duration-200'>
+                        Sign up here!
+                      </p>
+                    </a>
+                  </div>
+                </form>
+              </div>
+              <div className='bg-cover w-full hidden sm:flex rounded-r-md'>
+                <Link
+                  to={"/"}
+                  className='bg-cover w-full hidden sm:flex rounded-r-md'
+                >
+                  <img
+                    className='h-[500px] bg-cover w-full rounded-r-md'
+                    src='./login.jpg'
+                    alt='DineRetso Restaurant Login'
+                  />
+                </Link>
+              </div>
             </div>
           </div>
         </div>

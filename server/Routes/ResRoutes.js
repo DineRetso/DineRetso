@@ -11,12 +11,51 @@ const { isAuth, isAdmin } = require("../utils.js");
 dotenv.config();
 const resRouter = express.Router();
 
+resRouter.get(
+  "/getRestaurants",
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const restaurant = await Restaurant.find().select("-email");
+      if (!restaurant) {
+        return res.status(401).json("No Restaurants Available");
+      } else {
+        res.json(restaurant);
+      }
+    } catch (error) {
+      res.status(500).send({ message: "Server Error!" });
+    }
+  })
+);
+resRouter.get(
+  "/:resName/:_id",
+  expressAsyncHandler(async (req, res) => {
+    const { _id } = req.params;
+    try {
+      const restaurant = await Restaurant.findById(_id);
+      if (!restaurant) {
+        return res.status(401).send("No restaurant found!");
+      } else {
+        res.status(200).json(restaurant);
+      }
+    } catch (error) {
+      res.status(500).send({ message: "Internal Server Error" });
+    }
+  })
+);
 resRouter.post(
   "/send-registration",
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    const { image, resName, owner, email, phoneNo, address, category, description } =
-      req.body;
+    const {
+      image,
+      resName,
+      owner,
+      email,
+      phoneNo,
+      address,
+      category,
+      description,
+    } = req.body;
     const newRes = new RegRestaurants({
       image,
       resName,
@@ -27,6 +66,13 @@ resRouter.post(
       category,
       description,
     });
+    const existingName = await Restaurant.findOne({ resName });
+    if (existingName) {
+      res
+        .status(403)
+        .send({ message: "The restaurant name has already been used!" });
+      return;
+    }
     try {
       const transporter = nodemailer.createTransport({
         service: "gmail",

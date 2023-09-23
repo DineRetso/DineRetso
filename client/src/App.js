@@ -1,7 +1,7 @@
 import "./index.css";
 import "./input.css";
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import MainDashboard from "./Pages/Main_Dashboard";
@@ -23,7 +23,11 @@ import QRCodeGenerator from "./Pages/QRCodeGenerrator";
 import OwnerView from "./Pages/Restaurants/Restaurant View/OwnerView";
 import AdminLogin from "./Dine-Secret/AdminLogin";
 import Dashboard from "./Dine-Secret/Dashboard";
-import Restaurant from "./Pages/Restaurant";
+import Restaurant from "./Pages/Restaurants/Restaurant View/Restaurant";
+import OwnerNavbar from "./Components/Owner/OwnerNavbar";
+import OwnerDashboard from "./Pages/Owner/OwnerDashboard";
+import OwnerMenu from "./Pages/Owner/OwnerMenu";
+import RestaurantMainView from "./Pages/Restaurants/Restaurant View/RestaurantMainView";
 
 function App() {
   return (
@@ -52,19 +56,50 @@ function App() {
               </AdminRoute>
             }
           />
+          <Route path='/login' element={<Login />} />
+          <Route path='/signup' element={<Signup />} />
+          <Route
+            path='/dineretso-restaurant/*'
+            element={
+              <div>
+                <OwnerNavbar />
+                <Routes>
+                  <Route
+                    path='/:resName/dashboard'
+                    element={
+                      <OwnerRoute>
+                        <OwnerDashboard />
+                      </OwnerRoute>
+                    }
+                  />
+                  <Route
+                    path='/:owner/Menu'
+                    element={
+                      <OwnerRoute>
+                        <OwnerMenu />
+                      </OwnerRoute>
+                    }
+                  />
+                </Routes>
+              </div>
+            }
+          />
           <Route
             path='/*'
             element={
               <div>
                 <Navbar />
+                <Outlet />
                 <Routes>
                   <Route path='/' element={<MainDashboard />} />
                   <Route path='/qr' element={<QRCodeGenerator />} />
-                  <Route path='/login' element={<Login />} />
-                  <Route path='/signup' element={<Signup />} />
                   <Route path='/verifyOTP' element={<VerifyOTP />} />
                   <Route path='/reset-password' element={<ResetPassword />} />
                   <Route path='/Restaurants' element={<Restaurant />} />
+                  <Route
+                    path='/Restaurant/:resName/:_id'
+                    element={<RestaurantMainView />}
+                  />
                   <Route
                     path='/dineretso-services'
                     element={<Service_Dashboard />}
@@ -77,6 +112,7 @@ function App() {
                       </OwnerRoute>
                     }
                   />
+
                   <Route
                     path='/user/profile/:id'
                     element={
