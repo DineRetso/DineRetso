@@ -26,6 +26,10 @@ const menuSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+const visitSchema = new mongoose.Schema({
+  source: { type: String },
+  timestamp: { type: Date, default: Date.now },
+});
 
 const newSchema = new mongoose.Schema(
   {
@@ -45,7 +49,7 @@ const newSchema = new mongoose.Schema(
     openAt: { type: Date },
     closeAt: { type: Date },
     restoReview: [reviewSchema],
-    visits: { type: Number, default: 0 },
+    visits: [visitSchema],
     isSubscribed: { type: String, default: "not subscribed" },
     menu: [menuSchema],
     tags: [{ type: String }],

@@ -27,21 +27,43 @@ resRouter.get(
   })
 );
 resRouter.get(
-  "/:resName/:_id",
+  "/getFeaturedResto",
   expressAsyncHandler(async (req, res) => {
-    const { _id } = req.params;
+    try {
+      const restaurant = await Restaurant.find({ isSubscribed: "subscribed" });
+      if (!restaurant) {
+        return res.status(401).json("No Restaurants Featured");
+      } else {
+        res.status(200).json(restaurant);
+      }
+    } catch (error) {
+      res.status(500).send({ message: "Server Error!" });
+    }
+  })
+);
+resRouter.get(
+  "/:resName/:_id/:source",
+  expressAsyncHandler(async (req, res) => {
+    const { _id, source } = req.params;
     try {
       const restaurant = await Restaurant.findById(_id);
       if (!restaurant) {
         return res.status(401).send("No restaurant found!");
       } else {
+        const visit = {
+          source: source,
+        };
+        restaurant.visits.push(visit);
+        await restaurant.save();
         res.status(200).json(restaurant);
       }
     } catch (error) {
+      console.error(error);
       res.status(500).send({ message: "Internal Server Error" });
     }
   })
 );
+
 resRouter.post(
   "/send-registration",
   isAuth,

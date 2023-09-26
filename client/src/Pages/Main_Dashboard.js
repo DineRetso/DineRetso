@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer, useState } from "react";
-import Popup from "reactjs-popup";
+
 import { Helmet } from "react-helmet-async";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -20,7 +20,20 @@ const reducer = (state, action) => {
       return state;
   }
 };
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+function getRandomFeaturedRestaurants(featuredRestaurants, count) {
+  const shuffledRestaurants = featuredRestaurants
+    .filter((resto) => resto.isSubscribed === "subscribed")
+    .sort(() => 0.5 - Math.random());
 
+  return shuffledRestaurants.slice(0, count);
+}
 const MainDashboard = () => {
   const [{ loading, error, featuredRestaurant }, dispatch] = useReducer(
     reducer,
@@ -31,18 +44,20 @@ const MainDashboard = () => {
     }
   );
   const [subscribedMenus, setSubscribedMenus] = useState([]);
+  const [randomFeaturedRestaurants, setRandomFeaturedRestaurants] = useState(
+    []
+  );
 
   useEffect(() => {
     const fetchRestaurant = async () => {
       try {
         dispatch({ type: "FETCH_REQUEST" });
-        const response = await axios.get("/api/restaurant/getRestaurants");
+        const response = await axios.get("/api/restaurant/getFeaturedResto");
         if (response.status === 200) {
           dispatch({ type: "FETCH_SUCCESS", payload: response.data });
           const subscribedRestaurants = response.data.filter(
             (resto) => resto.isSubscribed === "subscribed"
           );
-
           const featuredMenus = subscribedRestaurants.flatMap(
             (subscribedResto) =>
               subscribedResto.menu
@@ -52,8 +67,10 @@ const MainDashboard = () => {
                   owner: subscribedResto.resName,
                 }))
           );
-
-          setSubscribedMenus(featuredMenus);
+          setSubscribedMenus(shuffleArray(featuredMenus));
+          setRandomFeaturedRestaurants(
+            getRandomFeaturedRestaurants(subscribedRestaurants, 10)
+          );
         } else {
           const errorMessage =
             response.data.message || "An unexpected error occurred.";
@@ -89,17 +106,14 @@ const MainDashboard = () => {
         <meta name='viewport' content='width=device-width, initial-scale=1.0' />
       </Helmet>
       <div className='w-full space-y-5'>
-        <div className='text-neutrals-500 pl-24 py-5'>
-          <h2 className='text-2xl font-semibold'>Welcome to</h2>
-          <h1 className='text-5xl font-bold text-primary-200'>DineRetso</h1>
-          <h3 className='lg:w-4/12'>
-            Your Ultimate Destination to Explore, Discover, and Savor the
-            Perfect Dining Experience.
-          </h3>
-        </div>
-        <div className='w-full flex flex-col justify-center items-center space-y-3'>
+        <img
+          src='../Dashboardimg.png'
+          alt='DineRetso dashboard'
+          className='absolute inset-0 w-full h-full object-cover'
+        />
+        <div className='w-full flex flex-col justify-center items-center space-y-3 z-50 pt-[600px]'>
           <div className='flex p-2 border-b border-neutrals-500 w-9/12 justify-center items-center'>
-            <h1 className='text-4xl font-semibold text-neutrals-700'>
+            <h1 className='text-4xl font-semibold text-orange-500'>
               FEATURED MENU
             </h1>
           </div>
@@ -126,20 +140,18 @@ const MainDashboard = () => {
                 naturalSlideWidth={100}
                 naturalSlideHeight={125}
                 totalSlides={featuredRestaurant.length}
-                isPlaying={true} // Enable automatic sliding
-                interval={3000} // Set the interval in milliseconds (e.g., 3 seconds)
+                isPlaying={true}
+                interval={3000}
               >
                 <div className='flex justify-center w-full'>
                   <Slider style={{ width: "100%" }}>
-                    {featuredRestaurant
-                      .filter((resto) => resto.isSubscribed === "subscribed")
-                      .map((subscribedResto, index) => (
-                        <Slide key={subscribedResto._id} index={index}>
-                          <div className='flex justify-center h-auto p-2 w-full'>
-                            <FeaturedRestaurant fResto={subscribedResto} />
-                          </div>
-                        </Slide>
-                      ))}
+                    {randomFeaturedRestaurants.map((randomResto, index) => (
+                      <Slide key={randomResto._id} index={index}>
+                        <div className='flex justify-center h-auto p-2 w-full'>
+                          <FeaturedRestaurant fResto={randomResto} />
+                        </div>
+                      </Slide>
+                    ))}
                   </Slider>
                 </div>
               </CarouselProvider>

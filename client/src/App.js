@@ -85,11 +85,10 @@ function App() {
             }
           />
           <Route
-            path='/*'
+            path='*'
             element={
               <div>
                 <Navbar />
-                <Outlet />
                 <Routes>
                   <Route path='/' element={<MainDashboard />} />
                   <Route path='/qr' element={<QRCodeGenerator />} />
@@ -97,7 +96,7 @@ function App() {
                   <Route path='/reset-password' element={<ResetPassword />} />
                   <Route path='/Restaurants' element={<Restaurant />} />
                   <Route
-                    path='/Restaurant/:resName/:_id'
+                    path='/Restaurant/:resName/:_id/:source'
                     element={<RestaurantMainView />}
                   />
                   <Route

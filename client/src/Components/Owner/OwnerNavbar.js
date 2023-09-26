@@ -98,8 +98,8 @@ export default function OwnerNavbar() {
   };
 
   return (
-    <div className='flex'>
-      <nav className='bg-neutrals-700 text-TextColor w-72 h-screen fixed top-0 left-0 overflow-y-auto font-inter space-y-10 hidden sm:flex flex-col p-5'>
+    <div className='flex z-50'>
+      <nav className='bg-orange-200 text-TextColor w-72 h-screen fixed top-0 left-0 overflow-y-auto font-inter space-y-10 hidden sm:flex flex-col p-5'>
         <div className='w-full flex flex-col justify-center items-center space-y-3 border-b border-TextColor py-5'>
           <div>
             <h1 className='text-2xl font-bold'>{myRestaurant.resName}</h1>
@@ -112,43 +112,43 @@ export default function OwnerNavbar() {
             />
           </div>
         </div>
-        <div className='w-full h-auto space-y-3 font-thin text-2xl'>
+        <div className='w-full h-auto space-y-1 font-thin text-2xl'>
           <Link
             to='/dashboard'
-            className='flex items-center hover:bg-neutrals-600 p-3'
+            className='flex items-center hover:bg-orange-700 p-3'
           >
             <i className='material-icons'>dashboard</i>
             <span className='ml-2'>Dashboard</span>
           </Link>
           <Link
             to={`/dineretso-restaurant/${myRestaurant.resName}/Menu`}
-            className='flex items-center hover:bg-neutrals-600 p-3'
+            className='flex items-center hover:bg-orange-700 p-3'
           >
             <i className='material-icons'>restaurant_menu</i>
             <span className='ml-2'>Menu</span>
           </Link>
           <Link
             to='/customers'
-            className='flex items-center hover:bg-neutrals-600 p-3'
+            className='flex items-center hover:bg-orange-700 p-3'
           >
             <i className='material-icons'>people</i>
             <span className='ml-2'>Customers</span>
           </Link>
           <Link
             to='/analytics'
-            className='flex items-center hover:bg-neutrals-600 p-3'
+            className='flex items-center hover:bg-orange-700 p-3'
           >
             <i className='material-icons'>analytics</i>
             <span className='ml-2'>Analytics</span>
           </Link>
           <Link
             to='/settings'
-            className='flex items-center hover:bg-neutrals-600 p-3'
+            className='flex items-center hover:bg-orange-700 p-3'
           >
             <i className='material-icons'>settings</i>
             <span className='ml-2'>Settings</span>
           </Link>
-          <div className='flex items-center hover:bg-neutrals-600 p-3'>
+          <div className='flex items-center hover:bg-orange-700 p-3'>
             <i className='material-icons'>logout</i>
             <button onClick={signoutHandler} className='ml-2'>
               Logout

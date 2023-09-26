@@ -153,7 +153,7 @@ adminRouter.post(
         phoneNo: resto.phoneNo,
         address: resto.address,
         category: resto.category,
-        description: resto.description
+        description: resto.description,
       });
       //update user info
       await newResto.save();

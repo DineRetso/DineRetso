@@ -22,16 +22,14 @@ export default function RestaurantMainView() {
   });
   const params = useParams();
 
-  //FETCH RESTAURANT
   useEffect(() => {
     const fetchRestaurant = async () => {
       try {
         dispatch({ type: "FETCH_REQUEST" });
         const response = await axios.get(
-          `/api/restaurant/${params.resName}/${params._id}`
+          `/api/restaurant/${params.resName}/${params._id}/${params.source}`
         );
         dispatch({ type: "FETCH_SUCCESS", payload: response.data });
-        console.log("Response data:", response.data);
       } catch (error) {
         dispatch({ type: "FETCH_FAIL", payload: error });
         if (
@@ -52,7 +50,7 @@ export default function RestaurantMainView() {
       }
     };
     fetchRestaurant();
-  }, [params.resName, params._id]);
+  }, [params.resName, params._id, params.source]);
   return (
     <div className='flex flex-col justify-center items-center w-full'>
       <div className='head-container w-full h-96'>

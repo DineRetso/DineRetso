@@ -64,3 +64,15 @@ code {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
+
+/* Add this to your CSS file */
+nav {
+  transition: background-color 0.3s ease-in-out; /* Add a smooth transition */
+}
+
+/* Define the background color for the scrolled state */
+nav.scrolled {
+  background-color: #f1b958;
+  color: #ffff;
+  opacity: 0.8; /* Change to your desired color */
+}

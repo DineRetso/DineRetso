@@ -13,7 +13,7 @@ export default function FeaturedRestaurant(props) {
       <div className='w-1/2 bg-cover flex justify-center items-center'>
         <img
           src={fResto.profileImage}
-          alt='Restaurant Image'
+          alt='Restaurant profile'
           className='w-auto h-80 object-contain'
         />
       </div>

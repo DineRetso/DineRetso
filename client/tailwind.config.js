@@ -29,6 +29,11 @@ module.exports = {
         600: "#74848b",
         700: "#414a4e",
       },
+      orange: {
+        200: "#E17A4F",
+        500: "#F3782C",
+        700: "#862B2A",
+      },
     },
     fontFamily: {
       inter: ["Inter", "sans"],

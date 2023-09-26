@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../../Components/LoadingSpinner";
@@ -24,6 +24,9 @@ export default function Restaurant() {
     error: "",
   });
   const navigate = useNavigate();
+  const [cat, setCat] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
+  const source = "web";
 
   useEffect(() => {
     const fetchRestaurant = async () => {
@@ -31,7 +34,24 @@ export default function Restaurant() {
         dispatch({ type: "FETCH_REQUEST" });
         const response = await axios.get("/api/restaurant/getRestaurants");
         if (response.status === 200) {
-          dispatch({ type: "FETCH_SUCCESS", payload: response.data });
+          const allRestaurants = response.data;
+          // Sort restaurants - subscribed first, then non-subscribed
+          const sortedRestaurants = allRestaurants.sort((a, b) => {
+            if (
+              a.isSubscribed === "subscribed" &&
+              b.isSubscribed !== "subscribed"
+            ) {
+              return -1;
+            } else if (
+              a.isSubscribed !== "subscribed" &&
+              b.isSubscribed === "subscribed"
+            ) {
+              return 1;
+            } else {
+              return 0;
+            }
+          });
+          dispatch({ type: "FETCH_SUCCESS", payload: sortedRestaurants });
         } else {
           const errorMessage =
             response.data.message || "An unexpected error occurred.";
@@ -49,8 +69,12 @@ export default function Restaurant() {
 
     fetchRestaurant();
   }, []);
+  const handleSearchInputChange = (e) => {
+    setSearchTerm(e.target.value); // Update search input value
+  };
+
   return (
-    <div className='w-full p-10 font-inter bg-neutrals-200'>
+    <div className='w-full font-inter '>
       <Helmet>
         <title>Restaurants Available in Nueva Vizcaya</title>
         <meta
@@ -60,7 +84,7 @@ export default function Restaurant() {
         />
         <meta
           name='keywords'
-          content='restaurants, Nueva Vizcaya, dining, restaurant category'
+          content='restaurants, Nueva Vizcaya, dining, DineRetso'
         />
         <meta name='author' content='DineRetso' />
         <meta name='viewport' content='width=device-width, initial-scale=1.0' />
@@ -68,87 +92,121 @@ export default function Restaurant() {
       {loading ? (
         <LoadingSpinner />
       ) : (
-        <div className='flex justify-center flex-col items-center space-y-4'>
-          <div className='border-b border-neutrals-400 lg:p-5 md:p-4 p-2'>
-            <h1 className='lg:font-bold md:font-bold font-semibold lg:text-5xl md:text-5xl sm:text-4xl text-3xl'>
-              Restaurant Categories
-            </h1>
+        <div className='flex justify-center flex-col items-center space-y-4 mt-[300px]'>
+          <div>
+            <img
+              src='../RestaurantImg.png'
+              alt='DineRetso dashboard'
+              className='absolute inset-0 h-[400px] w-full object-cover'
+            />
           </div>
-          <div
-            className='flex lg:flex-row md:flex-row flex-col w-3/4 lg:space-x-5 md:space-x-3 space-x-0 
-              lg:space-y-0 md:space-y-0 space-y-2 justify-center items-center'
-          >
-            <Link to={"/Restaurant/famous"}>
-              <div className='lg:h-80 lg:w-80 h-60 w-60 border bg-red-200 rounded-md flex justify-center items-center'>
-                <h2>Famous Restaurant</h2>
-              </div>
-            </Link>
-            <Link to={"/Restaurant/local"}>
-              <div className='lg:h-80 lg:w-80 h-60 w-60 border bg-red-200 rounded-md flex justify-center items-center'>
-                <h2>Local Restaurant</h2>
-              </div>
-            </Link>
-            <Link to={"/Restaurant/unique"}>
-              <div className='lg:h-80 lg:w-80 h-60 w-60 border bg-red-200 rounded-md flex justify-center items-center'>
-                <h2>Unique Restaurant</h2>
-              </div>
-            </Link>
+          <div className='sticky w-full top-[103px] flex shadow-md h-20 p-3 z-40 bg-orange-500 bg-opacity-75'>
+            <div className='w-3/4 flex justify-start items-center px-5'>
+              <i className='material-icons text-4xl '>search</i>
+              <input
+                className='w-full h-full px-2 rounded-md'
+                placeholder='Search here...'
+                value={searchTerm}
+                onChange={handleSearchInputChange}
+              ></input>
+            </div>
+            <div className='w-1/4 flex justify-center items-center rounded-r-lg'>
+              <select
+                className='p-3 w-full h-full rounded-md text-sm border outline-primary-500 shadow-md'
+                id='category'
+                value={cat}
+                onChange={(e) => setCat(e.target.value)}
+              >
+                <option value='All'>All</option>
+                <option value='Famous'>Famous</option>
+                <option value='Local'>Local</option>
+                <option value='Unique'>Unique</option>
+              </select>
+            </div>
           </div>
-          <div className='w-3/4 pt-5'>
-            <h1 className='text-3xl font-semibold mb-10'>
-              Featured Restaurants
-            </h1>
-            {restaurant
-              .filter((resto) => resto.isSubscribed === "subscribed")
-              .map((subscribedResto) => (
-                <div
-                  key={subscribedResto._id}
-                  className='rounded flex lg:flex-row md:flex-row flex-col justify-center items-center shadow-lg w-full'
-                >
-                  <div className='flex justify-center items-center bg-cover lg:w-1/2 w-full max-h-80'>
-                    <Link
-                      to={`/Restaurant/${subscribedResto.resName}/${subscribedResto._id}`}
-                    >
-                      <img
-                        src={subscribedResto.profileImage}
-                        alt={subscribedResto.resName}
-                        className='w-auto h-60'
-                      />
-                    </Link>
-                  </div>
-                  <div className='lg:w-3/4 md:w-3/4 sm:w-10/12 w-full'>
-                    <h1 className='text-xl font-semibold'>
-                      {subscribedResto.resName}
-                    </h1>
-                    <h1>{subscribedResto.phoneNo}</h1>
-                    <h1>{subscribedResto.category}</h1>
-                    <h1>{subscribedResto.address}</h1>
-                    <div className='flex flex-col'>
-                      <p>Social Media:</p>
-                      <div className='flex flex-row space-x-2 text-2xl'>
-                        <a
-                          href={subscribedResto.fbLink}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                        >
-                          <img
-                            src='../facebook.png'
-                            alt='Facebook'
-                            width='32'
-                            height='32'
-                          />
-                        </a>
+
+          <div className='Restaurant-Content flex justify-center items-center flex-col p-5 w-full'>
+            <h1 className='text-3xl font-semibold mb-10'>{cat} Restaurants</h1>
+            <div className='grid w-full lg:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-10'>
+              {restaurant
+                .filter((resto) => {
+                  return (
+                    (cat === "All" || resto.category === cat) &&
+                    (searchTerm === "" ||
+                      resto.resName
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase()) ||
+                      resto.address
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase()) ||
+                      resto.phoneNo
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase()) ||
+                      resto.menu.some((menuItem) =>
+                        menuItem.menuName
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())
+                      ) ||
+                      resto.menu.some((menuItem) =>
+                        menuItem.classification
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())
+                      ))
+                  );
+                })
+                .map((subscribedResto) => (
+                  <div
+                    key={subscribedResto._id}
+                    className='rounded flex justify-start items-center shadow-lg w-auto'
+                  >
+                    <div className='flex justify-start items-start bg-cover max-h-80 w-5/12'>
+                      <Link
+                        to={`/Restaurant/${subscribedResto.resName}/${subscribedResto._id}/${source}`}
+                      >
                         <img
-                          src='../instagram.png'
-                          alt='Facebook'
-                          width='32'
-                          height='32'
+                          src={subscribedResto.profileImage}
+                          alt={subscribedResto.resName}
+                          className='w-auto h-60 rounded-lg'
                         />
+                      </Link>
+                    </div>
+                    <div className='pl-5 w-full'>
+                      <div className='w-full border-b border-b-red-700 mb-2'>
+                        <h1 className='text-xl font-semibold'>
+                          {subscribedResto.resName}
+                        </h1>
+                      </div>
+                      <div className='pl-5'>
+                        <h1>{subscribedResto.phoneNo}</h1>
+                        <h1>{subscribedResto.category}</h1>
+                        <h1>{subscribedResto.address}</h1>
+                        <div className='flex flex-col'>
+                          <div className='flex flex-row space-x-2 text-2xl'>
+                            <a
+                              href={subscribedResto.fbLink}
+                              target='_blank'
+                              rel='noopener noreferrer'
+                            >
+                              <img
+                                src='../facebook.png'
+                                alt='Facebook'
+                                width='32'
+                                height='32'
+                              />
+                            </a>
+                            <img
+                              src='../instagram.png'
+                              alt='Facebook'
+                              width='32'
+                              height='32'
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+            </div>
           </div>
         </div>
       )}

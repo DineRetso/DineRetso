@@ -72,18 +72,59 @@ export default function AddMenuItem({ onAddMenuItem, onClose }) {
   };
 
   return (
-    <div className='fixed inset-0 flex items-center justify-center  z-50'>
+    <div className='fixed flex inset-0 items-center justify-center z-50 top-0 left-0 sm:left-auto w-full sm:w-3/4 h-screen'>
       <div
-        className='bg-trans-background flex flex-col justify-center items-center p-10 rounded-md w-3/4
-      bg-neutrals-700 bg-opacity-80'
+        className='bg-TextColor flex flex-col justify-center items-center p-5 sm:p-10 rounded-md w-full sm:w-1/2
+    border border-orange-500'
       >
-        <h2>Add Menu Item</h2>
+        <h2 className='text-2xl text-orange-500'>ADD NEW MENU</h2>
         <form
-          className='flex lg:flex-row md:flex-row flex-col w-full justify-center items-center space-x-5'
+          className='flex flex-col w-full justify-center items-center space-y-1 sm:space-y-1 text-sm'
           onSubmit={handleAddMenuItem}
         >
-          <div className='flex flex-col lg:w-1/2 md:w-1/2 sm:w-full'>
-            <div className='border border-main h-60 w-full'>
+          <div className='flex flex-col w-full space-y-1 sm:space-y-1 justify-center items-center'>
+            <div className='w-full'>
+              <label>Name</label>
+              <input
+                type='text'
+                className='p-2 w-full rounded-md text-sm border outline-orange-500'
+                value={menuName}
+                onChange={(e) => setMenuName(e.target.value)}
+                required
+              />
+            </div>
+            <div className='w-full'>
+              <label className='text-md'>Price</label>
+              <input
+                type='number'
+                className='p-2 w-full rounded-md text-sm border outline-orange-500'
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                required
+              />
+            </div>
+            <div className='w-full'>
+              <label>Classification</label>
+              <input
+                type='text'
+                className='p-2 w-full rounded-md text-sm border outline-orange-500'
+                value={classification}
+                onChange={(e) => setClassification(e.target.value)}
+                required
+              />
+            </div>
+            <div className='w-full'>
+              <label>Description</label>
+              <textarea
+                className='p-2 w-full rounded-md text-sm border outline-orange-500'
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+              ></textarea>
+            </div>
+          </div>
+          <div className='flex flex-col w-full h-auto'>
+            <div className='border border-main h-40 sm:h-60 w-full'>
               {loading ? (
                 <div className='w-full h-full flex items-center justify-center rounded-md shadow-md'>
                   <LoadingSpinner type='uploading' />
@@ -94,25 +135,22 @@ export default function AddMenuItem({ onAddMenuItem, onClose }) {
                     <img
                       src={menuImage}
                       alt='Selected'
-                      className='w-full max-h-60 object-cover rounded-md'
+                      className='w-full max-h-32 sm:max-h-52 object-contain rounded-md'
                     />
                   </div>
-                  <div>
-                    <button
-                      className='mt-2 text-sm bg-ButtonColor p-3 rounded-md w-auto text-warning'
-                      onClick={removeImage}
-                    >
+                  <div className='border border-orange-500 flex justify-center items-center w-1/2 hover:bg-orange-500 text-orange-500 hover:text-TextColor transition-all duration-300 p-2 rounded-md'>
+                    <button className='w-full' onClick={removeImage}>
                       Remove Image
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className='flex flex-col justify-center items-center w-full h-full space-y-5'>
-                  <div className='w-full h-full flex items-center justify-center rounded-md border border-main shadow-md shadow-main'>
+                <div className='flex flex-col justify-center items-center w-full h-full space-y-3 sm:space-y-5'>
+                  <div className='w-full h-full flex items-center justify-center rounded-md border border-main shadow-md'>
                     No Image
                   </div>
                   <div>
-                    <label className='cursor-pointer bg-ButtonColor p-3 rounded-md text-main mt-3'>
+                    <label className='cursor-pointer bg-ButtonColor p-2 sm:p-3 rounded-md text-main mt-2 sm:mt-3'>
                       Add Image
                       <input
                         type='file'
@@ -136,46 +174,19 @@ export default function AddMenuItem({ onAddMenuItem, onClose }) {
               )}
             </div>
           </div>
-          <div className='flex flex-col lg:w-1/2 md:w-1/2 w-full space-y-5 justify-center items-center'>
-            <input
-              type='text'
-              placeholder='Menu Name'
-              className='mt-2 p-2 w-full bg-gray-200 rounded-xl'
-              value={menuName}
-              onChange={(e) => setMenuName(e.target.value)}
-              required
-            />
-
-            <input
-              type='number'
-              placeholder='Price'
-              className='mt-2 p-2 w-full bg-gray-200 rounded-xl'
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              required
-            />
-            <input
-              type='text'
-              placeholder='Classification'
-              className='mt-2 p-2 w-full bg-gray-200 rounded-xl'
-              value={classification}
-              onChange={(e) => setClassification(e.target.value)}
-              required
-            />
-            <textarea
-              placeholder='Description'
-              className='mt-2 p-2 w-full bg-gray-200 rounded-xl'
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-            ></textarea>
-            <div>
-              <button type='submit'>Add</button>
+          <div className='flex flex-row w-full sm:pt-5 pt-10 space-x-4'>
+            <div className='border border-orange-500 flex justify-center items-center w-3/4 hover:bg-orange-500 text-orange-500 hover:text-TextColor transition-all duration-300 p-2 rounded-md'>
+              <button type='submit' className='w-full'>
+                Add
+              </button>
+            </div>
+            <div className='border border-orange-500 flex justify-center items-center w-3/4 hover:bg-orange-500 text-orange-500 hover:text-TextColor transition-all duration-300 p-2 rounded-md'>
               <button
                 onClick={() => {
                   removeImage();
                   onClose();
                 }}
+                className='w-full'
               >
                 Cancel
               </button>

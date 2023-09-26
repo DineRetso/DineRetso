@@ -189,46 +189,51 @@ export default function OwnerMenu() {
     <div className='ml-0 lg:ml-72 p-10 font-inter'>
       <div className='flex flex-col justify-center items-center space-y-5'>
         <div className='flex justify-center items-center'>
-          <h1 className='text-2xl font-semibold'>MENU</h1>
+          <h1 className='text-2xl font-semibold text-orange-500'>MENU</h1>
         </div>
-        <div className='flex shadow-md w-full h-20 p-3'>
-          <div className='flex justify-start items-center w-1/4 border-r border-neutrals-700'>
-            <i className='material-icons text-primary-500 text-4xl'>add</i>
-            <div className='w-full flex justify-center items-center text-neutrals-500 text-xl'>
-              {showAddMenu ? (
-                status === "subscribed" ? (
-                  <AddMenuItem
-                    onAddMenuItem={handleAddMenuItem}
-                    onClose={() => setShowAddMenu(false)}
-                  />
+          <div className='sticky top-0 flex shadow-md w-full h-20 p-3 z-40 bg-TextColor'>
+            <div className='flex justify-start items-center w-1/4 border-r border-neutrals-700'>
+              <i className='material-icons text-orange-500 lg:text-4xl md:text-2xl sm:lg'>
+                add
+              </i>
+              <div className='w-full flex justify-center items-center lg:text-xl md:text-lg sm:text-sm text-xs'>
+                {showAddMenu ? (
+                  status === "subscribed" ? (
+                    <AddMenuItem
+                      onAddMenuItem={handleAddMenuItem}
+                      onClose={() => setShowAddMenu(false)}
+                    />
+                  ) : (
+                    <div className='w-auto bg-OrangeDefault rounded-md p-1 flex justify-center items-center'>
+                      <button
+                        onClick={() =>
+                          toast.info("Please subscribe for full access.")
+                        }
+                      >
+                        Add Menu
+                      </button>
+                    </div>
+                  )
                 ) : (
                   <div className='w-auto bg-OrangeDefault rounded-md p-1 flex justify-center items-center'>
-                    <button
-                      onClick={() =>
-                        toast.info("Please subscribe for full access.")
-                      }
-                    >
-                      Add Menu
-                    </button>
+                    <button onClick={() => setShowAddMenu(true)}>Add Menu</button>
                   </div>
-                )
-              ) : (
-                <div className='w-auto bg-OrangeDefault rounded-md p-1 flex justify-center items-center'>
-                  <button onClick={() => setShowAddMenu(true)}>Add Menu</button>
-                </div>
-              )}
+                )}
+              </div>
+            </div>
+            <div className='w-3/4 flex justify-start items-center px-5'>
+              <i className='material-icons text-4xl text-orange-500'>search</i>
+              <input
+                className='w-full h-full px-2'
+                placeholder='Search here...'
+                value={searchQuery}
+                onChange={handleSearchInputChange}
+              ></input>
+            </div>
+            <div className='w-auto flex justify-center items-center bg-orange-500 p-3 rounded-r-lg'>
+              <i className='material-icons text-4xl text-TextColor'>sort</i>
             </div>
           </div>
-          <div className='w-3/4 flex justify-start items-center px-5'>
-            <i className='material-icons text-4xl text-neutrals-500'>search</i>
-            <input
-              className='w-full h-full'
-              placeholder='Search here...'
-              value={searchQuery}
-              onChange={handleSearchInputChange}
-            ></input>
-          </div>
-        </div>
         <div className='menu-container'>
           {loading ? (
             <LoadingSpinner />
@@ -245,12 +250,12 @@ export default function OwnerMenu() {
                         <img
                           src={menuItem.menuImage}
                           alt={menuItem.menuName}
-                          className='w-80 h-48 rounded-md object-cover'
+                          className='w-64 h-40 sm:h-48 sm:w-80 rounded-md object-cover'
                         />
                       ) : (
                         <div>
                           <img
-                            className='w-80 h-48 rounded-md'
+                            className='w-64 h-40 sm:h-48 sm:w-80 rounded-md'
                             src='/dineLogo.jpg'
                             alt='menuImage'
                           />
@@ -259,7 +264,7 @@ export default function OwnerMenu() {
                     </div>
                     <div className='flex justify-center items-start flex-col w-full shadow-lg h-40 space-y-2 pl-7'>
                       <div>
-                        <p className='text-2xl text-neutrals-700 font-semibold'>
+                        <p className='sm:text-2xl text-lg text-neutrals-700 font-semibold'>
                           {menuItem.menuName}
                         </p>
                       </div>
