@@ -63,6 +63,32 @@ resRouter.get(
     }
   })
 );
+resRouter.post(
+  "/add-review/:_id",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const { _id } = req.params;
+    try {
+      const restaurant = await Restaurant.findById(_id);
+      if (!restaurant) {
+        return res.status(401).send("No restaurant found!");
+      } else {
+        const { reviewerName, comment, rating } = req.body;
+        const review = {
+          reviewerName: reviewerName,
+          comment: comment,
+          rating: rating,
+        };
+        restaurant.restoReview.push(review);
+        await restaurant.save();
+        res.status(200).json({ message: "Review submitted!" });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal Server Error!" });
+    }
+  })
+);
 
 resRouter.post(
   "/send-registration",

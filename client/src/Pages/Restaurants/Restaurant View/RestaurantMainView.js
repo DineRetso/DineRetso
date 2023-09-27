@@ -1,6 +1,10 @@
 import axios from "axios";
-import React, { useEffect, useReducer } from "react";
-import { useParams } from "react-router-dom";
+import React, { useContext, useEffect, useReducer, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Rating } from "@mui/material";
+import { toast } from "react-toastify";
+import { Store } from "../../../Store";
+import { formatDistanceToNow } from "date-fns";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -21,6 +25,16 @@ export default function RestaurantMainView() {
     error: "",
   });
   const params = useParams();
+  const [classi, setClassi] = useState([]);
+  const [menuItem, setMenuItems] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [rates, setRating] = useState("");
+  const [comment, setComment] = useState("");
+  const [reviewerName, setReviewerName] = useState("");
+  const [location, setLocation] = useState("");
+  const { state } = useContext(Store);
+  const { userInfo } = state;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchRestaurant = async () => {
@@ -29,6 +43,18 @@ export default function RestaurantMainView() {
         const response = await axios.get(
           `/api/restaurant/${params.resName}/${params._id}/${params.source}`
         );
+        // Extract menu classifications from the response
+        const classifications = response.data.menu.map(
+          (menu) => menu.classification
+        );
+        // Filter out duplicates
+        const uniqueClassifications = Array.from(new Set(classifications));
+        const items = response.data.menu;
+        const rev = response.data.restoReview;
+        setReviews(rev);
+        setMenuItems(items);
+        setClassi(uniqueClassifications);
+
         dispatch({ type: "FETCH_SUCCESS", payload: response.data });
       } catch (error) {
         dispatch({ type: "FETCH_FAIL", payload: error });
@@ -51,28 +77,279 @@ export default function RestaurantMainView() {
     };
     fetchRestaurant();
   }, [params.resName, params._id, params.source]);
+
+  useEffect(() => {
+    // Set reviewerName to userInfo.fName when userInfo is available
+    if (userInfo && userInfo.fName) {
+      setReviewerName(userInfo.fName + " " + userInfo.lName);
+      setLocation(userInfo.address);
+    }
+  }, [userInfo]);
+  //submit rating
+  const rateHandler = async (e) => {
+    e.preventDefault();
+    if (!userInfo || !userInfo.token) {
+      // Redirect to the login page if userInfo is missing
+      navigate("/login");
+      return;
+    }
+    const rating = Math.round(rates * 2) / 2;
+    try {
+      console.log(`reviewer:  ${reviewerName}`);
+      const response = await axios.post(
+        `/api/restaurant/add-review/${params._id}`,
+        { reviewerName, comment, rating },
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+      if (response.status === 200) {
+        toast.info(response.data.message);
+      } else {
+        toast.error("Failed to submit review.");
+      }
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        toast.error(error.response.data.message);
+      } else {
+        console.error(error);
+        toast.error("Internal Server Error. Please Contact the DineRetso!");
+      }
+    }
+  };
+  const calculateAverage = () => {
+    if (reviews.length === 0) {
+      return 0;
+    }
+    const totalRatings = reviews.reduce(
+      (total, review) => total + review.rating,
+      0
+    );
+    const averageRating = totalRatings / reviews.length;
+    return averageRating;
+  };
+  const averageRating = calculateAverage();
   return (
-    <div className='flex flex-col justify-center items-center w-full'>
-      <div className='head-container w-full h-96'>
-        <div className='h-96 w-full'>
+    <div className='flex flex-col justify-center items-center w-full font-inter'>
+      <div className='head-container w-full mt-[-110px]'>
+        <div className='w-full h-80'>
           <img
             className='h-full w-full object-cover'
             src={Restaurant.bgPhoto}
             alt='Restaurant Background'
           />
         </div>
-        <div className='mt-[-200px]'>
-          <h1 className='text-5xl font-bold text-primary-700'>
+      </div>
+      <div className='w-3/4 flex justify-evenly items-center space-x-5'>
+        <div className='flex justify-center items-center w-80 h-80 border-b border-orange-700 '>
+          <img
+            src={Restaurant.profileImage}
+            alt={Restaurant.resName}
+            className='w-80 h-80 object-cover'
+          />
+        </div>
+        <div className='flex flex-col space-y-2'>
+          <span className='text-2xl font-semibold'>Welcome to </span>
+          <h1 className='text-5xl font-bold text-orange-500 capitalize'>
             {Restaurant.resName}
           </h1>
+          <div className='flex flex-col space-y-1 pl-10 text-lg'>
+            <h3>{Restaurant.description}</h3>
+            <h3>{Restaurant.address}</h3>
+            <h3>{Restaurant.phoneNo}</h3>
+            <span>Links:</span>
+            <a href={Restaurant.webLink}>{Restaurant.webLink}</a>
+            <a href={Restaurant.webLink}>{Restaurant.webLink}</a>
+            <a href={Restaurant.webLink}>{Restaurant.webLink}</a>
+          </div>
         </div>
-        <div>{Restaurant.description}</div>
       </div>
-      <div>{Restaurant.resName}</div>
-      <div className='flex w-full space-x-5 justify-center'>
-        <a href='#Menu'>Menu</a>
-        <a href='#Blog Posts'>Blog Posts</a>
-        <a href='#Reviews'>Reviews</a>
+      <div className='flex w-11/12 space-x-10 justify-center text-3xl my-5 border-b-2 p-5'>
+        <a href='#menu'>MENUS</a>
+        <a href='#posts'>BLOG POSTS</a>
+        <a href='#reviews'>REVIEWS</a>
+      </div>
+      <div
+        id='menu'
+        className='flex flex-col h-screen w-11/12 overflow-y-hidden overflow-hidden space-y-5'
+      >
+        <div className='h-16 w-full flex justify-start items-center'>
+          <i className='material-icons text-4xl '>search</i>
+          <input
+            className='w-full h-full px-2 rounded-md text-xl'
+            placeholder='Search here...'
+          ></input>
+        </div>
+        <div className='flex space-x-2'>
+          <div className='p-2 border '>All</div>
+          {classi.map((classification, index) => (
+            <div key={index} className='p-2 border '>
+              {classification}
+            </div>
+          ))}
+        </div>
+        <div className='grid grid-cols-5 gap-5'>
+          {menuItem.map((menu, index) => (
+            <div key={index} className='flex flex-col shadow-lg'>
+              <div>
+                {menu.menuImage ? (
+                  <img
+                    src={menu.menuImage}
+                    alt={menu.menuName}
+                    className='w-64 h-40 sm:h-48 sm:w-80 rounded-t-md object-cover'
+                  />
+                ) : (
+                  <div>
+                    <img
+                      className='w-64 h-40 sm:h-48 sm:w-80 rounded-t-md'
+                      src='/dineLogo.jpg'
+                      alt='menuImage'
+                    />
+                  </div>
+                )}
+              </div>
+              <div className='space-y-2 p-2'>
+                <h1 className='text-xl text-orange-500 font-semibold'>
+                  {menu.menuName}
+                </h1>
+                <h2 className='text-xl text-neutrals-700'>₱{menu.price}</h2>
+                <div className='flex justify-between items-center'>
+                  <Rating
+                    name='read-only'
+                    size='small'
+                    defaultValue={3.5}
+                    readOnly
+                  />
+                  <div className='p-2'>
+                    <button>Rate Now</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div id='posts' className='h-screen'>
+        Postings
+      </div>
+      <div
+        id='reviews'
+        className='w-11/12 flex justify-center items-center flex-col space-y-5 pt-5  border-y '
+      >
+        <div className='w-full justify-start items-center'>
+          <h1 className='text-5xl text-neutrals-500 font-bold'> Reviews</h1>
+        </div>
+        <div className='w-full flex flex-col overflow-y-auto '>
+          <div className='w-full flex justify-start items-center space-x-5 border-b p-3'>
+            <div className='w-60 border-r flex flex-col'>
+              <h1>Total Reviews</h1>
+              <h1>{reviews.length}</h1>
+            </div>
+            <div>
+              <h1>Average Ratings</h1>
+
+              <Rating
+                name='read-only'
+                size='large'
+                value={averageRating}
+                readOnly
+                precision={0.1}
+                title={`Average Rating: ${averageRating}`}
+              />
+            </div>
+          </div>
+          <div className='w-full h-[500px] '>
+            <div className='w-full h-[500px] overflow-y-auto overflow-hidden'>
+              {reviews.map((rev, index) => (
+                <div
+                  key={index}
+                  className='flex w-full justify-start items-center py-10 border-b'
+                >
+                  <div className='flex w-80 flex-row space-x-3 justify-start items-center'>
+                    <div>
+                      {rev.image ? (
+                        <img
+                          src={rev.image}
+                          alt='owner-profile'
+                          className='h-16 w-16 rounded-full'
+                        />
+                      ) : (
+                        <img
+                          src='/userIcon.png'
+                          alt='owner-profile'
+                          className='h-16 w-16 rounded-full border'
+                        />
+                      )}
+                    </div>
+                    <div>
+                      <h1 className='text-sm'>
+                        {formatDistanceToNow(new Date(rev.createdAt))} ago
+                      </h1>
+                      <h1 className='text-xl text-orange-500'>
+                        {rev.reviewerName}
+                      </h1>
+                    </div>
+                  </div>
+                  <div className='w-full flex flex-col'>
+                    <Rating
+                      name='read-only'
+                      size='large'
+                      value={rev.rating}
+                      readOnly
+                      precision={0.5}
+                    />
+                    <p>{rev.comment}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        {userInfo ? (
+          <form className='w-full' onSubmit={rateHandler}>
+            <div>
+              <label>Your rating</label>
+              <Rating
+                name='half-rating'
+                size='large'
+                value={rates}
+                onChange={(event, newValue) => {
+                  setRating(newValue);
+                }}
+                precision={0.5}
+              />
+            </div>
+            <div className='w-full flex flex-col justify-center items-center'>
+              <label>Comment</label>
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                required
+                className='mt-2 h-32 p-3 w-full rounded-md text-sm border outline-primary-500 shadow-md'
+              ></textarea>
+            </div>
+            <div className='w-full'>
+              <div className='border border-primary-500 flex justify-center items-center w-1/2 hover:bg-primary-500 text-primary-500 hover:text-TextColor transition-all duration-300 p-2 rounded-md'>
+                <button className='w-full' type='submit'>
+                  Submit
+                </button>
+              </div>
+            </div>
+          </form>
+        ) : (
+          <div>
+            <h1>Please login to submit Rating!</h1>
+            <div className='border border-primary-500 flex justify-center items-center w-1/2 hover:bg-primary-500 text-primary-500 hover:text-TextColor transition-all duration-300 p-2 rounded-md'>
+              <a href='/login' className='w-full'>
+                Login
+              </a>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

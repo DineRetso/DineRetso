@@ -92,7 +92,7 @@ export default function Restaurant() {
       {loading ? (
         <LoadingSpinner />
       ) : (
-        <div className='flex justify-center flex-col items-center space-y-4 mt-[300px]'>
+        <div className='flex justify-center flex-col items-center space-y-4 mt-[280px]'>
           <div>
             <img
               src='../RestaurantImg.png'

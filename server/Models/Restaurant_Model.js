@@ -2,9 +2,11 @@ const mongoose = require("mongoose");
 const reviewSchema = new mongoose.Schema(
   {
     image: { type: String },
-    name: { type: String, required: true },
     comment: { type: String, required: true },
-    rating: { type: String, required: true },
+    reviewerName: { type: String, required: true },
+    location: { type: String },
+    status: { type: Boolean, default: false },
+    rating: { type: Number, required: true },
   },
   {
     timestamps: true,

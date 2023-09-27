@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema(
     address: { type: String, required: true },
     mobileNo: { type: String, required: true },
     isOwner: { type: Boolean, default: false, required: true },
-    myRestaurant: { type: String, unique: true },
+    myRestaurant: { type: String },
     attempt: { type: Number, default: 0, required: true },
     lastFailedLogin: { type: Date },
     resetToken: { type: String },

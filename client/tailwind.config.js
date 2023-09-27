@@ -25,7 +25,7 @@ module.exports = {
       neutrals: {
         200: "#eceff1",
         400: "#d3d9dc",
-        500: "#a1aaae",
+        500: "#65737C",
         600: "#74848b",
         700: "#414a4e",
       },
