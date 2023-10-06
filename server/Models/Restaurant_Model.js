@@ -5,8 +5,10 @@ const reviewSchema = new mongoose.Schema(
     comment: { type: String, required: true },
     reviewerName: { type: String, required: true },
     location: { type: String },
-    status: { type: Boolean, default: false },
+    status: { type: String, required: true },
     rating: { type: Number, required: true },
+    source: { type: String, required: true },
+    menuId: { type: String },
   },
   {
     timestamps: true,

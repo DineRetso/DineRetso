@@ -31,6 +31,97 @@ ownerRouter.get(
   })
 );
 ownerRouter.post(
+  "/restaurant/edit-menu-item/:restaurantID",
+  isAuth,
+  isOwner,
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const { restaurantID } = req.params;
+      const { _id, menuName, description, price, menuImage, imagePublicId } =
+        req.body;
+      const restaurant = await Restaurant.findById(restaurantID);
+      if (!restaurant) {
+        return res.status(404).json({ message: "Restaurant not found!" });
+      }
+      const menuItem = restaurant.menu.find(
+        (item) => item._id.toString() === _id
+      );
+      if (!menuItem) {
+        return res
+          .status(404)
+          .json({ message: "Menu item not found in the restaurant" });
+      }
+      menuItem.menuName = menuName;
+      menuItem.description = description;
+      menuItem.price = price;
+      menuItem.menuImage = menuImage;
+      menuItem.imagePublicId = imagePublicId;
+
+      await restaurant.save();
+      return res.status(200).json({ message: "Menu updated successfully" });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+  })
+);
+
+//manageReview
+ownerRouter.post(
+  "/restaurant/manage-review/:restaurantID",
+  isAuth,
+  isOwner,
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const { restaurantID } = req.params;
+      const { menuId, id, status } = req.body;
+      const restaurant = await Restaurant.findById(restaurantID);
+      if (!restaurant) {
+        return res.status(404).json({ message: "Restaurant not found" });
+      }
+      if (menuId) {
+        const menu = restaurant.menu.find(
+          (item) => item._id.toString() === menuId
+        );
+        if (!menu) {
+          return res.status(404).json({ message: "Menu not found" });
+        }
+
+        // manageMenuReview
+        const menuReview = menu.menuReview.find(
+          (item) => item._id.toString() === id
+        );
+        if (!menuReview) {
+          return res.status(404).json({ message: "Menu review not found!" });
+        }
+
+        menuReview.status = status;
+        await restaurant.save();
+        return res
+          .status(200)
+          .json({ message: "Menu review updated successfully" });
+      }
+      //manage restoReview
+      else {
+        const resRev = restaurant.restoReview.find(
+          (item) => item._id.toString() === id
+        );
+        if (!resRev) {
+          return res.status(404).json({ message: "Resto review not found!" });
+        }
+        resRev.status = status;
+        await restaurant.save();
+        return res.status(200).json({ message: "Menu updated successfully" });
+      }
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Internal Server Error!" });
+    }
+  })
+);
+
+//addMenu
+ownerRouter.post(
   "/restaurant/add-menu-item/:restaurantID",
   isAuth,
   isOwner,
@@ -59,7 +150,9 @@ ownerRouter.post(
       };
       restaurant.menu.push(newMenuItem);
       await restaurant.save();
+      const newMenuItemId = restaurant.menu[restaurant.menu.length - 1]._id;
       res.status(200).json({
+        _id: newMenuItemId,
         menuName: menuName,
         description: description,
         price: price,
@@ -78,8 +171,6 @@ ownerRouter.delete(
   "/:_id/:menuId",
   expressAsyncHandler(async (req, res) => {
     const { _id, menuId } = req.params;
-    console.log("_id:", _id);
-    console.log("menuId:", menuId);
     try {
       const restaurant = await Restaurant.findById(_id);
       console.log(restaurant);

@@ -76,3 +76,17 @@ nav.scrolled {
   color: #ffff;
   opacity: 0.8; /* Change to your desired color */
 }
+
+.menu-reviews-container {
+  position: absolute;
+  top: 300px;
+  height: 200px;
+  overflow-y: scroll;
+  left: 18rem;
+  width: 100%;
+  background-color: white;
+  z-index: 999;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow-y: auto; /* Add overflow for scrolling if needed */
+}

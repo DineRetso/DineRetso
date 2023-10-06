@@ -1,22 +1,20 @@
 import React, { useContext, useState } from "react";
-import PropTypes from "prop-types"; // Import PropTypes for prop validation
+import { Store } from "../../Store";
 import axios from "axios";
 import { toast } from "react-toastify";
 import LoadingSpinner from "../LoadingSpinner";
-import { Store } from "../../Store";
 
-export default function AddMenuItem({ onAddMenuItem, onClose }) {
+export default function EditMenuItem({ onEditMenuItem, onClose, menu }) {
   const { state } = useContext(Store);
+  const [menuName, setMenuName] = useState(menu.menuName);
+  const [price, setPrice] = useState(menu.price);
+  const [classification, setClassification] = useState(menu.classification);
+  const [description, setDescription] = useState(menu.description);
+  const [menuImage, setMenuImage] = useState(menu.menuImage);
+  const [loading, setLoading] = useState(false);
+  const [imagePublicId, setImagePublicId] = useState(menu.imagePublicId);
   const { userInfo } = state;
-  const [menuName, setMenuName] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [menuImage, setMenuImage] = useState(); // Add state for menuImage
-  const [isAvailable, setIsAvailable] = useState(true); // Add state for isAvailable
-  const [classification, setClassification] = useState(""); // Add state for classification
-  const [loading, setLoading] = useState();
-  const [imagePublicId, setImagePublicId] = useState("");
-  const [isVisible, setIsVisible] = useState(false);
+  const _id = menu._id;
 
   const uploadimg = async (e) => {
     const file = e.target.files[0];
@@ -52,14 +50,12 @@ export default function AddMenuItem({ onAddMenuItem, onClose }) {
       setLoading(false);
     }
   };
-  const handleAddMenuItem = () => {
-    // Validate and submit the menu item data
+  const handleEditMenuItem = () => {
     if (!menuName || !description || !price || !classification) {
-      // Handle validation error
       toast.error("Please fill out all fields.");
     } else {
-      // Add the menu item and close the component
-      onAddMenuItem({
+      onEditMenuItem({
+        _id,
         menuName,
         description,
         price,
@@ -75,12 +71,12 @@ export default function AddMenuItem({ onAddMenuItem, onClose }) {
     <div className='fixed flex inset-0 items-center justify-center z-50 top-0 left-0 sm:left-auto w-full sm:w-3/4 h-screen'>
       <div
         className='bg-TextColor flex flex-col justify-center items-center p-5 sm:p-10 rounded-md w-full sm:w-1/2
-    border border-orange-500'
+            border border-orange-500'
       >
-        <h2 className='text-2xl text-orange-500'>ADD NEW MENU</h2>
+        <h2 className='text-2xl text-orange-500'>EDIT MENU</h2>
         <form
           className='flex flex-col w-full justify-center items-center space-y-1 sm:space-y-1 text-sm'
-          onSubmit={handleAddMenuItem}
+          onSubmit={handleEditMenuItem}
         >
           <div className='flex flex-col w-full space-y-1 sm:space-y-1 justify-center items-center'>
             <div className='w-full'>
@@ -135,7 +131,7 @@ export default function AddMenuItem({ onAddMenuItem, onClose }) {
                     <img
                       src={menuImage}
                       alt='Selected'
-                      className='w-full max-h-32 sm:max-h-52 object-contain rounded-md'
+                      className='w-full max-h-32 sm:max-h-48 object-contain rounded-md'
                     />
                   </div>
                   <div className='border border-orange-500 flex justify-center items-center w-1/2 hover:bg-orange-500 text-orange-500 hover:text-TextColor transition-all duration-300 p-2 rounded-md'>
@@ -174,16 +170,15 @@ export default function AddMenuItem({ onAddMenuItem, onClose }) {
               )}
             </div>
           </div>
-          <div className='flex flex-row w-full sm:pt-5 pt-10 space-x-4'>
+          <div className='flex flex-row w-full sm:pt-1 pt-2 space-x-4'>
             <div className='border border-orange-500 flex justify-center items-center w-3/4 hover:bg-orange-500 text-orange-500 hover:text-TextColor transition-all duration-300 p-2 rounded-md'>
               <button type='submit' className='w-full'>
-                Add
+                Save
               </button>
             </div>
             <div className='border border-orange-500 flex justify-center items-center w-3/4 hover:bg-orange-500 text-orange-500 hover:text-TextColor transition-all duration-300 p-2 rounded-md'>
               <button
                 onClick={() => {
-                  removeImage();
                   onClose();
                 }}
                 className='w-full'
@@ -197,9 +192,3 @@ export default function AddMenuItem({ onAddMenuItem, onClose }) {
     </div>
   );
 }
-
-// Define prop types for the component
-AddMenuItem.propTypes = {
-  onAddMenuItem: PropTypes.func.isRequired, // Function to handle adding a menu item
-  onClose: PropTypes.func.isRequired, // Function to handle closing the component
-};

@@ -73,19 +73,57 @@ resRouter.post(
       if (!restaurant) {
         return res.status(401).send("No restaurant found!");
       } else {
-        const { reviewerName, comment, rating } = req.body;
+        const { reviewerName, comment, rating, location } = req.body;
         const review = {
           reviewerName: reviewerName,
           comment: comment,
           rating: rating,
+          location: location,
+          status: "pending",
+          source: "Restaurant",
+          createdAt: new Date(),
         };
         restaurant.restoReview.push(review);
         await restaurant.save();
-        res.status(200).json({ message: "Review submitted!" });
+        res.status(200).json({ message: "Review submitted!", review });
       }
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Internal Server Error!" });
+    }
+  })
+);
+
+resRouter.post(
+  "/add-menu-review/:pid",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const { pid } = req.params;
+    try {
+      const restaurant = await Restaurant.findById(pid);
+      if (!restaurant) {
+        return res.status(404).json({ message: "Restaurant not found!" });
+      }
+      const { reviewerName, comment, rating, location, menuId } = req.body;
+      const menuItem = restaurant.menu.id(menuId);
+      if (!menuItem) {
+        return res.status(404).json({ message: "Menu item not found!" });
+      }
+      const newReview = {
+        status: "pending",
+        source: "Menu",
+        menuId: menuId,
+        reviewerName,
+        comment,
+        rating,
+        location,
+      };
+      menuItem.menuReview.push(newReview);
+      await restaurant.save();
+      res.status(200).json({ message: "Menu review Submitted" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal Server Error" });
     }
   })
 );

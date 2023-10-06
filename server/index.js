@@ -11,6 +11,7 @@ const ResRoutes = require("./Routes/ResRoutes.js");
 const AdminRoutes = require("./Routes/AdminRoutes.js");
 const OwnerRoutes = require("./Routes/OwnerRoutes.js");
 const Dine = require("./Models/AdminModel.js");
+const PaymentRoutes = require("./Routes/PaymentRoutes.js");
 
 dotenv.config();
 mongoose
@@ -32,6 +33,7 @@ app.use("/api/image", ImageRoutes);
 app.use("/api/restaurant", ResRoutes);
 app.use("/api/admin", AdminRoutes);
 app.use("/api/owner", OwnerRoutes);
+app.use("/api/payment", PaymentRoutes);
 
 // // Add sample admin user data.
 // const createSampleAdminUser = async () => {

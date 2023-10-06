@@ -99,7 +99,7 @@ export default function OwnerNavbar() {
 
   return (
     <div className='flex z-50'>
-      <nav className='bg-orange-200 text-TextColor w-72 h-screen fixed top-0 left-0 overflow-y-auto font-inter space-y-10 hidden sm:flex flex-col p-5'>
+      <nav className='bg-neutrals-500 text-TextColor w-72 h-screen fixed top-0 left-0 overflow-y-auto font-inter space-y-10 hidden sm:flex flex-col p-5'>
         <div className='w-full flex flex-col justify-center items-center space-y-3 border-b border-TextColor py-5'>
           <div>
             <h1 className='text-2xl font-bold'>{myRestaurant.resName}</h1>
@@ -115,40 +115,49 @@ export default function OwnerNavbar() {
         <div className='w-full h-auto space-y-1 font-thin text-2xl'>
           <Link
             to='/dashboard'
-            className='flex items-center hover:bg-orange-700 p-3'
+            className='flex items-center hover:bg-orange-700 p-2'
           >
             <i className='material-icons'>dashboard</i>
-            <span className='ml-2'>Dashboard</span>
+            <span className='ml-2 border-b w-full'>Dashboard</span>
           </Link>
           <Link
             to={`/dineretso-restaurant/${myRestaurant.resName}/Menu`}
-            className='flex items-center hover:bg-orange-700 p-3'
+            className='flex items-center hover:bg-orange-700 p-2'
           >
             <i className='material-icons'>restaurant_menu</i>
-            <span className='ml-2'>Menu</span>
+            <span className='ml-2 border-b w-full'>Menu</span>
           </Link>
           <Link
-            to='/customers'
-            className='flex items-center hover:bg-orange-700 p-3'
+            to={`/dineretso-restaurant/${myRestaurant.resName}/customers`}
+            className='flex items-center hover:bg-orange-700 p-2'
           >
             <i className='material-icons'>people</i>
-            <span className='ml-2'>Customers</span>
+            <span className='ml-2 border-b w-full'>Customers</span>
           </Link>
           <Link
             to='/analytics'
-            className='flex items-center hover:bg-orange-700 p-3'
+            className='flex items-center hover:bg-orange-700 p-2'
           >
             <i className='material-icons'>analytics</i>
-            <span className='ml-2'>Analytics</span>
+            <span className='ml-2 border-b w-full'>Analytics</span>
+          </Link>
+          <Link
+            to={`/dineretso-restaurant/${myRestaurant.resName}/subscriptions`}
+            className='flex items-center hover:bg-orange-700 p-2'
+          >
+            <i className='material-icons'>subscriptions</i>
+            <span className='ml-2 border-b w-full'>
+              Plans and Subscriptions
+            </span>
           </Link>
           <Link
             to='/settings'
-            className='flex items-center hover:bg-orange-700 p-3'
+            className='flex items-center hover:bg-orange-700 p-2'
           >
             <i className='material-icons'>settings</i>
-            <span className='ml-2'>Settings</span>
+            <span className='ml-2 border-b w-full'>Settings</span>
           </Link>
-          <div className='flex items-center hover:bg-orange-700 p-3'>
+          <div className='flex items-center hover:bg-orange-700 p-2'>
             <i className='material-icons'>logout</i>
             <button onClick={signoutHandler} className='ml-2'>
               Logout
@@ -158,7 +167,7 @@ export default function OwnerNavbar() {
       </nav>
       <button
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        className='bg-neutrals-700 text-TextColor p-3 sm:hidden'
+        className='bg-neutrals-700 text-TextColor p-2 sm:hidden'
       >
         <svg
           className='w-6 h-6'

@@ -4,7 +4,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Rating } from "@mui/material";
 import { toast } from "react-toastify";
 import { Store } from "../../../Store";
-import { formatDistanceToNow } from "date-fns";
+
+import Menu from "../../../Components/Restaurant/Menu";
+import Review from "../../../Components/Restaurant/Review";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -50,7 +52,9 @@ export default function RestaurantMainView() {
         // Filter out duplicates
         const uniqueClassifications = Array.from(new Set(classifications));
         const items = response.data.menu;
-        const rev = response.data.restoReview;
+        const rev = response.data.restoReview.filter(
+          (review) => review.status === true
+        );
         setReviews(rev);
         setMenuItems(items);
         setClassi(uniqueClassifications);
@@ -93,18 +97,23 @@ export default function RestaurantMainView() {
       navigate("/login");
       return;
     }
+    if (rates === null || rates === undefined) {
+      toast.error("Please select a rating before submitting.");
+      return;
+    }
     const rating = Math.round(rates * 2) / 2;
     try {
-      console.log(`reviewer:  ${reviewerName}`);
       const response = await axios.post(
         `/api/restaurant/add-review/${params._id}`,
-        { reviewerName, comment, rating },
+        { reviewerName, comment, rating, location },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
       );
       if (response.status === 200) {
         toast.info(response.data.message);
+        setRating("");
+        setComment("");
       } else {
         toast.error("Failed to submit review.");
       }
@@ -195,40 +204,7 @@ export default function RestaurantMainView() {
         <div className='grid grid-cols-5 gap-5'>
           {menuItem.map((menu, index) => (
             <div key={index} className='flex flex-col shadow-lg'>
-              <div>
-                {menu.menuImage ? (
-                  <img
-                    src={menu.menuImage}
-                    alt={menu.menuName}
-                    className='w-64 h-40 sm:h-48 sm:w-80 rounded-t-md object-cover'
-                  />
-                ) : (
-                  <div>
-                    <img
-                      className='w-64 h-40 sm:h-48 sm:w-80 rounded-t-md'
-                      src='/dineLogo.jpg'
-                      alt='menuImage'
-                    />
-                  </div>
-                )}
-              </div>
-              <div className='space-y-2 p-2'>
-                <h1 className='text-xl text-orange-500 font-semibold'>
-                  {menu.menuName}
-                </h1>
-                <h2 className='text-xl text-neutrals-700'>₱{menu.price}</h2>
-                <div className='flex justify-between items-center'>
-                  <Rating
-                    name='read-only'
-                    size='small'
-                    defaultValue={3.5}
-                    readOnly
-                  />
-                  <div className='p-2'>
-                    <button>Rate Now</button>
-                  </div>
-                </div>
-              </div>
+              <Menu menu={menu} pid={params._id} />
             </div>
           ))}
         </div>
@@ -251,7 +227,6 @@ export default function RestaurantMainView() {
             </div>
             <div>
               <h1>Average Ratings</h1>
-
               <Rating
                 name='read-only'
                 size='large'
@@ -265,45 +240,8 @@ export default function RestaurantMainView() {
           <div className='w-full h-[500px] '>
             <div className='w-full h-[500px] overflow-y-auto overflow-hidden'>
               {reviews.map((rev, index) => (
-                <div
-                  key={index}
-                  className='flex w-full justify-start items-center py-10 border-b'
-                >
-                  <div className='flex w-80 flex-row space-x-3 justify-start items-center'>
-                    <div>
-                      {rev.image ? (
-                        <img
-                          src={rev.image}
-                          alt='owner-profile'
-                          className='h-16 w-16 rounded-full'
-                        />
-                      ) : (
-                        <img
-                          src='/userIcon.png'
-                          alt='owner-profile'
-                          className='h-16 w-16 rounded-full border'
-                        />
-                      )}
-                    </div>
-                    <div>
-                      <h1 className='text-sm'>
-                        {formatDistanceToNow(new Date(rev.createdAt))} ago
-                      </h1>
-                      <h1 className='text-xl text-orange-500'>
-                        {rev.reviewerName}
-                      </h1>
-                    </div>
-                  </div>
-                  <div className='w-full flex flex-col'>
-                    <Rating
-                      name='read-only'
-                      size='large'
-                      value={rev.rating}
-                      readOnly
-                      precision={0.5}
-                    />
-                    <p>{rev.comment}</p>
-                  </div>
+                <div key={index}>
+                  <Review rev={rev} />
                 </div>
               ))}
             </div>
@@ -316,7 +254,7 @@ export default function RestaurantMainView() {
               <Rating
                 name='half-rating'
                 size='large'
-                value={rates}
+                value={parseFloat(rates)}
                 onChange={(event, newValue) => {
                   setRating(newValue);
                 }}

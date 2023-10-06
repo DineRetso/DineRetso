@@ -28,6 +28,8 @@ import OwnerNavbar from "./Components/Owner/OwnerNavbar";
 import OwnerDashboard from "./Pages/Owner/OwnerDashboard";
 import OwnerMenu from "./Pages/Owner/OwnerMenu";
 import RestaurantMainView from "./Pages/Restaurants/Restaurant View/RestaurantMainView";
+import Customers from "./Pages/Owner/Customers";
+import Subscriptions from "./Pages/Owner/Subscriptions/Subscriptions";
 
 function App() {
   return (
@@ -77,6 +79,22 @@ function App() {
                     element={
                       <OwnerRoute>
                         <OwnerMenu />
+                      </OwnerRoute>
+                    }
+                  />
+                  <Route
+                    path='/:resName/customers'
+                    element={
+                      <OwnerRoute>
+                        <Customers />
+                      </OwnerRoute>
+                    }
+                  />
+                  <Route
+                    path=':resName/subscriptions'
+                    element={
+                      <OwnerRoute>
+                        <Subscriptions />
                       </OwnerRoute>
                     }
                   />
