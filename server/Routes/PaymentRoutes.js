@@ -1,4 +1,4 @@
-const express = requires("express");
+const express = require("express");
 const dotenv = require("dotenv");
 
 dotenv.config();
