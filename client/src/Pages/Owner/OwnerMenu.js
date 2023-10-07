@@ -272,10 +272,12 @@ export default function OwnerMenu() {
   };
 
   return (
-    <div className='ml-0 lg:ml-72 p-10 font-inter'>
+    <div className='ml-0 lg:ml-72 md:ml-72 sm:ml-72 p-10 font-inter'>
       <div className='flex flex-col justify-center items-center space-y-5'>
         <div className='flex justify-center items-center'>
-          <h1 className='text-2xl font-semibold text-orange-500'>MENU</h1>
+          <h1 className='lg:text-4xl md:text-3xl text-2xl font-semibold text-orange-500'>
+            MENU
+          </h1>
         </div>
         <div className='sticky top-0 flex shadow-md w-full h-20 p-3 z-40 bg-TextColor'>
           <div className='flex justify-start items-center w-1/4 border-r border-neutrals-700'>
@@ -290,7 +292,7 @@ export default function OwnerMenu() {
                     onClose={() => setShowAddMenu(false)}
                   />
                 ) : (
-                  <div className='w-auto bg-OrangeDefault rounded-md p-1 flex justify-center items-center'>
+                  <div className='w-auto text-neutrals-500 bg-OrangeDefault rounded-md p-1 flex justify-center items-center'>
                     <button
                       onClick={() =>
                         toast.info("Please subscribe for full access.")
@@ -301,16 +303,18 @@ export default function OwnerMenu() {
                   </div>
                 )
               ) : (
-                <div className='w-auto bg-OrangeDefault rounded-md p-1 flex justify-center items-center'>
+                <div className='w-auto bg-OrangeDefault rounded-md p-1 flex justify-center items-center text-neutrals-500 lg:text-xl md:text-md text-small'>
                   <button onClick={() => setShowAddMenu(true)}>Add Menu</button>
                 </div>
               )}
             </div>
           </div>
           <div className='w-3/4 flex justify-start items-center px-5'>
-            <i className='material-icons text-4xl text-orange-500'>search</i>
+            <i className='material-icons lg:text-4xl md:text-md text-small text-orange-500'>
+              search
+            </i>
             <input
-              className='w-full h-full px-2'
+              className='w-full h-full px-2 lg:text-xl md:text-md text-small'
               placeholder='Search here...'
               value={searchQuery}
               onChange={handleSearchInputChange}
@@ -415,31 +419,31 @@ export default function OwnerMenu() {
                         <img
                           src={menuItem.menuImage}
                           alt={menuItem.menuName}
-                          className='w-64 h-40 sm:h-48 sm:w-80 rounded-md object-cover'
+                          className='w-64 h-40 sm:h-52 sm:w-90 rounded-md object-cover'
                         />
                       ) : (
                         <div>
                           <img
-                            className='w-64 h-40 sm:h-48 sm:w-80 rounded-md'
+                            className='w-64 h-40 sm:h-52 sm:w-90 rounded-md'
                             src='/dineLogo.jpg'
                             alt='menuImage'
                           />
                         </div>
                       )}
                     </div>
-                    <div className='flex justify-center items-start flex-col w-full shadow-lg h-40 space-y-2 pl-7'>
+                    <div className='flex justify-center items-start flex-col w-full shadow-lg h-48 space-y-2 pl-7'>
                       <div>
-                        <p className='sm:text-2xl text-lg text-neutrals-700 font-semibold'>
+                        <p className='lg:text-2xl md:text-2xl sm:text-xl text-md text-neutrals-700 font-semibold'>
                           {menuItem.menuName}
                         </p>
                       </div>
-                      <div>
+                      <div className='lg:text-2xl md:text-md text-sm text-md text-neutrals-700 font-semibold'>
                         <p>P {menuItem.price}</p>
                       </div>
                       <div>
                         <Rating
                           name='read-only'
-                          size='large'
+                          className={`lg:${"size='large'"}`}
                           value={
                             Array.isArray(menuItem.menuReview) &&
                             menuItem.menuReview.length > 0
@@ -491,7 +495,9 @@ export default function OwnerMenu() {
                   </div>
                 ))
               ) : (
-                <div>No Menu Available</div>
+                <div className='text-red-200 font-semibold'>
+                  No Menu Available
+                </div>
               )}
             </div>
           )}

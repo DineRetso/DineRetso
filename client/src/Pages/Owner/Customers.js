@@ -573,7 +573,7 @@ export default function Customers() {
                         />
                       ))
                     ) : (
-                      <div>
+                      <div className='text-red-200 font-semibold'>
                         <h1>No Reviews Available</h1>
                       </div>
                     ))}

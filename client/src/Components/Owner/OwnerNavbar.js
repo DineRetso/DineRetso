@@ -86,6 +86,49 @@ export default function OwnerNavbar() {
     };
     fetchRestaurant();
   }, [userInfo.fName, userInfo.myRestaurant, userInfo.token]);
+  useEffect(() => {
+    const checkPaymentStatusAndRedirect = async () => {
+      if (userInfo.linkId) {
+        try {
+          const response = await fetch(
+            `/api/payment/getPaymentLink/${userInfo.linkId}`,
+            {
+              method: "GET",
+            }
+          );
+          if (!response.ok) {
+            throw new Error("Failed to get payment link details");
+          }
+          const { users } = await response.json();
+
+          if (users) {
+            if (users.linkId) {
+              userInfo.linkId = users.linkId;
+              localStorage.setItem("userInfo", JSON.stringify(userInfo));
+            }
+            if (users.subscriptionStatus === "subscribed") {
+              userInfo.subscriptionStatus = "subscribed";
+              localStorage.setItem("userInfo", JSON.stringify(userInfo));
+            } else if (users.subscriptionStatus === "not subscribed") {
+              userInfo.subscriptionStatus = "not subscribed";
+              localStorage.setItem("userInfo", JSON.stringify(userInfo));
+            } else {
+              userInfo.subscriptionStatus = "expired";
+              userInfo.linkId = "";
+              localStorage.setItem("userInfo", JSON.stringify(userInfo));
+            }
+          }
+        } catch (error) {
+          console.error("Error checking payment status :", error);
+          toast.error(
+            "Error checking payment status in navbar. Please contact DineRetso."
+          );
+        }
+      }
+    };
+
+    checkPaymentStatusAndRedirect();
+  }, []);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -99,7 +142,7 @@ export default function OwnerNavbar() {
 
   return (
     <div className='flex z-50'>
-      <nav className='bg-neutrals-500 text-TextColor w-72 h-screen fixed top-0 left-0 overflow-y-auto font-inter space-y-10 hidden sm:flex flex-col p-5'>
+      <nav className='bg-orange-200 text-TextColor w-72 h-screen fixed top-0 left-0 overflow-y-auto font-inter space-y-10 hidden sm:flex flex-col p-5'>
         <div className='w-full flex flex-col justify-center items-center space-y-3 border-b border-TextColor py-5'>
           <div>
             <h1 className='text-2xl font-bold'>{myRestaurant.resName}</h1>
@@ -118,44 +161,42 @@ export default function OwnerNavbar() {
             className='flex items-center hover:bg-orange-700 p-2'
           >
             <i className='material-icons'>dashboard</i>
-            <span className='ml-2 border-b w-full'>Dashboard</span>
+            <span className='ml-2'>Dashboard</span>
           </Link>
           <Link
             to={`/dineretso-restaurant/${myRestaurant.resName}/Menu`}
             className='flex items-center hover:bg-orange-700 p-2'
           >
             <i className='material-icons'>restaurant_menu</i>
-            <span className='ml-2 border-b w-full'>Menu</span>
+            <span className='ml-2'>Menu</span>
           </Link>
           <Link
             to={`/dineretso-restaurant/${myRestaurant.resName}/customers`}
             className='flex items-center hover:bg-orange-700 p-2'
           >
             <i className='material-icons'>people</i>
-            <span className='ml-2 border-b w-full'>Customers</span>
+            <span className='ml-2'>Customers</span>
           </Link>
           <Link
             to='/analytics'
             className='flex items-center hover:bg-orange-700 p-2'
           >
             <i className='material-icons'>analytics</i>
-            <span className='ml-2 border-b w-full'>Analytics</span>
+            <span className='ml-2'>Analytics</span>
           </Link>
           <Link
             to={`/dineretso-restaurant/${myRestaurant.resName}/subscriptions`}
             className='flex items-center hover:bg-orange-700 p-2'
           >
             <i className='material-icons'>subscriptions</i>
-            <span className='ml-2 border-b w-full'>
-              Plans and Subscriptions
-            </span>
+            <span className='ml-2'>Plans and Subscriptions</span>
           </Link>
           <Link
             to='/settings'
             className='flex items-center hover:bg-orange-700 p-2'
           >
             <i className='material-icons'>settings</i>
-            <span className='ml-2 border-b w-full'>Settings</span>
+            <span className='ml-2'>Settings</span>
           </Link>
           <div className='flex items-center hover:bg-orange-700 p-2'>
             <i className='material-icons'>logout</i>
@@ -167,7 +208,7 @@ export default function OwnerNavbar() {
       </nav>
       <button
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        className='bg-neutrals-700 text-TextColor p-2 sm:hidden'
+        className='bg-orange-200 text-TextColor p-2 sm:hidden w-full'
       >
         <svg
           className='w-6 h-6'
@@ -183,74 +224,93 @@ export default function OwnerNavbar() {
           />
         </svg>
       </button>
-      {isMobileMenuOpen && (
-        <nav className='bg-neutrals-700 text-TextColor w-full h-screen fixed top-0 left-0 overflow-y-auto font-inter space-y-10 p-7 sm:hidden'>
-          <div className='w-full flex flex-col justify-center items-center space-y-3 border-b border-TextColor py-5'>
-            <div>
-              <h1 className='text-2xl font-bold'>{myRestaurant.resName}</h1>
+      <div
+        className={`${
+          isMobileMenuOpen ? "opacity-100" : "opacity-0"
+        } transition-opacity duration-500 ease-in-out`}
+      >
+        {isMobileMenuOpen && (
+          <nav className='bg-orange-200 text-TextColor w-full h-screen fixed top-0 left-0 overflow-y-auto font-inter space-y-10 p-7 sm:hidden z-50'>
+            <div className='w-full flex flex-col justify-center items-center space-y-3 border-b border-TextColor py-5'>
+              <div>
+                <h1 className='text-2xl font-bold'>{myRestaurant.resName}</h1>
+              </div>
+              <div className='rounded-full h-32 w-32 bg-cover'>
+                <img
+                  className='rounded-full h-32 w-32'
+                  src={myRestaurant.profileImage}
+                  alt={myRestaurant.resName}
+                />
+              </div>
             </div>
-            <div className='rounded-full h-32 w-32 bg-cover'>
-              <img
-                className='rounded-full h-32 w-32'
-                src={myRestaurant.profileImage}
-                alt={myRestaurant.resName}
-              />
-            </div>
-          </div>
-          <div className='w-full h-auto space-y-3 font-thin text-2xl'>
-            <Link
-              to='/dashboard'
-              className='flex items-center hover:bg-neutrals-600 p-3'
-            >
-              <i className='material-icons'>dashboard</i>
-              <span className='ml-2'>Dashboard</span>
-            </Link>
-            <Link
-              to='/menu'
-              className='flex items-center hover:bg-neutrals-600 p-3'
-            >
-              <i className='material-icons'>restaurant_menu</i>
-              <span className='ml-2'>Menu</span>
-            </Link>
-            <Link
-              to='/customers'
-              className='flex items-center hover:bg-neutrals-600 p-3'
-            >
-              <i className='material-icons'>people</i>
-              <span className='ml-2'>Customers</span>
-            </Link>
-            <Link
-              to='/analytics'
-              className='flex items-center hover:bg-neutrals-600 p-3'
-            >
-              <i className='material-icons'>analytics</i>
-              <span className='ml-2'>Analytics</span>
-            </Link>
-            <Link
-              to='/settings'
-              className='flex items-center hover:bg-neutrals-600 p-3'
-            >
-              <i className='material-icons'>settings</i>
-              <span className='ml-2'>Settings</span>
-            </Link>
-            <div className='flex items-center hover:bg-neutrals-600 p-3'>
-              <i className='material-icons'>logout</i>
-              <button onClick={signoutHandler} className='ml-2'>
-                Logout
-              </button>
-            </div>
-            <div className='flex items-center hover:bg-neutrals-600 p-3'>
-              <button
+            <div className='w-full h-auto space-y-3 font-thin text-2xl'>
+              <Link
+                to='/dashboard'
+                className='flex items-center hover:bg-neutrals-600 p-3'
                 onClick={() => setIsMobileMenuOpen(false)}
-                className='flex items-center'
               >
-                <i className='material-icons'>close</i>
-                <span className='ml-2'>Close</span>
-              </button>
+                <i className='material-icons'>dashboard</i>
+                <span className='ml-2'>Dashboard</span>
+              </Link>
+              <Link
+                to={`/dineretso-restaurant/${myRestaurant.resName}/Menu`}
+                className='flex items-center hover:bg-neutrals-600 p-3'
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <i className='material-icons'>restaurant_menu</i>
+                <span className='ml-2'>Menu</span>
+              </Link>
+              <Link
+                to={`/dineretso-restaurant/${myRestaurant.resName}/customers`}
+                className='flex items-center hover:bg-neutrals-600 p-3'
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <i className='material-icons'>people</i>
+                <span className='ml-2'>Customers</span>
+              </Link>
+              <Link
+                to='/analytics'
+                className='flex items-center hover:bg-neutrals-600 p-3'
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <i className='material-icons'>analytics</i>
+                <span className='ml-2'>Analytics</span>
+              </Link>
+              <Link
+                to={`/dineretso-restaurant/${myRestaurant.resName}/subscriptions`}
+                className='flex items-center hover:bg-neutrals-600 p-3'
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <i className='material-icons'>subscriptions</i>
+                <span className='ml-2'>Plans and Subscriptions</span>
+              </Link>
+              <Link
+                to='/settings'
+                className='flex items-center hover:bg-neutrals-600 p-3'
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <i className='material-icons'>settings</i>
+                <span className='ml-2'>Settings</span>
+              </Link>
+              <div className='flex items-center hover:bg-neutrals-600 p-3'>
+                <i className='material-icons'>logout</i>
+                <button onClick={signoutHandler} className='ml-2'>
+                  Logout
+                </button>
+              </div>
+              <div className='flex items-center hover:bg-neutrals-600 p-3'>
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className='flex items-center'
+                >
+                  <i className='material-icons'>close</i>
+                  <span className='ml-2'>Close</span>
+                </button>
+              </div>
             </div>
-          </div>
-        </nav>
-      )}
+          </nav>
+        )}
+      </div>
     </div>
   );
 }

@@ -30,6 +30,7 @@ import OwnerMenu from "./Pages/Owner/OwnerMenu";
 import RestaurantMainView from "./Pages/Restaurants/Restaurant View/RestaurantMainView";
 import Customers from "./Pages/Owner/Customers";
 import Subscriptions from "./Pages/Owner/Subscriptions/Subscriptions";
+import SubscriptionDetails from "./Pages/Owner/Subscriptions/SubscriptionDetails";
 
 function App() {
   return (
@@ -95,6 +96,14 @@ function App() {
                     element={
                       <OwnerRoute>
                         <Subscriptions />
+                      </OwnerRoute>
+                    }
+                  />
+                  <Route
+                    path=':name/:resId/details'
+                    element={
+                      <OwnerRoute>
+                        <SubscriptionDetails />
                       </OwnerRoute>
                     }
                   />

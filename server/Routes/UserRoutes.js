@@ -140,6 +140,8 @@ userRouter.post(
           email: user.email,
           isOwner: user.isOwner,
           myRestaurant: user.myRestaurant,
+          subscriptionStatus: user.subscriptionStatus,
+          linkId: user.linkId,
           token: generateToken(user),
         });
       } else {

@@ -6,6 +6,7 @@ const bcrypt = require("bcryptjs");
 const RegRestaurants = require("../Models/Register_Model.js");
 const Restaurant = require("../Models/Restaurant_Model.js");
 const User = require("../Models/User_Model.js");
+const Payments = require("../Models/PaymentModel.js");
 const { isAuth, isOwner } = require("../utils.js");
 
 dotenv.config();
@@ -193,6 +194,28 @@ ownerRouter.delete(
       res
         .status(500)
         .json({ message: "An error occurred while deleting the menu item" });
+    }
+  })
+);
+ownerRouter.get(
+  "/payment/:_id",
+  isAuth,
+  isOwner,
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const { _id } = req.params;
+
+      const payment = await Payments.find({ payeeResId: _id });
+      if (payment) {
+        return res.status(200).json(payment);
+      }
+      return res.status(404).json({ message: "No Payment transaction." });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        message:
+          "An error occurred while fetching payment. Please try again later",
+      });
     }
   })
 );

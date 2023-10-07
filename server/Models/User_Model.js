@@ -13,14 +13,11 @@ const userSchema = new mongoose.Schema(
     lastFailedLogin: { type: Date },
     resetToken: { type: String },
     resetTokenExpires: { type: Date },
+    linkId: { type: String },
     subscriptionStatus: {
       type: String,
       enum: ["subscribed", "not subscribed", "expired"],
       default: "not subscribed",
-    },
-    subscriptionPlan: {
-      type: String, // You can store the name or ID of the subscribed plan
-      default: null, // Set to null if user is not subscribed
     },
     subscriptionStartDate: {
       type: Date,
