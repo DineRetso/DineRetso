@@ -71,14 +71,21 @@ const Login = () => {
         <div className='flex w-full h-full justify-center items-center'>
           <div className='flex w-full h-auto border-TextColor justify-center items-center'>
             <div className='flex flex-row justify-center lg:p-20 md:p-4 w-full rounded-md'>
-              <div className='flex flex-col w-[600px] bg-cover border border-primary-700 bg-TextColor justify-center items-center py-10 lg:px-8 md:p-5 p-2 lg:rounded-l-md md:rounded-l-md sm:rounded-l-md rounded-md'>
-                <div className='w-full h-auto justify-start pt-24 border-b border-primary-700 pb-5'>
-                  <h1 className='text-primary-200 text-3xl font-bold'>Login</h1>
+              <div className='flex flex-col w-[600px] bg-cover border border-orange-500 bg-TextColor justify-center items-center py-10 lg:px-8 md:p-5 p-2 lg:rounded-l-md md:rounded-l-md sm:rounded-l-md rounded-md'>
+                <div className='flex flex-row w-full h-auto justify-start border-b border-orange-500 pb-5'>
+                  <div className='w-16 h-16'>
+                    <img src='/Logo.png' alt='logo' />
+                  </div>
+                  <div className='flex justify-start items-center'>
+                    <h1 className='text-orange-500 text-3xl font-bold'>
+                      Login
+                    </h1>
+                  </div>
                 </div>
                 <form className='flex flex-col w-full justify-center items-center space-y-5'>
                   <input
                     type='text'
-                    className='mt-2 p-3 w-full rounded-md text-sm border outline-primary-500'
+                    className='mt-2 p-3 w-full rounded-md text-sm border outline-orange-500'
                     placeholder='Email'
                     id='email'
                     required
@@ -89,7 +96,7 @@ const Login = () => {
                   />
                   <input
                     type='password'
-                    className='mt-2 p-3 w-full rounded-md text-sm border outline-primary-500'
+                    className='mt-2 p-3 w-full rounded-md text-sm border outline-orange-500'
                     placeholder='Password'
                     id='password'
                     value={password}
@@ -97,7 +104,7 @@ const Login = () => {
                       setPassword(e.target.value);
                     }}
                   />
-                  <div className='border border-primary-500 flex justify-center items-center w-3/4 hover:bg-primary-500 text-primary-500 hover:text-TextColor transition-all duration-300 p-2 rounded-md'>
+                  <div className='border border-orange-500 flex justify-center items-center w-3/4 hover:bg-TextColor bg-orange-500 text-TextColor hover:text-orange-500 transition-all duration-300 p-2 rounded-md'>
                     <button
                       className=' rounded-xl w-full'
                       type='submit'

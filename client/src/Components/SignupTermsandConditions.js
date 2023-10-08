@@ -1,6 +1,7 @@
 import React from "react";
 
-export default function SignupTermsandConditions() {
+export default function SignupTermsandConditions(props) {
+  const { handleCheckBox } = props;
   return (
     <div
       className='overflow-y-scroll max-h-40 border bg-neutrals-400 border-gray-300 p-2 rounded'
@@ -127,6 +128,18 @@ export default function SignupTermsandConditions() {
           </ol>
         </li>
       </ol>
+      <div className='mt-2'>
+        <input
+          className='mr-1'
+          type='checkbox'
+          id='terms'
+          onChange={handleCheckBox}
+          required
+        />
+        <label htmlFor='terms' className='text-BlackColor'>
+          I agree to the Terms and Conditions.
+        </label>
+      </div>
     </div>
   );
 }

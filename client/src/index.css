@@ -73,7 +73,7 @@ nav {
 /* Define the background color for the scrolled state */
 nav.scrolled {
   background-color: #f1b958;
-  color: #ffff;
+  color: #f1b958;
   opacity: 0.8; /* Change to your desired color */
 }
 
@@ -89,4 +89,19 @@ nav.scrolled {
   padding: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow-y: auto; /* Add overflow for scrolling if needed */
+}
+
+.bg-signup-image {
+  background-image: url("../public/bgSignUp.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  min-height: 100%; /* Set a minimum height for the image to cover the container */
+}
+.bg-about-image {
+  background-image: url("../public/AboutUs.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  min-height: 100%; /* Set a minimum height for the image to cover the container */
 }

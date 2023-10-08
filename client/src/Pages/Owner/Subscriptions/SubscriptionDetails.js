@@ -141,7 +141,7 @@ export default function SubscriptionDetails(props) {
 
   return (
     <div>
-      <div className='w-full'>
+      <div className='w-full '>
         <div className='header w-full flex justify-center items-center bg-'>
           <h1>Payment History</h1>
         </div>
@@ -175,7 +175,7 @@ export default function SubscriptionDetails(props) {
             </div>
           )}
         </div>
-        <div className='w-full grid grid-cols-4 gap-3 p-5'>
+        <div className='w-full grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-3 p-5'>
           {sortedPayments.map((payment) => (
             <div
               key={payment._id}

@@ -116,30 +116,28 @@ const Signup = () => {
   };
 
   return (
-    <div className='w-full bg-cover bg-neutrals-700 relative bg-opacity-25'>
-      <div className='w-full flex font-sans justify-center items-center h-auto p-10'>
+    <div className='w-full bg-cover bg-neutrals-700 relative '>
+      <div className='w-full flex font-sans justify-center items-center h-auto lg:p-10 md:p-8 sm:p-6 p-3'>
         {loading ? (
           <LoadingSpinner type='OTP' />
         ) : (
-          <div className='flex justify-center items-center bg-opacity-30 w-full rounded-3xl p-11'>
+          <div className='flex justify-center items-center bg-opacity-30 w-full rounded-3xl lg:p-11'>
             <div className='flex w-full h-full rounded-md'>
-              <div className='hidden md:flex justify-center items-center md:w-7/12 w-5/12 bg-green-200 h-auto'>
-                <h1>Sign Up Design content text</h1>
-              </div>
+              <div className='bg-signup-image hidden md:flex justify-center items-center md:w-7/12 w-5/12 h-auto'></div>
               <div className='w-full'>
                 <form
                   onSubmit={signuphandler}
                   className='flex flex-col justify-center bg-TextColor p-5'
                 >
-                  <div className='flex justify-start items-start border-b border-primary-500 p-5'>
-                    <h1 className='text-3xl text-primary-500 font-semibold'>
+                  <div className='flex justify-start items-start border-b border-orange-500 p-5'>
+                    <h1 className='text-3xl text-orange-500 font-semibold'>
                       Sign Up
                     </h1>
                   </div>
-                  <div className='flex justify-center items-center lg:flex mt-6 md:flex w-full space-x-2'>
-                    <div className='mb-4 lg:w-1/2 md:w-1/2'>
+                  <div className='flex justify-center items-center lg:flex-row md:flex-row flex-col mt-6 md:flex w-full space-x-2'>
+                    <div className='flex  mb-4 lg:w-1/2 md:w-1/2 w-full'>
                       <input
-                        className='p-3 w-full rounded-md text-sm border outline-primary-500'
+                        className='p-3 w-full rounded-md text-sm border outline-orange-500'
                         id='fName'
                         type='text'
                         placeholder='First Name'
@@ -148,9 +146,9 @@ const Signup = () => {
                         onChange={(e) => setfName(e.target.value)}
                       />
                     </div>
-                    <div className='mb-4 lg:w-1/2 md:w-1/2'>
+                    <div className='mb-4 lg:w-1/2 md:w-1/2 w-full'>
                       <input
-                        className='p-3 w-full rounded-md text-sm border outline-primary-500'
+                        className='p-3 w-full rounded-md text-sm border outline-orange-500'
                         id='lName'
                         type='text'
                         placeholder='Last Name'
@@ -162,7 +160,7 @@ const Signup = () => {
                   </div>
                   <div className='flex mb-4 w-full'>
                     <input
-                      className='p-3 w-full rounded-md text-sm border outline-primary-500'
+                      className='p-3 w-full rounded-md text-sm border outline-orange-500'
                       id='address'
                       type='text'
                       placeholder='Address'
@@ -173,7 +171,7 @@ const Signup = () => {
                   </div>
                   <div className='flex w-full mb-4'>
                     <input
-                      className='p-3 w-full rounded-md text-sm border outline-primary-500'
+                      className='p-3 w-full rounded-md text-sm border outline-orange-500'
                       id='mobileNo'
                       type='number'
                       placeholder='Mobile No'
@@ -184,7 +182,7 @@ const Signup = () => {
                   </div>
                   <div className='flex w-full mb-4'>
                     <input
-                      className='p-3 w-full rounded-md text-sm border outline-primary-500'
+                      className='p-3 w-full rounded-md text-sm border outline-orange-500'
                       id='username'
                       type='email'
                       placeholder='Email'
@@ -195,7 +193,7 @@ const Signup = () => {
                   </div>
                   <div className='flex flex-col w-full mb-4'>
                     <input
-                      className='p-3 w-full rounded-md text-sm border outline-primary-500'
+                      className='p-3 w-full rounded-md text-sm border outline-orange-500'
                       id='password'
                       type='password'
                       placeholder='Password'
@@ -204,7 +202,7 @@ const Signup = () => {
                       onChange={(e) => setPassword(e.target.value)}
                     />
                     {password && isPasswordValid(password) && (
-                      <span className='text-sm text-green-500'>
+                      <span className='text-sm text-green-700'>
                         Password Valid!
                       </span>
                     )}
@@ -218,7 +216,7 @@ const Signup = () => {
                   <div className='flex w-full mb-6'>
                     <input
                       ref={cofirm}
-                      className='p-3 w-full rounded-md text-sm border outline-primary-500'
+                      className='p-3 w-full rounded-md text-sm border outline-orange-500'
                       id='confirm'
                       type='password'
                       placeholder='Confirm password'
@@ -229,27 +227,23 @@ const Signup = () => {
                   </div>
                   {/* ... (terms and conditions checkbox) */}
                   <label
-                    className='block text-gray-700 font-bold mb-2 text-BlackColor'
+                    className='block text-gray-700 mb-2'
                     onClick={showTA ? closeTerms : showTerms}
                   >
-                    Terms and Conditions
+                    See{" "}
+                    <span className='text-primary-700 hover:cursor-pointer'>
+                      Terms and Conditions
+                    </span>
                   </label>
                   <div className='flex w-full mb-6'>
                     <div className='text-sm text-gray-700 w-full'>
-                      {showTA && <SignupTermsandConditions />}
-                      {/* Checkbox */}
-                      <div className='mt-2'>
-                        <input
-                          className='mr-1'
-                          type='checkbox'
-                          id='terms'
-                          onChange={handleCheckBox}
-                          required
+                      {showTA && (
+                        <SignupTermsandConditions
+                          handleCheckBox={handleCheckBox}
                         />
-                        <label htmlFor='terms' className='text-BlackColor'>
-                          I agree to the Terms and Conditions.
-                        </label>
-                      </div>
+                      )}
+                      {/* Checkbox */}
+
                       <div className='mt-2'>
                         <p>
                           Already have an Account? Go back to{" "}
@@ -266,7 +260,7 @@ const Signup = () => {
                     </div>
                   </div>
                   <div className='w-full flex justify-center items-center'>
-                    <div className='border border-primary-500 flex justify-center items-center w-1/2 hover:bg-primary-500 text-primary-500 hover:text-TextColor transition-all duration-300 p-2 rounded-md'>
+                    <div className='border border-orange-500 bg-orange-500 flex justify-center items-center w-1/2 hover:bg-TextColor text-TextColor hover:text-orange-500 transition-all duration-300 p-2 rounded-md'>
                       <button
                         className='w-40 font-bold py-2 px-4  focus:outline-none focus:shadow-outline'
                         type='submit'

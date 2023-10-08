@@ -31,6 +31,8 @@ import RestaurantMainView from "./Pages/Restaurants/Restaurant View/RestaurantMa
 import Customers from "./Pages/Owner/Customers";
 import Subscriptions from "./Pages/Owner/Subscriptions/Subscriptions";
 import SubscriptionDetails from "./Pages/Owner/Subscriptions/SubscriptionDetails";
+import AboutUs from "./Pages/AboutUs";
+import RestaurantMenu from "./Pages/Restaurants/Restaurant View/RestaurantMenu";
 
 function App() {
   return (
@@ -122,6 +124,8 @@ function App() {
                   <Route path='/verifyOTP' element={<VerifyOTP />} />
                   <Route path='/reset-password' element={<ResetPassword />} />
                   <Route path='/Restaurants' element={<Restaurant />} />
+                  <Route path='/AboutUs' element={<AboutUs />} />
+                  <Route path='/Menus' element={<RestaurantMenu />} />
                   <Route
                     path='/Restaurant/:resName/:_id/:source'
                     element={<RestaurantMainView />}

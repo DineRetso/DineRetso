@@ -27,6 +27,32 @@ resRouter.get(
   })
 );
 resRouter.get(
+  "/getMenus",
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const restaurant = await Restaurant.find();
+      if (!restaurant) {
+        return res.status(404).json({ message: "No Menu Available" });
+      } else {
+        const menuData = restaurant.map((restaurant) => ({
+          resName: restaurant.resName,
+          category: restaurant.category,
+          address: restaurant.address,
+          openAt: restaurant.openAt,
+          closeAt: restaurant.closeAt,
+          isSubscribed: restaurant.isSubscribed,
+          menu: restaurant.menu,
+          tags: restaurant.tags,
+        }));
+        res.status(200).json(menuData);
+      }
+    } catch (error) {
+      console.error(errror);
+      res.status(500).send({ message: "Server Error!" });
+    }
+  })
+);
+resRouter.get(
   "/getFeaturedResto",
   expressAsyncHandler(async (req, res) => {
     try {

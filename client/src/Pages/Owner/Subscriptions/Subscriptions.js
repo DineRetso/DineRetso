@@ -76,7 +76,7 @@ export default function Subscriptions() {
     checkPaymentStatusAndRedirect();
   }, [setPaymentStatus, setPaymentLink]);
   return (
-    <div className='ml-72 font-inter'>
+    <div className='lg:ml-72 md:ml-72 sm:ml-72 font-inter'>
       {userInfo.subscriptionStatus === "not subscribed" ? (
         <div className='w-full h-full flex flex-col'>
           <div className='w-full h-32 p-5 flex flex-col justify-center items-start  text-neutrals-500 border-b'>

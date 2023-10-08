@@ -39,9 +39,9 @@ const Navbar = () => {
   const menuOptions = [
     { text: "Home", link: "/" },
     { text: "Restaurants", link: "/Restaurants" },
-    { text: "Menu", link: "/about" },
+    { text: "Menu", link: "/Menus" },
     { text: "Services", link: "/dineretso-services" },
-    { text: "About", link: "/about" },
+    { text: "About", link: "/AboutUs" },
     ...(userInfo
       ? [
           {
@@ -59,7 +59,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`sticky top-0 z-50 w-full text-BlackColor py-1 text-xl font-inter ${navClass}`}
+      className={`sticky top-0 z-50 w-full text-red-900 py-1 text-xl font-inter ${navClass}`}
     >
       <div className='mx-auto px-4'>
         <div className='flex items-center justify-between'>
@@ -67,18 +67,18 @@ const Navbar = () => {
             <div className='flex-shrink-0'>
               <a href='/' className=''>
                 <div className='flex'>
-                  <div className='flex text-neutrals-700 justify-center items-center text-5xl'>
+                  <div className='flex  justify-center items-center text-5xl'>
                     <img
                       src='../Logo.png'
                       alt='DineRetso Logo'
-                      className='w-24 h-24'
+                      className='w-24 h-24 text-sm'
                     />
                   </div>
                 </div>
               </a>
             </div>
           </div>
-          <div className='hidden md:flex lg:flex items-center'>
+          <div className='hidden md:flex lg:flex items-center font-semibold'>
             {menuOptions.map((option, index) => (
               <a
                 key={index}
