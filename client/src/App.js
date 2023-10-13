@@ -33,6 +33,13 @@ import Subscriptions from "./Pages/Owner/Subscriptions/Subscriptions";
 import SubscriptionDetails from "./Pages/Owner/Subscriptions/SubscriptionDetails";
 import AboutUs from "./Pages/AboutUs";
 import RestaurantMenu from "./Pages/Restaurants/Restaurant View/RestaurantMenu";
+import DineNavbar from "./Dine-Secret/DineNavbar";
+import Static from "./Components/Dine/Static";
+import Restaurants from "./Dine-Secret/Restaurants/Restaurants";
+import Registration from "./Dine-Secret/Regsitration/Registration";
+import BlogPost from "./Dine-Secret/BlogPost/BlogPost";
+import AddBlog from "./Dine-Secret/BlogPost/AddBlog";
+import PlansAndPricing from "./Pages/Owner/Subscriptions/PlansAndPricing";
 
 function App() {
   return (
@@ -41,24 +48,65 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/dine-admin/secret/login' element={<AdminLogin />} />
+
           <Route
-            path='/dine-admin/secret/admin-dashboard'
-            element={<Dashboard />}
-          />
-          <Route
-            path='/admin/manage-restaurants'
+            path='/dine/admin/secret/*'
             element={
-              <AdminRoute>
-                <ManageRestaurant />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path='/admin/manage-restaurant/pendingResto/:id'
-            element={
-              <AdminRoute>
-                <ShowPendingResto />
-              </AdminRoute>
+              <div>
+                <DineNavbar />
+                <Static />
+                <Routes>
+                  <Route path='/admin-dashboard' element={<Dashboard />} />
+                  <Route
+                    path='/manage-restaurants'
+                    element={
+                      <AdminRoute>
+                        <ManageRestaurant />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path='/registration/pendingResto/:id'
+                    element={
+                      <AdminRoute>
+                        <ShowPendingResto />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path='/restaurants'
+                    element={
+                      <AdminRoute>
+                        <Restaurants />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path='/registration'
+                    element={
+                      <AdminRoute>
+                        <Registration />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path='/blog-post'
+                    element={
+                      <AdminRoute>
+                        <BlogPost />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path='/add-blog-post/:id'
+                    element={
+                      <AdminRoute>
+                        <AddBlog />
+                      </AdminRoute>
+                    }
+                  />
+                </Routes>
+              </div>
             }
           />
           <Route path='/login' element={<Login />} />
@@ -98,6 +146,14 @@ function App() {
                     element={
                       <OwnerRoute>
                         <Subscriptions />
+                      </OwnerRoute>
+                    }
+                  />
+                  <Route
+                    path='/:resName/PlansNPricing'
+                    element={
+                      <OwnerRoute>
+                        <PlansAndPricing />
                       </OwnerRoute>
                     }
                   />

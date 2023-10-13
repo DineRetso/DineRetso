@@ -3,6 +3,7 @@ import { Store } from "../../Store";
 import axios from "axios"; // Make sure you have axios installed
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../LoadingSpinner";
+import { toast } from "react-toastify";
 
 export default function AdminRoute({ children }) {
   const dineInfo = JSON.parse(localStorage.getItem("dineInfo"));
@@ -13,27 +14,29 @@ export default function AdminRoute({ children }) {
 
   useEffect(() => {
     const fetchDineInfo = async () => {
-      if (!dineInfo) {
+      if (dineInfo === null) {
+        toast.info("Unauthorized!");
         setIsAdmin(false);
         setIsLoading(false);
         return;
-      }
-      const id = dineInfo._id;
-      try {
-        const response = await axios.post("/api/admin/dineInfo", {
-          _id: id,
-        });
+      } else {
+        try {
+          const id = dineInfo._id;
+          const response = await axios.post("/api/admin/dineInfo", {
+            _id: id,
+          });
 
-        if (response.data && response.data.isAdmin) {
-          setIsAdmin(true);
-        } else {
+          if (response.data && response.data.isAdmin) {
+            setIsAdmin(true);
+          } else {
+            setIsAdmin(false);
+          }
+        } catch (error) {
+          console.error("Error fetching admin info:", error);
           setIsAdmin(false);
+        } finally {
+          setIsLoading(false);
         }
-      } catch (error) {
-        console.error("Error fetching admin info:", error);
-        setIsAdmin(false);
-      } finally {
-        setIsLoading(false);
       }
     };
 
@@ -45,6 +48,7 @@ export default function AdminRoute({ children }) {
   }
 
   if (!isAdmin) {
+    toast.info("Unauthorized!");
     return navigate("/login");
   }
 

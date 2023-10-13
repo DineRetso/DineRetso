@@ -57,6 +57,17 @@ const newSchema = new mongoose.Schema(
     isSubscribed: { type: String, default: "not subscribed" },
     menu: [menuSchema],
     tags: [{ type: String }],
+    blogPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: "BlogPost" }],
+    postCount: { type: Number, default: 0 },
+    postStatus: { type: String },
+    subscriptionStartDate: {
+      type: Date,
+      default: null,
+    },
+    subscriptionEndDate: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true, collection: "Restaurants" }
 );

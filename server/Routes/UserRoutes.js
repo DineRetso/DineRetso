@@ -144,6 +144,7 @@ userRouter.post(
           linkId: user.linkId,
           token: generateToken(user),
         });
+    
       } else {
         user.attempt += 1;
         user.lastFailedLogin = new Date();

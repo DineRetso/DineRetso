@@ -52,6 +52,15 @@ export default function Menu(props) {
     setshowRateMenu(true);
     setMenuId(menu._id);
   };
+  const calculateTotalRatings = (menu) => {
+    let totalRatings = 0;
+    const len = menu.menuReview.length;
+    menu.menuReview.forEach((review) => {
+      totalRatings += review.rating;
+    });
+    const averageRating = totalRatings / len;
+    return averageRating;
+  };
 
   return (
     <div>
@@ -78,7 +87,13 @@ export default function Menu(props) {
         </h1>
         <h2 className='text-xl text-neutrals-700'>₱{menu.price}</h2>
         <div className='flex justify-between items-center'>
-          <Rating name='read-only' size='small' defaultValue={3.5} readOnly />
+          <Rating
+            name='read-only'
+            size='medium'
+            value={calculateTotalRatings(menu)}
+            precision={0.1}
+            readOnly
+          />
           <div className='p-2'>
             {userInfo ? (
               <div>

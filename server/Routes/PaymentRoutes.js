@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const User = require("../Models/User_Model.js");
 const Payments = require("../Models/PaymentModel.js");
 const Restaurant = require("../Models/Restaurant_Model.js");
+const cron = require("node-cron");
 
 dotenv.config();
 const PAY_API_KEY = process.env.PAY_API_KEY;
@@ -114,6 +115,8 @@ const getPaymentLinkDetails = async (linkId) => {
         user.subscriptionStartDate = currentDate;
         user.subscriptionEndDate = endDate;
         restaurant.isSubscribed = "subscribed";
+        restaurant.subscriptionStartDate = currentDate;
+        restaurant.subscriptionEndDate = endDate;
         await paymentstatus.save();
         await user.save();
         await restaurant.save();
@@ -123,6 +126,8 @@ const getPaymentLinkDetails = async (linkId) => {
         restaurant.isSubscribed = "expired";
         user.subscriptionStartDate = null;
         user.subscriptionEndDate = null;
+        restaurant.subscriptionStartDate = null;
+        restaurant.subscriptionEndDate = null;
         user.linkId = "";
         await paymentstatus.save();
         await user.save();
@@ -148,6 +153,26 @@ const getPaymentLinkDetailsHandler = async (req, res) => {
     res.status(500).json({ error: "Failed to get payment link details" });
   }
 };
+
+const dailySubscriptionCheck = () => {
+  cron.schedule("55 23 * * *", async () => {
+    // For each user, check their payment link status
+    const users = await User.find({});
+    for (const user of users) {
+      if (user.linkId) {
+        try {
+          await getPaymentLinkDetails(user.linkId);
+        } catch (error) {
+          console.error(
+            `Error checking subscription for user ${user._id}: ${error}`
+          );
+        }
+      }
+    }
+  });
+};
+
+dailySubscriptionCheck();
 
 paymentRouter.post("/createPaymentLink", createPaymentLinkHandler);
 paymentRouter.get("/getPaymentLink/:linkId", getPaymentLinkDetailsHandler);

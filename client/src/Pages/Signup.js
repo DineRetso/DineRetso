@@ -95,7 +95,7 @@ const Signup = () => {
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     const hashedOTP = await bcrypt.hash(otp, 10);
-    const expirationTime = new Date().getTime() + 2 * 60 * 1000;
+    const expirationTime = new Date().getTime() + 60 * 60 * 1000;
     const userData = {
       fName,
       lName,

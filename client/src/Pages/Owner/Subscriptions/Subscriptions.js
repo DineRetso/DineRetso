@@ -9,6 +9,7 @@ export default function Subscriptions() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo } = state;
   const [paymentStatus, setPaymentStatus] = useState(null);
+  const [owner, setOwner] = useState(null);
   const navigate = useNavigate();
   const userId = userInfo._id;
   const payeeName = userInfo.fName;
@@ -55,12 +56,14 @@ export default function Subscriptions() {
         if (!response.ok) {
           throw new Error("Failed to get payment link details");
         }
-        const { responseData } = await response.json();
+        const { responseData, users } = await response.json();
         const paymentsData = responseData;
         const myData = paymentsData.data.attributes.checkout_url;
+        console.log("users", users);
         if (paymentsData && myData) {
           setPaymentStatus(paymentsData);
           setPaymentLink(myData);
+          setOwner(users);
         } else {
           console.log("error");
         }
@@ -74,7 +77,8 @@ export default function Subscriptions() {
   };
   useEffect(() => {
     checkPaymentStatusAndRedirect();
-  }, [setPaymentStatus, setPaymentLink]);
+  }, [setPaymentStatus, setPaymentLink, setOwner]);
+
   return (
     <div className='lg:ml-72 md:ml-72 sm:ml-72 font-inter'>
       {userInfo.subscriptionStatus === "not subscribed" ? (

@@ -36,7 +36,7 @@ export default function AdminLogin() {
       });
       dispatch({ type: "FETCH_SUCCESS", payload: data });
       localStorage.setItem("dineInfo", JSON.stringify(data));
-      navigate("/dine-admin/secret/admin-dashboard");
+      navigate("/dine/admin/secret/admin-dashboard");
     } catch (err) {
       console.error(err);
       if (err.response && err.response.data && err.response.data.message) {
@@ -48,7 +48,7 @@ export default function AdminLogin() {
   };
   return (
     <div>
-      <div className='relative font-sans'>
+      <div className='relative font-sans '>
         <div className='relative'>
           <div className='flex flex-col pt-20 justify-center items-center relative h-screen z-20'>
             <div className='w-3/4 bg-trans-background md:w-3/4 lg:w-1/2 bg-white p-8 lg:px-1 space-y-5 rounded-xl flex flex-col  justify-center items-center'>
@@ -69,18 +69,21 @@ export default function AdminLogin() {
                   className='mt-2 p-2 w-full bg-gray-200 rounded-xl'
                   placeholder='Password'
                   id='password'
+                  autoComplete=""
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value);
                   }}
                 />
-                <button
-                  className='mt-4 text-TextColor bg-ButtonColor px-4 py-2 rounded-xl w-full'
-                  type='submit'
-                  onClick={loginHandler}
-                >
-                  Login
-                </button>
+                <div className='border border-orange-500 flex justify-center items-center w-3/4 hover:bg-TextColor bg-orange-500 text-TextColor hover:text-orange-500 transition-all duration-300 p-2 rounded-md'>
+                  <button
+                    className=' rounded-xl w-full'
+                    type='submit'
+                    onClick={loginHandler}
+                  >
+                    Login
+                  </button>
+                </div>
               </form>
             </div>
           </div>

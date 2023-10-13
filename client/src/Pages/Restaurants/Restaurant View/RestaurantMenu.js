@@ -26,6 +26,7 @@ export default function RestaurantMenu() {
   const navigate = useNavigate();
   const [category, setCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortRatings, setSortRatings] = useState("All");
 
   function shuffleArray(array) {
     // Create a copy of the original array
@@ -83,14 +84,48 @@ export default function RestaurantMenu() {
             ...shuffledSubscribedMenus,
             ...shuffledNonSubscribedMenus,
           ];
-          const filteredMenus = allMenus.filter((menuItem) => {
+          let sortedMenus = allMenus;
+          if (sortRatings !== "All") {
+            sortedMenus = allMenus.filter((menuItem) => {
+              const avgRating = calculateTotalRatings(menuItem);
+              return avgRating === parseFloat(sortRatings);
+            });
+          }
+          if (sortRatings === "noreview") {
+            sortedMenus = allMenus.filter(
+              (menuItem) => menuItem.menuReview.length === 0
+            );
+          } else if (sortRatings === "5") {
+            sortedMenus = allMenus.filter(
+              (menuItem) => Math.round(calculateSorting(menuItem)) === 5
+            );
+          } else if (sortRatings === "4") {
+            sortedMenus = allMenus.filter(
+              (menuItem) => Math.round(calculateSorting(menuItem)) === 4
+            );
+          } else if (sortRatings === "3") {
+            sortedMenus = allMenus.filter(
+              (menuItem) => Math.round(calculateSorting(menuItem)) === 3
+            );
+          } else if (sortRatings === "2") {
+            sortedMenus = allMenus.filter(
+              (menuItem) => Math.round(calculateSorting(menuItem)) === 2
+            );
+          } else if (sortRatings === "2") {
+            sortedMenus = filteredMenus.filter(
+              (menuItem) => Math.round(calculateSorting(menuItem)) === 1
+            );
+          }
+          const filteredMenus = sortedMenus.filter((menuItem) => {
             return (
               searchQuery === "" ||
               menuItem.menuName.toLowerCase().includes(searchQuery) ||
+              menuItem.description.toLowerCase().includes(searchQuery) ||
               menuItem.price.toString().includes(searchQuery) ||
               menuItem.classification.toLowerCase().includes(searchQuery)
             );
           });
+
           dispatch({ type: "FETCH_SUCCESS", payload: filteredMenus });
         } else {
           const errorMessage =
@@ -105,7 +140,7 @@ export default function RestaurantMenu() {
       }
     };
     fetchMenu();
-  }, [category, searchQuery]);
+  }, [category, searchQuery, sortRatings]);
   const calculateTotalRatings = (menu) => {
     let totalRatings = 0;
     const len = menu.menuReview.length;
@@ -114,6 +149,17 @@ export default function RestaurantMenu() {
     });
     const averageRating = totalRatings / len;
     return averageRating;
+  };
+  const calculateSorting = (menu) => {
+    let totalRatings = 0;
+    const len = menu.menuReview.length;
+    menu.menuReview.forEach((review) => {
+      totalRatings += review.rating;
+    });
+    const averageRating = totalRatings / len;
+
+    // Round the average rating to the nearest whole number
+    return Math.round(averageRating);
   };
 
   return (
@@ -140,10 +186,10 @@ export default function RestaurantMenu() {
           className='h-[400px] w-full object-cover'
         />
       </div>
-      <div className='w-full flex flex-row justify-center items-center h-20 border'>
-        <div className='w-60 h-full flex justify-center items-center'>
+      <div className='w-full flex flex-row justify-center items-center h-20 border px-20'>
+        <div className='w-60 h-full flex justify-center items-center border-r p-5'>
           <select
-            className='w-60'
+            className='w-60 h-full'
             id='category'
             value={category}
             onChange={(e) => setCategory(e.target.value)}
@@ -155,14 +201,31 @@ export default function RestaurantMenu() {
           </select>
         </div>
         <div className='w-full h-full p-2 flex justify-center items-center'>
+          <div className='w-16 bg-orange-200 h-full flex justify-center items-center rounded-l-lg'>
+            <i className='material-icons text-TextColor text-3xl '>search</i>
+          </div>
           <input
             className='p-2 w-full h-full'
             placeholder='Search here...'
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <div className='w-16 bg-orange-200 h-full flex justify-center items-center rounded-r-lg'>
-            <i className='material-icons text-TextColor text-3xl '>search</i>
+          <div>
+            <label>Sort Ratings</label>
+            <select
+              className='w-60 h-full'
+              id='category'
+              value={sortRatings}
+              onChange={(e) => setSortRatings(e.target.value)}
+            >
+              <option value='All'>All</option>
+              <option value='5'>5 Star</option>
+              <option value='4'>4 Star</option>
+              <option value='3'>3 Star</option>
+              <option value='2'>2 Star</option>
+              <option value='1'>1 Star</option>
+              <option value='noreview'>No review</option>
+            </select>
           </div>
         </div>
       </div>
@@ -181,7 +244,7 @@ export default function RestaurantMenu() {
               >
                 <div className=''>
                   <img
-                    className='w-80 h-60 rounded-lg'
+                    className='w-80 h-60 rounded-lg object-cover'
                     src={menuItem.menuImage}
                     alt='menu'
                   />

@@ -8,7 +8,7 @@ const Restaurant = require("../Models/Restaurant_Model.js");
 
 dotenv.config();
 const imageRouter = express.Router();
-const upload = multer();
+const upload = multer({ limits: { fileSize: 50 * 1024 * 1024 } });
 
 imageRouter.post("/", isAuth, upload.single("file"), async (req, res) => {
   cloudinary.config({
@@ -91,6 +91,41 @@ imageRouter.post(
     };
     const result = await streamUpload(req);
     res.send(result);
+  }
+);
+
+imageRouter.post(
+  "/multiple",
+  isAuth,
+  upload.array("images[]", 5),
+  async (req, res) => {
+    cloudinary.config({
+      cloud_name: process.env.CLOUDINARY_NAME,
+      api_key: process.env.CLOUDINARY_KEY,
+      api_secret: process.env.CLOUDINARY_API,
+      secure: true,
+    });
+
+    try {
+      const uploadPromises = req.files.map((file) => {
+        return new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream((error, result) => {
+            if (result) {
+              resolve(result);
+            } else {
+              reject(error);
+            }
+          });
+          streamifier.createReadStream(file.buffer).pipe(stream);
+        });
+      });
+
+      const results = await Promise.all(uploadPromises);
+      res.send(results);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Image upload failed.");
+    }
   }
 );
 

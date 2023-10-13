@@ -102,10 +102,6 @@ export default function OwnerNavbar() {
           const { users } = await response.json();
 
           if (users) {
-            if (users.linkId) {
-              userInfo.linkId = users.linkId;
-              localStorage.setItem("userInfo", JSON.stringify(userInfo));
-            }
             if (users.subscriptionStatus === "subscribed") {
               userInfo.subscriptionStatus = "subscribed";
               localStorage.setItem("userInfo", JSON.stringify(userInfo));
@@ -114,7 +110,6 @@ export default function OwnerNavbar() {
               localStorage.setItem("userInfo", JSON.stringify(userInfo));
             } else {
               userInfo.subscriptionStatus = "expired";
-              userInfo.linkId = "";
               localStorage.setItem("userInfo", JSON.stringify(userInfo));
             }
           }
@@ -185,7 +180,7 @@ export default function OwnerNavbar() {
             <span className='ml-2'>Analytics</span>
           </Link>
           <Link
-            to={`/dineretso-restaurant/${myRestaurant.resName}/subscriptions`}
+            to={`/dineretso-restaurant/${myRestaurant.resName}/PlansNPricing`}
             className='flex items-center hover:bg-orange-700 p-2'
           >
             <i className='material-icons'>subscriptions</i>

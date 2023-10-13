@@ -7,10 +7,11 @@ const RegRestaurants = require("../Models/Register_Model.js");
 const Restaurant = require("../Models/Restaurant_Model.js");
 const User = require("../Models/User_Model.js");
 const Dine = require("../Models/AdminModel.js");
+const Posting = require("../Models/PostingModels.js");
 const { generateAdminToken, isAdminAuth, isAdmin } = require("../utils.js");
 
-dotenv.config();
 const adminRouter = express.Router();
+dotenv.config();
 
 adminRouter.post(
   "/dineInfo",
@@ -154,6 +155,7 @@ adminRouter.post(
         address: resto.address,
         category: resto.category,
         description: resto.description,
+        postStatus: "pending",
       });
       //update user info
       await newResto.save();
@@ -191,6 +193,94 @@ adminRouter.get(
     }
   })
 );
+
+adminRouter.get(
+  "/getUsers",
+  isAdminAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.find();
+    try {
+      if (user) {
+        res.send(user);
+      } else {
+        res.status(401).send({ message: "No restaurant found!" });
+      }
+    } catch (error) {
+      res.status(500).send({ message: "Internal Server Error!" });
+    }
+  })
+);
+adminRouter.get(
+  "/getResto/:id",
+  isAdminAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const id = req.params.id;
+    try {
+      const resto = await Restaurant.findById(id);
+      if (resto) {
+        res.status(200).json(resto);
+      } else {
+        return res.status(404).json({ message: "No restaurant found" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: `Internal Server Error: ${error}` });
+    }
+  })
+);
+
+adminRouter.post("/create", async (req, res) => {
+  try {
+    const {
+      resID,
+      title,
+      description,
+      tags,
+      images,
+      type,
+      resName,
+      address,
+      fbLink,
+      igLink,
+      webLink,
+      category,
+    } = req.body;
+
+    // Create a new BlogPost document
+    const blogPost = new Posting({
+      resID,
+      title,
+      description,
+      tags,
+      type,
+      resName,
+      address,
+      fbLink,
+      igLink,
+      webLink,
+      category,
+      images: images, // Store Cloudinary image URLs
+    });
+
+    // Save the blog post to the database
+    await blogPost.save();
+    console.log(blogPost);
+    const restaurant = await Restaurant.findById(resID);
+    console.log;
+    if (restaurant) {
+      restaurant.blogPosts.push(blogPost._id);
+      restaurant.postCount += 1;
+      await restaurant.save();
+    }
+  
+    res.status(201).json({ message: "Blog post created successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 module.exports = adminRouter;
 
 // adminRouter.post(

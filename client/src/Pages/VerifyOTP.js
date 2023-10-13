@@ -84,14 +84,14 @@ export default function VerifyOTP() {
 
   return (
     <div className='flex items-center justify-center h-screen font-sans'>
-      <div className='bg-main w-1/2 rounded-md p-8'>
+      <div className='w-1/2 rounded-md p-16 border h-96 shadow bg-orange-100 '>
         <form onSubmit={verifyOTP}>
           <div className='mb-4'>
-            <label className='block text-first-text font-bold mb-2'>
+            <label className='flex items-center justify-center text-first-text font-bold mb-2'>
               Enter OTP
             </label>
             <input
-              className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+              className='mt-10 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
               type='text'
               placeholder='Enter the OTP sent to your email'
               required
@@ -104,9 +104,9 @@ export default function VerifyOTP() {
               ? `OTP will expire in ${remainingTime} seconds`
               : "OTP has expired"}
           </div>
-          <div className='flex items-center justify-center'>
+          <div className='bg-red-700 border mt-14 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-2xl focus:outline-none focus:shadow-outline'>
             <button
-              className='bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
+              className=' w-full py-2 px-4 rounded focus:outline-none focus:shadow-outline'
               type='submit'
             >
               Verify OTP
