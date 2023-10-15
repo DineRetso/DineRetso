@@ -8,6 +8,7 @@ const Restaurant = require("../Models/Restaurant_Model.js");
 const User = require("../Models/User_Model.js");
 const Payments = require("../Models/PaymentModel.js");
 const { isAuth, isOwner } = require("../utils.js");
+const mongoose = require("mongoose");
 
 dotenv.config();
 const ownerRouter = express.Router();
@@ -219,4 +220,124 @@ ownerRouter.get(
     }
   })
 );
+ownerRouter.get(
+  "/getPaymentDetails/:paymentId",
+  isAuth,
+  isOwner,
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const { paymentId } = req.params;
+      const payment = await Payments.findById(paymentId);
+      if (payment) {
+        return res.status(200).json(payment);
+      } else {
+        return res.status(404).json({ message: "No payment found!" });
+      }
+    } catch (error) {
+      console.error(error);
+      return res
+        .status(500)
+        .json({ message: "Internal Server Error. Please contact DineRetso" });
+    }
+  })
+);
+ownerRouter.get("/approved-reviews/:restaurantId", async (req, res) => {
+  const restaurantId = req.params.restaurantId;
+  try {
+    const restaurant = await Restaurant.aggregate([
+      { $match: { _id: new mongoose.Types.ObjectId(restaurantId) } },
+      {
+        $project: {
+          _id: 1,
+          restoReview: {
+            $filter: {
+              input: "$restoReview",
+              as: "review",
+              cond: { $eq: ["$$review.status", "approved"] },
+            },
+          },
+          menuReview: {
+            $map: {
+              input: "$menu",
+              as: "menuItem",
+              in: {
+                $filter: {
+                  input: "$$menuItem.menuReview",
+                  as: "review",
+                  cond: { $eq: ["$$review.status", "approved"] },
+                },
+              },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          allReviews: {
+            $concatArrays: [
+              "$restoReview",
+              {
+                $reduce: {
+                  input: "$menuReview",
+                  initialValue: [],
+                  in: { $concatArrays: ["$$value", "$$this"] },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        $unwind: "$allReviews",
+      },
+      {
+        $replaceRoot: { newRoot: "$allReviews" },
+      },
+    ]);
+
+    res.json(restaurant);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+ownerRouter.get("/reviews/:reviewerId", async (req, res) => {
+  const { reviewerId } = req.params;
+  try {
+    const restaurantWithMenuReview = await Restaurant.findOne({
+      "menu.menuReview.reviewerId": reviewerId,
+    });
+    const restaurantWithRestoReview = await Restaurant.findOne({
+      "restoReview.reviewerId": reviewerId,
+    });
+    const matchingReviews = [];
+    if (restaurantWithMenuReview) {
+      restaurantWithMenuReview.menu.forEach((menu) => {
+        menu.menuReview.forEach((review) => {
+          if (review.reviewerId === reviewerId) {
+            matchingReviews.push(review);
+          }
+        });
+      });
+    }
+    if (restaurantWithRestoReview) {
+      restaurantWithRestoReview.restoReview.forEach((review) => {
+        if (review.reviewerId === reviewerId) {
+          matchingReviews.push(review);
+        }
+      });
+    }
+    if (!matchingReviews) {
+      return res
+        .status(404)
+        .json({ message: "No reviews found for this reviewerId" });
+    }
+    res.status(200).json(matchingReviews);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 module.exports = ownerRouter;

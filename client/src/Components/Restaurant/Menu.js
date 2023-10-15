@@ -15,6 +15,7 @@ export default function Menu(props) {
   const [menuId, setMenuId] = useState("");
   const handleAddMenuRate = async (
     menu,
+    reviewerId,
     rating,
     comment,
     reviewerName,
@@ -24,7 +25,7 @@ export default function Menu(props) {
       console.log(menuId);
       const response = await axios.post(
         `/api/restaurant/add-menu-review/${pid}`,
-        { reviewerName, comment, rating, location, menuId },
+        { reviewerId, reviewerName, comment, rating, location, menuId },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }

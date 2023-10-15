@@ -99,18 +99,21 @@ resRouter.post(
       if (!restaurant) {
         return res.status(401).send("No restaurant found!");
       } else {
-        const { reviewerName, comment, rating, location } = req.body;
+        const { reviewerId, reviewerName, comment, rating, location } =
+          req.body;
         const review = {
           reviewerName: reviewerName,
           comment: comment,
           rating: rating,
           location: location,
+          reviewerId: reviewerId,
           status: "pending",
           source: "Restaurant",
           createdAt: new Date(),
         };
         restaurant.restoReview.push(review);
         await restaurant.save();
+        console.log(review);
         res.status(200).json({ message: "Review submitted!", review });
       }
     } catch (error) {
@@ -130,7 +133,8 @@ resRouter.post(
       if (!restaurant) {
         return res.status(404).json({ message: "Restaurant not found!" });
       }
-      const { reviewerName, comment, rating, location, menuId } = req.body;
+      const { reviewerId, reviewerName, comment, rating, location, menuId } =
+        req.body;
       const menuItem = restaurant.menu.id(menuId);
       if (!menuItem) {
         return res.status(404).json({ message: "Menu item not found!" });
@@ -139,6 +143,7 @@ resRouter.post(
         status: "pending",
         source: "Menu",
         menuId: menuId,
+        reviewerId: reviewerId,
         reviewerName,
         comment,
         rating,

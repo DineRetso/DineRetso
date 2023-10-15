@@ -57,14 +57,14 @@ export default function DineNavbar() {
             <span className='ml-2'>Reviews</span>
           </Link>
           <Link
-            to='/dashboard'
+            to='/dine/admin/secret/customers'
             className='flex items-center hover:bg-orange-700 p-2'
           >
             <i className='material-icons'>people</i>
             <span className='ml-2'>Customers</span>
           </Link>
           <Link
-            to='/dine/admin/secret/blog-post'
+            to='/dine/admin/secret/posting'
             className='flex items-center hover:bg-orange-700 p-2'
           >
             <i className='material-icons'>article</i>

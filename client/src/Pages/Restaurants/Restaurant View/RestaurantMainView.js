@@ -33,6 +33,7 @@ export default function RestaurantMainView() {
   const [rates, setRating] = useState("");
   const [comment, setComment] = useState("");
   const [reviewerName, setReviewerName] = useState("");
+  const [reviewerId, setReviewerId] = useState("");
   const [location, setLocation] = useState("");
   const { state } = useContext(Store);
   const { userInfo } = state;
@@ -87,6 +88,7 @@ export default function RestaurantMainView() {
     if (userInfo && userInfo.fName) {
       setReviewerName(userInfo.fName + " " + userInfo.lName);
       setLocation(userInfo.address);
+      setReviewerId(userInfo._id);
     }
   }, [userInfo]);
   //submit rating
@@ -105,7 +107,7 @@ export default function RestaurantMainView() {
     try {
       const response = await axios.post(
         `/api/restaurant/add-review/${params._id}`,
-        { reviewerName, comment, rating, location },
+        { reviewerId, reviewerName, comment, rating, location },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }

@@ -40,6 +40,10 @@ import Registration from "./Dine-Secret/Regsitration/Registration";
 import BlogPost from "./Dine-Secret/BlogPost/BlogPost";
 import AddBlog from "./Dine-Secret/BlogPost/AddBlog";
 import PlansAndPricing from "./Pages/Owner/Subscriptions/PlansAndPricing";
+import SubscriptionDashboard from "./Pages/Owner/Subscriptions/SubscriptionDashboard";
+import OwnerAnalytics from "./Pages/Owner/OwnerAnalytics";
+import DineCustomers from "./Dine-Secret/Customers/DineCustomers";
+import ViewPosting from "./Dine-Secret/BlogPost/ViewPosting";
 
 function App() {
   return (
@@ -90,6 +94,14 @@ function App() {
                     }
                   />
                   <Route
+                    path='/posting'
+                    element={
+                      <AdminRoute>
+                        <ViewPosting />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
                     path='/blog-post'
                     element={
                       <AdminRoute>
@@ -102,6 +114,14 @@ function App() {
                     element={
                       <AdminRoute>
                         <AddBlog />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path='/customers'
+                    element={
+                      <AdminRoute>
+                        <DineCustomers />
                       </AdminRoute>
                     }
                   />
@@ -158,10 +178,26 @@ function App() {
                     }
                   />
                   <Route
+                    path='/:resName/subscription/dashboard'
+                    element={
+                      <OwnerRoute>
+                        <SubscriptionDashboard />
+                      </OwnerRoute>
+                    }
+                  />
+                  <Route
                     path=':name/:resId/details'
                     element={
                       <OwnerRoute>
                         <SubscriptionDetails />
+                      </OwnerRoute>
+                    }
+                  />
+                  <Route
+                    path='/:resname/analytics'
+                    element={
+                      <OwnerRoute>
+                        <OwnerAnalytics />
                       </OwnerRoute>
                     }
                   />

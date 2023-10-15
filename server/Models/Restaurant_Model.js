@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const reviewSchema = new mongoose.Schema(
   {
     image: { type: String },
+    reviewerId: { type: String, required: true },
     comment: { type: String, required: true },
     reviewerName: { type: String, required: true },
     location: { type: String },

@@ -3,8 +3,9 @@ import { Store } from "../../../Store";
 import axios from "axios";
 import { getError } from "../../../utils";
 import LoadingSpinner from "../../../Components/LoadingSpinner";
-import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
+import PaymentDetails from "./PaymentDetails";
+import { toast } from "react-toastify";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -19,7 +20,7 @@ const reducer = (state, action) => {
   }
 };
 
-export default function PlansAndPricing() {
+export default function SubscriptionDashboard() {
   const { state } = useContext(Store);
   const { userInfo } = state;
   const [{ loading, error, owner }, dispatch] = useReducer(reducer, {
@@ -37,6 +38,9 @@ export default function PlansAndPricing() {
   const [payeeName, setPayeeName] = useState("");
   const [payeeResId, setPayeeResId] = useState("");
   const navigate = useNavigate();
+  const [paymentTransactions, setPaymentTransactions] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedPaymentId, setSelectedPaymentId] = useState(null);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -87,20 +91,46 @@ export default function PlansAndPricing() {
     };
     checkPaymentStatusAndRedirect();
   }, [owner.linkId, setPaymentLink, setResto, setPayments, setPStat, error]);
+  useEffect(() => {
+    const getPayments = async () => {
+      try {
+        const response = await axios.get(
+          `/api/owner/payment/${owner.myRestaurant}`,
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+        if (response.status === 200) {
+          setPaymentTransactions(response.data);
+        } else {
+          console.error("Error getting payment transactions");
+        }
+      } catch (error) {
+        console.log(getError(error));
+      }
+    };
+    getPayments();
+  }, [owner.myRestaurant, userInfo.token]);
 
-  const handleFormOpen = (e) => {
-    e.preventDefault();
-    setFormOpen(true);
+  const sortedPayments = [...paymentTransactions].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
+  function formatDate(dateString) {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    const formattedDate = new Date(dateString).toLocaleDateString(
+      undefined,
+      options
+    );
+    return formattedDate;
+  }
+  const openModal = (paymentId) => {
+    setSelectedPaymentId(paymentId);
+    setModalOpen(true);
   };
-  const handleFormClose = (e) => {
+  const closeModal = (e) => {
     e.preventDefault();
-    setFormOpen(false);
+    setModalOpen(false);
   };
-  const seeSub = (e) => [
-    navigate(
-      `/dineretso-restaurant/${owner.myRestaurant}/subscription/dashboard`
-    ),
-  ];
 
   const createPaymentLink = async () => {
     try {
@@ -135,16 +165,14 @@ export default function PlansAndPricing() {
       {loading ? (
         <LoadingSpinner />
       ) : error ? (
-        <div>{error}</div>
+        { error }
       ) : (
         <div>
+          {" "}
           <div className='pb-2 border-b flex flex-col'>
             <h1 className='text-3xl font-bold text-neutrals-500 '>
-              Plans and Pricing
+              Subscription Dashboard
             </h1>
-            <p className='font-thin'>
-              Manage your account settings and preference
-            </p>
             <div className='font-thin flex'>
               {owner.subscriptionStatus === "not subscribed" ? (
                 <div>
@@ -186,53 +214,74 @@ export default function PlansAndPricing() {
                       </p>
                     </div>
                   ) : (
-                    <div>Subscribe now</div>
+                    <div>
+                      {" "}
+                      <button onClick={createPaymentLink}> Buy new</button>
+                    </div>
                   )}
                 </div>
               ) : (
-                <div>
-                  Your are currently subscribed. See{" "}
-                  <Link
-                    to={`/dineretso-restaurant/${owner.myRestaurant}/subscription/dashboard`}
-                  >
-                    SUBSCRIPTION
-                  </Link>
-                </div>
+                <div>Your are currently subscribed.</div>
               )}
             </div>
           </div>
-          <div></div>
-          <div className='w-full flex justify-center items-center mt-2'>
-            {!owner.linkId === "" ? (
-              <div className='bg-orange-200 p-3 rounded-full flex justify-center items-center w-40'>
-                <button className='w-full' onClick={handleFormOpen}>
-                  Subscribe
-                </button>
-              </div>
-            ) : (
-              <div>
-                {" "}
-                <div className='bg-orange-200 p-3 rounded-full flex justify-center items-center w-auto'>
-                  <button className='w-full' onClick={seeSub}>
-                    Subscription Dashboard
-                  </button>
-                </div>
-              </div>
-            )}
+          <div className='w-full overflow-x-auto'>
+            <table className='min-w-full divide-y divide-gray-200'>
+              <thead className='bg-orange-500'>
+                <tr>
+                  <th className='px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider border'>
+                    Payment ID
+                  </th>
+                  <th className='px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider border'>
+                    Start
+                  </th>
+                  <th className='px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider border'>
+                    End
+                  </th>
+                  <th className='px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider border'>
+                    Status
+                  </th>
+                </tr>
+              </thead>
+              <tbody className='bg-white divide-y divide-gray-200'>
+                {!sortedPayments ? (
+                  <tr>
+                    <td colSpan='4' className='px-6 py-4 text-sm text-gray-500'>
+                      No payment transaction!
+                    </td>
+                  </tr>
+                ) : (
+                  sortedPayments.map((payment) => (
+                    <tr
+                      key={payment._id}
+                      onClick={() => openModal(payment._id)}
+                      className='hover:cursor-pointer hover:bg-orange-500 hover:bg-opacity-50 transition-all'
+                    >
+                      <td className='px-6 py-4 text-sm text-gray-900 border'>
+                        {payment.linkId}
+                      </td>
+                      <td className='px-6 py-4 text-sm text-gray-900 border'>
+                        {formatDate(payment.startDate)}
+                      </td>
+                      <td className='px-6 py-4 text-sm text-gray-900 border'>
+                        {formatDate(payment.endDate)}
+                      </td>
+                      <td className='px-6 py-4 text-sm text-gray-900 border'>
+                        {payment.status}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
-        </div>
-      )}
-      {formOpen && (
-        <div className='fixed lg:left-72 md:left-72 sm:left-72 inset-0 h-screen w-full border bg-neutrals-500 bg-opacity-60'>
-          <form>
-            <h1>Hello</h1>
-            <button onClick={handleFormClose}>Close</button>
-            <div className='bg-orange-200 p-3 rounded-full flex justify-center items-center w-40'>
-              <button className='w-full' onClick={createPaymentLink}>
-                Buy
-              </button>
-            </div>
-          </form>
+          {modalOpen && (
+            <PaymentDetails
+              closeModal={closeModal}
+              userInfo={userInfo}
+              selectedPaymentId={selectedPaymentId}
+            />
+          )}
         </div>
       )}
     </div>

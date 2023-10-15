@@ -212,6 +212,24 @@ adminRouter.get(
   })
 );
 adminRouter.get(
+  "/getCustomers",
+  isAdminAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const customer = await User.find();
+    try {
+      if (customer) {
+        res.status(200).json(customer);
+      } else {
+        return res.status(404).json({ message: "No Customers" });
+      }
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send(error);
+    }
+  })
+);
+adminRouter.get(
   "/getResto/:id",
   isAdminAuth,
   isAdmin,
@@ -273,13 +291,32 @@ adminRouter.post("/create", async (req, res) => {
       restaurant.postCount += 1;
       await restaurant.save();
     }
-  
+
     res.status(201).json({ message: "Blog post created successfully" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+adminRouter.get(
+  "/getPosting",
+  isAdminAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const posts = await Posting.find();
+      if (posts) {
+        res.status(200).json(posts);
+      } else {
+        res.status(404).send({ message: "No posts found." });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Internal Server Error" });
+    }
+  })
+);
 
 module.exports = adminRouter;
 

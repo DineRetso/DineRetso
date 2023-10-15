@@ -1,6 +1,7 @@
 import React from "react";
 import { formatDistanceToNow } from "date-fns";
 import Rating from "@mui/material/Rating";
+import { toast } from "react-toastify";
 
 function ShowManageReview({
   review,
@@ -8,6 +9,7 @@ function ShowManageReview({
   setReviewStatus,
   setReviewId,
   setMenuId,
+  status,
 }) {
   return (
     <div className='w-auto flex lg:flex-row md:flex-row sm:flex-row flex-col'>
@@ -95,7 +97,16 @@ function ShowManageReview({
                 </div>
               )}
               <div className='p-2 w-full h-full rounded-md text-sm border outline-primary-500 shadow-md'>
-                <button type='submit'>Respond</button>
+                {status === "subscribed" ? (
+                  <button type='submit'>Respond</button>
+                ) : (
+                  <div
+                    onClick={() => toast.info("Subscribe for full access.")}
+                    className='hover:cursor-pointer'
+                  >
+                    Respond
+                  </div>
+                )}
               </div>
             </form>
           </div>

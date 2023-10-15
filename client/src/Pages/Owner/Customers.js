@@ -35,6 +35,7 @@ export default function Customers() {
   const [reviewId, setReviewId] = useState("");
   const [reviewStatus, setReviewStatus] = useState("");
   const [menuId, setMenuId] = useState("");
+  const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
 
   const [selectedMenuItem, setSelectedMenuItem] = useState(null);
@@ -56,6 +57,7 @@ export default function Customers() {
           }
         );
         setStatus(data.subscriptionStatus);
+        setUserData(data);
       } catch (error) {
         if (
           error.response &&
@@ -69,7 +71,7 @@ export default function Customers() {
       }
     };
     fetchUser();
-  }, [userInfo._id, userInfo.token]);
+  }, [userInfo._id, userInfo.token, setStatus, setUserData]);
 
   useEffect(() => {
     const fetchRestaurant = async () => {
@@ -114,8 +116,9 @@ export default function Customers() {
       if (reviewStatus === "") {
         return toast.error("Please select status to submit!");
       }
+
       const response = await axios.post(
-        `/api/owner/restaurant/manage-review/${userInfo.myRestaurant}`,
+        `/api/owner/restaurant/manage-review/${userData.myRestaurant}`,
         {
           menuId: menuId, // Provide the menu ID if applicable
           id: reviewId, // Review ID
@@ -131,7 +134,7 @@ export default function Customers() {
         try {
           dispatch({ type: "FETCH_REQUEST" });
           const response = await axios.get(
-            `/api/owner/restaurant/${userInfo.fName}/${userInfo.myRestaurant}`,
+            `/api/owner/restaurant/${userData.fName}/${userData.myRestaurant}`,
             {
               headers: { Authorization: `Bearer ${userInfo.token}` },
             }
@@ -522,6 +525,7 @@ export default function Customers() {
                                         setReviewStatus={setReviewStatus}
                                         setReviewId={setReviewId}
                                         setMenuId={setMenuId}
+                                        status={status}
                                       />
                                     )
                                   )}
@@ -551,6 +555,7 @@ export default function Customers() {
                           setReviewStatus={setReviewStatus}
                           setReviewId={setReviewId}
                           setMenuId={setMenuId}
+                          status={status}
                         />
                       ))
                     ) : (
@@ -570,6 +575,7 @@ export default function Customers() {
                           setReviewStatus={setReviewStatus}
                           setReviewId={setReviewId}
                           setMenuId={setMenuId}
+                          status={status}
                         />
                       ))
                     ) : (

@@ -34,6 +34,7 @@ export default function OwnerMenu() {
   const [showSorting, setShowSorting] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedRating, setSelectedRating] = useState("All");
+  const [userData, setUserData] = useState(null);
 
   const showSort = () => {
     setShowSorting(true);
@@ -58,11 +59,11 @@ export default function OwnerMenu() {
           }
         );
         setStatus(userResponse.data.subscriptionStatus);
-
+        setUserData(userResponse.data);
         // Fetch restaurant data
         dispatch({ type: "FETCH_REQUEST" });
         const restaurantResponse = await axios.get(
-          `/api/owner/restaurant/${userInfo.fName}/${userInfo.myRestaurant}`,
+          `/api/owner/restaurant/${userResponse.data.fName}/${userResponse.data.myRestaurant}`,
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
@@ -104,7 +105,7 @@ export default function OwnerMenu() {
   const handleAddMenuItem = async (menuItemData) => {
     try {
       const response = await axios.post(
-        `/api/owner/restaurant/add-menu-item/${userInfo.myRestaurant}`,
+        `/api/owner/restaurant/add-menu-item/${userData.myRestaurant}`,
         menuItemData,
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -138,7 +139,7 @@ export default function OwnerMenu() {
   const handleEditMenuItem = async (editItemData) => {
     try {
       const response = await axios.post(
-        `/api/owner/restaurant/edit-menu-item/${userInfo.myRestaurant}`,
+        `/api/owner/restaurant/edit-menu-item/${userData.myRestaurant}`,
         editItemData,
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },

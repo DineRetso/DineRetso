@@ -10,12 +10,13 @@ export default function RateMenu({ onClose, onRateMenu, rateMenu }) {
   const [comment, setComment] = useState("");
   const reviewerName = userInfo.fName + " " + userInfo.lName;
   const location = userInfo.address;
+  const reviewerId = userInfo._id;
 
   const handleSubmit = () => {
     if (!rating || !comment) {
       toast.info("Please fill up all to submit.");
     } else {
-      onRateMenu(rateMenu, rating, comment, reviewerName, location);
+      onRateMenu(rateMenu, reviewerId, rating, comment, reviewerName, location);
       onClose();
     }
   };

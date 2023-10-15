@@ -67,22 +67,35 @@ export default function Static() {
   const { totalActive, totalInactive } = calulateTotalActiveRestaurants();
 
   return (
-    <div className='lg:ml-72 md:ml-72 sm:ml-72 relative flex flex-col'>
-      <div className='flex justify-start items-center w-full p-5 border-b'>
-        <h1 className='text-4xl'>Admin</h1>
+    <div className='lg:ml-72 md:ml-72 sm:ml-72 relative flex flex-col p-5 bg-neutrals-400  font-inter'>
+      <div className='flex justify-start items-center w-full p-5 border-b border-orange-500'>
+        <h1 className='text-4xl font-bold text-orange-500'>DineRetso</h1>
       </div>
       <div className='grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5 mt-5'>
-        <div className='border h-28'>
-          <i className='material-icons'>restaurant</i>
-          <h1>Total Active Restaurant</h1>
-          <h2>{totalActive}</h2>
+        <div className='border h-28 rounded-md bg-TextColor p-2'>
+          <div className='w-10 h-10 border flex justify-center items-center border-orange-500 rounded-md'>
+            <i className='material-icons text-orange-500'>restaurant</i>
+          </div>
+          <h1 className='text-neutrals-500'>Total Active Restaurant</h1>
+          <h2 className='text-xl text-neutrals-500 font-semibold'>
+            {totalActive}
+          </h2>
         </div>
-        <div className='border h-28'>
-          <i className='material-icons'>restaurant</i>
-          <h1>Total Active Restaurant</h1>
-          <h2>{totalInactive}</h2>
+        <div className='border h-28 rounded-md bg-TextColor p-2'>
+          <div className='w-10 h-10 border flex justify-center items-center border-orange-500 rounded-md'>
+            <i className='material-icons'>schedule</i>
+          </div>
+          <h1 className='text-neutrals-500'>Total Pending Restaurant</h1>
+          <h2 className='text-xl text-neutrals-500 font-semibold'>
+            {totalInactive}
+          </h2>
         </div>
-        <div className='border'></div>
+        <div className='border h-28  rounded-md bg-TextColor p-2'>
+          <div className='w-10 h-10 border flex justify-center items-center border-orange-500 rounded-md'>
+            <i className='material-icons'>attach_money</i>
+          </div>
+          <h1 className='text-neutrals-500'>Total Revenue</h1>
+        </div>
       </div>
     </div>
   );
