@@ -139,7 +139,7 @@ export default function OwnerNavbar() {
         error
       ) : (
         <div>
-          <nav className='bg-orange-200 text-TextColor w-72 h-screen fixed top-0 left-0 overflow-y-auto font-inter space-y-10 hidden sm:flex flex-col p-5'>
+          <nav className='bg-orange-500 text-TextColor w-72 h-screen fixed top-0 left-0 overflow-y-auto font-inter space-y-10 hidden sm:flex flex-col p-5'>
             <div className='w-full flex flex-col justify-center items-center space-y-3 border-b border-TextColor py-5'>
               <div>
                 <h1 className='text-2xl font-bold'>{myRestaurant.resName}</h1>
@@ -154,7 +154,7 @@ export default function OwnerNavbar() {
             </div>
             <div className='w-full h-auto space-y-1 font-thin text-2xl'>
               <Link
-                to='/dashboard'
+                to={`/dineretso-restaurant/${myRestaurant.resName}/dashboard`}
                 className='flex items-center hover:bg-orange-700 p-2'
               >
                 <i className='material-icons'>dashboard</i>
@@ -282,7 +282,7 @@ export default function OwnerNavbar() {
 
                 <div className='w-full h-auto space-y-3 font-thin text-2xl'>
                   <Link
-                    to='/dashboard'
+                    to={`/dineretso-restaurant/${myRestaurant.resName}/dashboard`}
                     className='flex items-center hover:bg-neutrals-600 p-3'
                     onClick={() => setIsMobileMenuOpen(false)}
                   >

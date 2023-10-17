@@ -29,7 +29,7 @@ import OwnerDashboard from "./Pages/Owner/OwnerDashboard";
 import OwnerMenu from "./Pages/Owner/OwnerMenu";
 import RestaurantMainView from "./Pages/Restaurants/Restaurant View/RestaurantMainView";
 import Customers from "./Pages/Owner/Customers";
-import Subscriptions from "./Pages/Owner/Subscriptions/Subscriptions";
+
 import SubscriptionDetails from "./Pages/Owner/Subscriptions/SubscriptionDetails";
 import AboutUs from "./Pages/AboutUs";
 import RestaurantMenu from "./Pages/Restaurants/Restaurant View/RestaurantMenu";
@@ -161,14 +161,7 @@ function App() {
                       </OwnerRoute>
                     }
                   />
-                  <Route
-                    path=':resName/subscriptions'
-                    element={
-                      <OwnerRoute>
-                        <Subscriptions />
-                      </OwnerRoute>
-                    }
-                  />
+
                   <Route
                     path='/:resName/PlansNPricing'
                     element={

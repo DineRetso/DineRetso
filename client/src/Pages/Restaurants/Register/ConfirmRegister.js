@@ -66,9 +66,11 @@ export default function ConfirmRegister() {
       ) : (
         <div className='flex  justify-center items-center h-96 font-sans'>
           <div className='bg-white p-8 rounded-lg shadow-md max-w-md w-full'>
-            <h2 className='text-2xl font-semibold text-main mb-4'>hehe</h2>
+            <h2 className='text-2xl font-semibold text-main mb-4'>
+              Terms and Conditions here...
+            </h2>
             <form className='flex flex-row justify-evenly'>
-              <div className='border border-primary-500 flex justify-center items-center w-40 hover:bg-primary-500 text-primary-500 hover:text-TextColor transition-all duration-300 p-2 rounded-md mt-2'>
+              <div className='border border-orange-500 flex justify-center items-center w-40 hover:bg-orange-500 text-orange-500 hover:text-TextColor transition-all duration-300 p-2 rounded-md mt-2'>
                 <button
                   type='submit'
                   className='bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded w-full'

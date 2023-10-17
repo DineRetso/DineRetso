@@ -95,7 +95,7 @@ export default function SubscriptionDashboard() {
     const getPayments = async () => {
       try {
         const response = await axios.get(
-          `/api/owner/payment/${owner.myRestaurant}`,
+          `/api/owner/payment/${userInfo.myRestaurant}`,
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
@@ -110,7 +110,7 @@ export default function SubscriptionDashboard() {
       }
     };
     getPayments();
-  }, [owner.myRestaurant, userInfo.token]);
+  }, [owner.myRestaurant, userInfo.token, setPaymentTransactions, error]);
 
   const sortedPayments = [...paymentTransactions].sort(
     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)

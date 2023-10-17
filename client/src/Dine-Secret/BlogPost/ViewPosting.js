@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getError } from "../../utils";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
 
 export default function ViewPosting() {
   const dineInfo = JSON.parse(localStorage.getItem("dineInfo"));
@@ -86,7 +87,7 @@ export default function ViewPosting() {
             </select>
           </div>
           <div className='flex flex-row justify-center items-center '>
-            <i className='material-icons'>search</i>
+            <i className='material-icons text-xl text-orange-500'>search</i>
             <input
               className='p-2 border-b'
               placeholder='Search here...'
@@ -103,7 +104,7 @@ export default function ViewPosting() {
       </div>
       <div className='grid lg:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-5'>
         {posts.length === 0 ? (
-          <div>
+          <div className='py-5 text-xl text-neutrals-600 font-semibold'>
             <h1>No Posts made</h1>
           </div>
         ) : (
@@ -124,12 +125,11 @@ export default function ViewPosting() {
                 <div
                   className={`shadow-xl ${
                     showFullContent[post._id]
-                      ? "p-2 text-neutrals-700"
-                      : "h-40 max-h-40 p-2 text-neutrals-700"
+                      ? "p-2 text-neutrals-700 text-justify"
+                      : "h-40 max-h-40 p-2 text-neutrals-700 text-justify"
                   } overflow-hidden`}
-                >
-                  {post.description}
-                </div>
+                  dangerouslySetInnerHTML={{ __html: post.description }}
+                ></div>
                 {post.description.length > 160 && (
                   <button
                     className='text-orange-500 underline w-full text-center'

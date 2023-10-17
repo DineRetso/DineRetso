@@ -218,8 +218,11 @@ export default function OwnerMenu() {
     setSearchQuery(value);
     // Filter the menu items based on the search query
     if (myRestaurant && myRestaurant.menu) {
-      const filteredItems = myRestaurant.menu.filter((menuItem) =>
-        menuItem.menuName.toLowerCase().includes(value.toLowerCase())
+      const filteredItems = myRestaurant.menu.filter(
+        (menuItem) =>
+          menuItem.menuName.toLowerCase().includes(value.toLowerCase()) ||
+          menuItem.description.toLowerCase().includes(value.toLowerCase()) ||
+          menuItem.price.toString().includes(value.toLowerCase())
       );
       setFilteredMenu(filteredItems);
     }
@@ -420,12 +423,12 @@ export default function OwnerMenu() {
                         <img
                           src={menuItem.menuImage}
                           alt={menuItem.menuName}
-                          className='w-64 h-40 sm:h-52 sm:w-90 rounded-md object-cover'
+                          className='w-64 h-40 sm:h-52 sm:w-96 rounded-md object-cover'
                         />
                       ) : (
                         <div>
                           <img
-                            className='w-64 h-40 sm:h-52 sm:w-90 rounded-md'
+                            className='w-64 h-40 sm:h-52 sm:w-96 rounded-md'
                             src='/dineLogo.jpg'
                             alt='menuImage'
                           />
@@ -463,7 +466,7 @@ export default function OwnerMenu() {
                       </div>
                       <div className='flex items-end justify-end w-full space-x-2 px-2'>
                         {status === "subscribed" ? (
-                          <div className='border border-primary-500 flex justify-center items-center w-auto hover:bg-primary-500 text-primary-500 hover:text-TextColor transition-all duration-300 p-1 rounded-md'>
+                          <div className='border border-orange-500 flex justify-center items-center w-auto hover:bg-orange-500 text-orange-500 hover:text-TextColor transition-all duration-300 p-1 rounded-md'>
                             <button
                               onClick={() => handleEditMenuItemClick(menuItem)}
                             >
@@ -471,7 +474,7 @@ export default function OwnerMenu() {
                             </button>
                           </div>
                         ) : (
-                          <div className='border border-primary-500 flex justify-center items-center w-auto hover:bg-primary-500 text-primary-500 hover:text-TextColor transition-all duration-300 p-1 rounded-md'>
+                          <div className='border border-orange-500 flex justify-center items-center w-auto hover:bg-orange-500 text-orange-500 hover:text-TextColor transition-all duration-300 p-1 rounded-md'>
                             <button
                               onClick={() =>
                                 toast.info("Subscribe for full access!")
@@ -482,7 +485,7 @@ export default function OwnerMenu() {
                           </div>
                         )}
 
-                        <div className='border border-red-200 flex justify-center items-center w-auto hover:bg-red-200 text-red-200 hover:text-TextColor transition-all duration-300 p-1 rounded-md'>
+                        <div className='border border-orange-700 flex justify-center items-center w-auto hover:bg-orange-700 text-orange-700 hover:text-TextColor transition-all duration-300 p-1 rounded-md'>
                           <button
                             onClick={() =>
                               deleteMenu(menuItem._id, menuItem.imagePublicId)

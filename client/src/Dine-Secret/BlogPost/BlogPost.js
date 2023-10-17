@@ -26,6 +26,8 @@ export default function BlogPost() {
   const { loading, error, Resto } = State;
   const navigate = useNavigate();
   const [pS, setPS] = useState("pending");
+  const [category, setCategory] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchPendingResto = async () => {
@@ -79,30 +81,39 @@ export default function BlogPost() {
   };
   return (
     <div className='lg:ml-72 md:ml-72 sm:ml-72 p-5'>
-      <h1>Blog post</h1>
-      <div className='flex flex-row w-full'>
-        <div>
-          <select
-            className='p-2 w-full rounded-md text-sm border outline-primary-500 shadow-md'
-            value={pS}
-            onChange={(e) => setPS(e.target.value)}
-          >
-            <option value='pending'>Pending</option>
-            <option value='finished'>Finished</option>
-            <option value='ellapsed'>Ellapsed</option>
-          </select>
+      <div className='flex flex-row w-full justify-between'>
+        <div className='flex flex-row space-x-2'>
+          <div>
+            <select
+              className='p-2 w-full rounded-md text-sm border outline-orange-500 shadow-md text-neutrals-500'
+              value={pS}
+              onChange={(e) => setPS(e.target.value)}
+            >
+              <option value='pending'>Pending</option>
+              <option value='finished'>Finished</option>
+              <option value='ellapsed'>Ellapsed</option>
+            </select>
+          </div>
+          <div>
+            <select className='p-2 w-full rounded-md text-sm border outline-orange-500 shadow-md text-neutrals-500'>
+              <option>All</option>
+              <option>Famous</option>
+              <option>Local</option>
+              <option>Unique</option>
+            </select>
+          </div>
+          <div className='flex flex-row justify-center items-center'>
+            <i className='material-icons  text-xl text-orange-500'>search</i>
+            <input
+              className='p-2 border-b'
+              placeholder='Search here...'
+            ></input>
+          </div>
         </div>
-        <div>
-          <select>
-            <option>All</option>
-            <option>Famous</option>
-            <option>Local</option>
-            <option>Unique</option>
-          </select>
-        </div>
-        <div>
-          <i className='material-icons'>search</i>
-          <input placeholder='Search here...'></input>
+        <div className='border flex justify-center items-center px-3 rounded-lg border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-TextColor transition-all'>
+          <button onClick={() => navigate("/dine/admin/secret/posting")}>
+            Return
+          </button>
         </div>
       </div>
       <div className='mt-4'>

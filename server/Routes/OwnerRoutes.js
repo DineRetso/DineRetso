@@ -339,5 +339,19 @@ ownerRouter.get("/reviews/:reviewerId", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+ownerRouter.get("/getMenu/:resto", async (req, res) => {
+  try {
+    const { resto } = req.params;
+    const response = await Restaurant.findById(resto);
+    if (!response) {
+      return res.status(404).send({ message: "Not Found" });
+    } else {
+      res.json({ menu: response.menu });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" + error });
+  }
+});
 
 module.exports = ownerRouter;

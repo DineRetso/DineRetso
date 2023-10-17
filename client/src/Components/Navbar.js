@@ -45,7 +45,7 @@ const Navbar = () => {
     ...(userInfo
       ? [
           {
-            text: userInfo.fName,
+            text: "Profile",
             link: userInfo.isOwner
               ? `/dineretso-restaurant/${userInfo.myRestaurant}/dashboard`
               : `/user/profile/${userInfo._id}`,

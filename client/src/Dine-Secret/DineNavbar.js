@@ -14,7 +14,7 @@ export default function DineNavbar() {
   };
   return (
     <div className='flex z-50'>
-      <nav className='bg-orange-500 text-TextColor w-72 h-screen fixed top-0 left-0 overflow-y-auto font-inter space-y-10 hidden sm:flex flex-col p-5'>
+      <nav className='bg-gradient-to-r from-orange-500 to-red-500 text-TextColor w-72 h-screen fixed top-0 left-0 overflow-y-auto font-inter space-y-10 hidden sm:flex flex-col p-5'>
         <div className='w-full flex flex-col justify-center items-center space-y-3 border-b border-TextColor py-5'>
           <div>
             <h1 className='text-2xl font-bold'>DineRetso</h1>

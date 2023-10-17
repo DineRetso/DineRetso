@@ -30,8 +30,8 @@ code {
 .animate-step {
   background-image: linear-gradient(
     to right,
-    #4fc1b0 0%,
-    #4fc1b0 50%,
+    #f3782c 0%,
+    #f3782c 50%,
     transparent 50%,
     transparent 100%
   );
@@ -72,8 +72,8 @@ nav {
 
 /* Define the background color for the scrolled state */
 nav.scrolled {
-  background-color: #f1b958;
-  color: #f1b958;
+  background-color: #feeba9;
+  color: #414a4e;
   opacity: 0.8; /* Change to your desired color */
 }
 

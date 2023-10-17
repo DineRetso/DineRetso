@@ -3,6 +3,8 @@ import React, { useEffect, useReducer, useState } from "react";
 import LoadingSpinner from "../../Components/LoadingSpinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const registeredReducer = (state, action) => {
   switch (action.type) {
@@ -100,31 +102,7 @@ export default function AddBlog() {
       console.error("Error creating blog post:", error);
     }
   };
-  const handleSaveDraft = async (e) => {
-    e.preventDefault();
-    const blogPost = {
-      title,
-      description,
-      tags,
-      type: "Draft",
-      resName: Resto.resName,
-      address: Resto.address,
-      fbLink: Resto.fbLink,
-      igLink: Resto.igLink,
-      webLink: Resto.webLink,
-      category: Resto.category,
-      images: selectedImages,
-    };
-    try {
-      console.log("images", selectedImages);
-      const response = await axios.post("/api/admin/create", blogPost, {
-        headers: { Authorization: `Bearer ${dineInfo.token}` },
-      });
-      console.log("Blog post created successfully:", response.data);
-    } catch (error) {
-      console.error("Error creating blog post:", error);
-    }
-  };
+
   const uploadimg = async (e) => {
     const files = e.target.files;
     const newSelectedImages = [];
@@ -180,14 +158,8 @@ export default function AddBlog() {
                   onChange={(e) => setTitle(e.target.value)}
                 ></input>
               </div>
-              <div className='w-full mt-10'>
-                <label>Description</label>
-                <textarea
-                  className='h-[200px] w-full p-2 border'
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                />
-              </div>
+              <ReactQuill value={description} onChange={setDescription} />
+
               <div>
                 <label>Tags</label>
                 <input
@@ -246,9 +218,6 @@ export default function AddBlog() {
                   />
                 </label>
               </div>
-              <button type='submit' onClick={handleSaveDraft}>
-                Save as draft
-              </button>
               <button type='submit' onClick={handlePublish}>
                 Publish
               </button>
