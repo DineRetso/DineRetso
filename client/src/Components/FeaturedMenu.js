@@ -4,7 +4,7 @@ import { Rating } from "@mui/material";
 export default function FeaturedMenu(props) {
   const { fMenu } = props;
   return (
-    <div className='flex flex-col justify-center w-full shadow-xl h-auto sm:h-96 rounded-md'>
+    <div className='flex flex-col justify-center w-full shadow-xl h-auto sm:h-[400px] rounded-md'>
       <div className='flex justify-center items-center w-full h-72 bg-neutrals-600 bg-opacity-70 rounded-md'>
         <img
           className='h-full w-full object-cover'

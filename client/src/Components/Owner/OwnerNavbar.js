@@ -182,6 +182,13 @@ export default function OwnerNavbar() {
                 <span className='ml-2'>Analytics</span>
               </Link>
               <Link
+                to={`/dineretso-restaurant/${myRestaurant.resName}/owner-posting`}
+                className='flex items-center hover:bg-orange-700 p-2'
+              >
+                <i className='material-icons'>description</i>
+                <span className='ml-2'>Posting</span>
+              </Link>
+              <Link
                 to={`/dineretso-restaurant/${myRestaurant.resName}/PlansNPricing`}
                 className='flex items-center hover:bg-orange-700 p-2'
               >

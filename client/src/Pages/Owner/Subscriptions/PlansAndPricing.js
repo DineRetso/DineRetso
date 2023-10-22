@@ -203,7 +203,7 @@ export default function PlansAndPricing() {
           </div>
           <div></div>
           <div className='w-full flex justify-center items-center mt-2'>
-            {!owner.linkId === "" ? (
+            {!owner.linkId ? (
               <div className='bg-orange-200 p-3 rounded-full flex justify-center items-center w-40'>
                 <button className='w-full' onClick={handleFormOpen}>
                   Subscribe

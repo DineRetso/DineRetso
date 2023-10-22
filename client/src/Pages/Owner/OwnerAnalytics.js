@@ -10,8 +10,8 @@ export default function OwnerAnalytics() {
   const { userInfo } = state;
   const [reviews, setReviews] = useState([]);
   const [chartData, setChartData] = useState({});
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   useEffect(() => {
     async function fetchReviews() {
@@ -33,7 +33,7 @@ export default function OwnerAnalytics() {
     }
 
     fetchReviews();
-  }, [userInfo.myRestaurant, startDate, endDate]);
+  }, [userInfo.myRestaurant, startDate, endDate, setReviews]);
 
   // Create the chart data based on the reviews
   const createChartData = (reviews) => {
@@ -123,7 +123,7 @@ export default function OwnerAnalytics() {
           </div>
           <div className='w-full flex'>
             <div className='w-1/2'></div>
-            <div>
+            <div className='w-1/2'>
               {chartData && chartData.data && chartData.data.labels ? (
                 <div>
                   <h1>Pie</h1>

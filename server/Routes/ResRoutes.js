@@ -6,6 +6,7 @@ const bcrypt = require("bcryptjs");
 const RegRestaurants = require("../Models/Register_Model.js");
 const Restaurant = require("../Models/Restaurant_Model.js");
 const User = require("../Models/User_Model.js");
+const Posting = require("../Models/PostingModels.js");
 const { isAuth, isAdmin } = require("../utils.js");
 
 dotenv.config();
@@ -241,6 +242,22 @@ resRouter.post(
     } catch (error) {
       console.error(error);
       res.status(500).send({ message: "Internal Server Error!" });
+    }
+  })
+);
+resRouter.get(
+  "/getPosting",
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const posts = await Posting.find();
+      if (posts) {
+        res.status(200).json(posts);
+      } else {
+        res.status(404).send({ message: "No post available." });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Internal server error " + error });
     }
   })
 );

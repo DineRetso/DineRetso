@@ -1,8 +1,13 @@
 const mongoose = require("mongoose");
+const imageSchema = new mongoose.Schema({
+  public_id: String,
+  secure_url: String,
+});
 
 const blogPostSchema = new mongoose.Schema(
   {
     resName: { type: String, required: true },
+    resId: { type: String, required: true },
     address: { type: String, required: true },
     fbLink: { type: String },
     igLink: { type: String },
@@ -10,10 +15,9 @@ const blogPostSchema = new mongoose.Schema(
     category: { type: String, required: true },
     visits: { type: Number, default: 0 },
     tags: [{ type: String }],
-    stat: { type: String },
     title: { type: String, required: true },
     description: { type: String, required: true },
-    images: [{ type: String }],
+    images: [imageSchema],
   },
   {
     timestamps: true,

@@ -44,6 +44,10 @@ import SubscriptionDashboard from "./Pages/Owner/Subscriptions/SubscriptionDashb
 import OwnerAnalytics from "./Pages/Owner/OwnerAnalytics";
 import DineCustomers from "./Dine-Secret/Customers/DineCustomers";
 import ViewPosting from "./Dine-Secret/BlogPost/ViewPosting";
+import PostingDashboard from "./Pages/Owner/Posting/PostingDashboard";
+import AddPosting from "./Pages/Owner/Posting/AddPosting";
+import ViewOwnerPosting from "./Pages/Owner/Posting/ViewOwnerPosting";
+import EditPosting from "./Pages/Owner/Posting/EditPosting";
 
 function App() {
   return (
@@ -171,6 +175,38 @@ function App() {
                     }
                   />
                   <Route
+                    path='/:resName/owner-posting'
+                    element={
+                      <OwnerRoute>
+                        <PostingDashboard />
+                      </OwnerRoute>
+                    }
+                  />
+                  <Route
+                    path='/:resName/owner-posting/add'
+                    element={
+                      <OwnerRoute>
+                        <AddPosting />
+                      </OwnerRoute>
+                    }
+                  />
+                  <Route
+                    path='/posting/:postingId'
+                    element={
+                      <OwnerRoute>
+                        <ViewOwnerPosting />
+                      </OwnerRoute>
+                    }
+                  />
+                  <Route
+                    path='/editPost/:postingId'
+                    element={
+                      <OwnerRoute>
+                        <EditPosting />
+                      </OwnerRoute>
+                    }
+                  />
+                  <Route
                     path='/:resName/subscription/dashboard'
                     element={
                       <OwnerRoute>
@@ -178,6 +214,7 @@ function App() {
                       </OwnerRoute>
                     }
                   />
+
                   <Route
                     path=':name/:resId/details'
                     element={
