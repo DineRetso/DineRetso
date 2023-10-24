@@ -317,6 +317,174 @@ adminRouter.get(
     }
   })
 );
+adminRouter.get(
+  "/getPendingPosting",
+  isAdminAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const posts = await Posting.find({ status: "Pending" });
+      if (posts) {
+        res.status(200).json(posts);
+      } else {
+        res.status(404).send({ message: "No posts found." });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Internal Server Error" });
+    }
+  })
+);
+
+adminRouter.get(
+  "/getRestoBlogPost",
+  isAdminAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const resto = await Restaurant.find().populate("blogPosts");
+      if (resto) {
+        resto.forEach((restaurant) => {
+          console.log(restaurant.blogPosts); // This will log the blogPosts for each restaurant
+        });
+        res.status(200).json(resto);
+      } else {
+        res.status(404).send({ message: "No posts found." });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Internal Server Error" });
+    }
+  })
+);
+//getOwnerPost
+adminRouter.get(
+  "/getSubmittedPost/:id",
+  isAdminAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { id } = req.params;
+    try {
+      console.log(id);
+      const Posts = await Posting.findById(id);
+      if (Posts) {
+        res.status(200).json(Posts);
+      } else {
+        res.status(400).send({ message: "Post not found." });
+      }
+      console.log(Posts);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Internal server error: " + error });
+    }
+  })
+);
+//Manage Post Submitted
+
+function sendEmailPosting(userEmails, blogPost) {
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.DineE,
+      pass: process.env.DineP,
+    },
+  });
+  const mailPromises = userEmails.map((userEmail) => {
+    return new Promise((resolve, reject) => {
+      const mailOptions = {
+        from: `DineRetso <${process.env.DineE}>`,
+        to: userEmail,
+        subject: "New Blog Post Created",
+        html: `
+          <p>Hello,</p>
+          <p>A new blog post "${
+            blogPost.title
+          }" has been created for your restaurant "${blogPost.resName}".</p>
+          ${
+            blogPost.images.length != 0 &&
+            `<img src="${blogPost.images[0].secure_url}" alt="Blog Post Image" />`
+          }
+          <p><strong>Description:</strong></p>
+          ${blogPost.description}
+          <p>Read the post <a href="URL_TO_THE_POST">here</a>.</p>
+          <p>Thank you for using our service.</p>
+        `,
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error(`Error sending email to ${userEmail}: ${error}`);
+          reject(error);
+        } else {
+          console.log(`Email sent to ${userEmail}: ${info.response}`);
+          resolve(info);
+        }
+      });
+    });
+  });
+
+  return Promise.all(mailPromises);
+}
+adminRouter.put(
+  "/posting/approve/:id",
+  isAdminAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const postId = req.params.id;
+      const { title, description, tags, images, video } = req.body;
+
+      const updatedPost = await Posting.findById(postId);
+
+      if (!updatedPost) {
+        return res.status(404).json({ message: "Post not found" });
+      }
+      updatedPost.title = title;
+      updatedPost.description = description;
+      updatedPost.tags = tags;
+      updatedPost.images = images;
+      updatedPost.video = video;
+      updatedPost.status = "Approved";
+      await updatedPost.save();
+      const restaurant = await Restaurant.findById(updatedPost.resId);
+      if (restaurant) {
+        restaurant.blogPosts.push(updatedPost._id);
+        restaurant.postCount += 1;
+        await restaurant.save();
+      }
+      const users = await User.find({}, "email");
+      const userEmails = users.map((user) => user.email);
+      await sendEmailPosting(userEmails, updatedPost);
+      res.status(200).json({ message: "Post Updated" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Internal Server Error:" + error });
+    }
+  })
+);
+
+adminRouter.put(
+  "/posting/cancel/:id",
+  isAdminAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const postId = req.params.id;
+      const updatedPost = await Posting.findById(postId);
+      if (!updatedPost) {
+        return res.status(404).json({ message: "Post not found" });
+      }
+      updatedPost.status = "Cancelled";
+
+      await updatedPost.save();
+
+      res.status(200).json({ message: "Post Updated" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Internal Server Error:" + error });
+    }
+  })
+);
 
 module.exports = adminRouter;
 

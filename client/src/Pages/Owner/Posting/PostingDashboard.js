@@ -14,13 +14,14 @@ export default function PostingDashboard() {
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [showFullContent, setShowFullContent] = useState(false);
+  const [pStatus, setPstatus] = useState("Approved");
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const response = await axios.get(
-          `/api/owner/getPosting/${userInfo.myRestaurant}`,
+          `/api/owner/getPosting/${userInfo.myRestaurant}/${pStatus}`,
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
@@ -43,7 +44,7 @@ export default function PostingDashboard() {
       }
     };
     fetchPosts();
-  }, [userInfo.myRestaurant, userInfo.token, setPost, setResto]);
+  }, [userInfo.myRestaurant, userInfo.token, setPost, setResto, pStatus]);
   const remainingPosts = 15 - resto.postCount;
 
   const filteredPosts = posts.filter((post) => {
@@ -97,6 +98,17 @@ export default function PostingDashboard() {
                 Remaining Post: {remainingPosts}
               </h1>
             </div>
+            <div>
+              <select
+                className='p-2 w-full rounded-md text-sm border outline-orange-500 shadow-md text-neutrals-500'
+                value={pStatus}
+                onChange={(e) => setPstatus(e.target.value)}
+              >
+                <option value='Pending'>Pending</option>
+                <option value='Approved'>Approved</option>
+                <option value='Cancelled'>Cancelled</option>
+              </select>
+            </div>
             <div className='flex flex-row justify-center items-center'>
               <div className='flex flex-row justify-center items-center '>
                 <i className='material-icons text-2xl text-orange-500'>
@@ -111,7 +123,7 @@ export default function PostingDashboard() {
               </div>
               <div className='border p-3 flex justify-center items-center px-3 rounded-lg border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-TextColor transition-all'>
                 <button className='w-full' onClick={handleAddButton}>
-                  New Post
+                  Submit Post
                 </button>
               </div>
             </div>

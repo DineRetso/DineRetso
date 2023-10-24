@@ -8,6 +8,7 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import FeaturedMenu from "../Components/FeaturedMenu";
 import LoadingSpinner from "../Components/LoadingSpinner";
+import { useNavigate } from "react-router-dom";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -52,6 +53,8 @@ const MainDashboard = () => {
   const [posts, setPosts] = useState([]);
   const [postLoading, setPostLoading] = useState(true);
   const [postError, setPostError] = useState("");
+  const navigate = useNavigate();
+  const source = "web";
 
   useEffect(() => {
     const fetchRestaurant = async () => {
@@ -83,7 +86,12 @@ const MainDashboard = () => {
         }
 
         if (posting) {
-          setPosts(posting.data);
+          const sortedPosts = posting.data.sort((a, b) => {
+            const dateA = new Date(a.createdAt);
+            const dateB = new Date(b.createdAt);
+            return dateB - dateA;
+          });
+          setPosts(sortedPosts);
           setPostLoading(false);
         } else {
           setPostError("No post available.");
@@ -141,8 +149,8 @@ const MainDashboard = () => {
               FEATURED MENU
             </h1>
           </div>
-          <div className='flex justify-center items-center h-96 w-full'>
-            <div className='shadow-md h-[400px] p-2 w-3/4 object-cover'>
+          <div className='flex justify-center items-center w-full'>
+            <div className='shadow-md p-2 w-3/4 object-cover'>
               <Carousel
                 autoPlay={true}
                 interval={3000}
@@ -169,12 +177,11 @@ const MainDashboard = () => {
           <div className='h-96 p-3 w-full flex justify-center items-center'>
             <div className='shadow-md h-96 p-2 w-3/4 object-cover'>
               <Carousel
-                autoPlay={true}
-                interval={3000}
+                autoPlay={false}
                 showArrows={true}
                 showStatus={true}
                 showIndicators={true}
-                infiniteLoop={true}
+                infiniteLoop={false}
               >
                 {randomFeaturedRestaurants.map((randomResto, index) => (
                   <div
@@ -204,37 +211,58 @@ const MainDashboard = () => {
                 <div className='text-red-600 text-lg'>{postError}</div>
               </div>
             ) : (
-              <div className='flex w-full flex-col space-y-5'>
+              <div className='flex w-full flex-col space-y-5 px-20'>
                 {posts.map((post) => (
                   <div
                     key={post._id}
-                    className='flex flex-row w-full border shadow-lg p-4 '
+                    className='flex flex-col w-full border shadow-lg p-4  justify-center items-center'
                   >
-                    <div className='grid grid-cols-3 max-h-[400px] w-[40%] p-2 overflow-y-auto'>
-                      {post.images.map((image, index) => (
-                        <img
-                          key={index}
-                          src={image.secure_url}
-                          alt={`post`}
-                          className='w-full h-auto rounded-lg'
-                        />
-                      ))}
-                    </div>
-                    <div className='w-[60%] p-2'>
+                    <div className='w-full flex justify-center'>
                       <h1 className='text-2xl text-orange-500 font-bold text-justify'>
                         {post.title}
                       </h1>
+                    </div>
+                    <div className='w-full flex justify-center'>
+                      <div className='grid grid-cols-3 w-full p-2 overflow-y-auto'>
+                        {post.video && (
+                          <video
+                            src={post.video.secure_url}
+                            alt='Uploaded Video'
+                            controls
+                          ></video>
+                        )}
+                        {post.images.map((image, index) => (
+                          <img
+                            key={index}
+                            src={image.secure_url}
+                            alt={`post`}
+                            className='w-full h-auto rounded-lg'
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <div className='w-full p-2'>
+                      <h2 className='text-2xl text-orange-500 font-bold'>
+                        {post.resName}
+                      </h2>
                       <div className='text-orange-500 border-r'>
                         {formatDate(post.createdAt)}
                       </div>
-                      <h2>{post.resName}</h2>
+
                       <div
                         dangerouslySetInnerHTML={{ __html: post.description }}
-                        className='text-justify text-gray-700 mt-2'
+                        className='text-justify text-neutrals-500 mt-2'
                       />
                       <div className='w-full flex justify-center items-center'>
                         <div className='border p-3 flex justify-center items-center px-3 rounded-lg border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-TextColor transition-all w-32'>
-                          <button className='w-full'>View</button>
+                          <button
+                            className='w-full'
+                            onClick={() =>
+                              navigate(`/ViewRestoPost/${post._id}/${source}`)
+                            }
+                          >
+                            View
+                          </button>
                         </div>
                       </div>
                     </div>

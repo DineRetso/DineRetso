@@ -36,6 +36,7 @@ export default function PlansAndPricing() {
   const userId = userInfo._id;
   const [payeeName, setPayeeName] = useState("");
   const [payeeResId, setPayeeResId] = useState("");
+  const [paymentType, setPaymentType] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -101,9 +102,20 @@ export default function PlansAndPricing() {
       `/dineretso-restaurant/${owner.myRestaurant}/subscription/dashboard`
     ),
   ];
+  const handleBasic = (e) => {
+    e.preventDefault();
+    setPaymentType("Basic");
+  };
+  const handlePremium = (e) => {
+    e.preventDefault();
+    setPaymentType("Premium");
+  };
 
   const createPaymentLink = async () => {
     try {
+      if (paymentType === "") {
+        return toast.info("Please Select type of service.");
+      }
       const response = await fetch(
         "/api/payment/createPaymentLink",
         {
@@ -111,7 +123,7 @@ export default function PlansAndPricing() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ userId, payeeName, payeeResId }),
+          body: JSON.stringify({ userId, payeeName, payeeResId, paymentType }),
         },
         {}
       );
@@ -225,7 +237,24 @@ export default function PlansAndPricing() {
       {formOpen && (
         <div className='fixed lg:left-72 md:left-72 sm:left-72 inset-0 h-screen w-full border bg-neutrals-500 bg-opacity-60'>
           <form>
-            <h1>Hello</h1>
+            <div className='w-1/2 relative'>
+              <div className='p-10 grid grid-cols-2 gap-20 w-auto'>
+                <div className='bg-TextColor border border-orange-500'>
+                  <h1>Price: 200</h1>
+                  <p>Image for post</p>
+                  <div className='bg-orange-200 p-3 rounded-full flex justify-center items-center w-40'>
+                    <p onClick={handleBasic}>Select Service</p>
+                  </div>
+                </div>
+                <div className='bg-TextColor border border-orange-500'>
+                  <h1>Price: 500</h1>
+                  <p>Can upload image and video</p>
+                  <div className='bg-orange-200 p-3 rounded-full flex justify-center items-center w-40'>
+                    <p onClick={handlePremium}>Select Service</p>
+                  </div>
+                </div>
+              </div>
+            </div>
             <button onClick={handleFormClose}>Close</button>
             <div className='bg-orange-200 p-3 rounded-full flex justify-center items-center w-40'>
               <button className='w-full' onClick={createPaymentLink}>

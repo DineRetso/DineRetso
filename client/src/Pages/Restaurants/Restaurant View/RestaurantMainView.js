@@ -7,6 +7,7 @@ import { Store } from "../../../Store";
 
 import Menu from "../../../Components/Restaurant/Menu";
 import Review from "../../../Components/Restaurant/Review";
+import Posts from "../../../Components/Restaurant/Posts";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -30,6 +31,7 @@ export default function RestaurantMainView() {
   const [classi, setClassi] = useState([]);
   const [menuItem, setMenuItems] = useState([]);
   const [reviews, setReviews] = useState([]);
+  const [posts, setPosts] = useState([]);
   const [rates, setRating] = useState("");
   const [comment, setComment] = useState("");
   const [reviewerName, setReviewerName] = useState("");
@@ -44,7 +46,7 @@ export default function RestaurantMainView() {
       try {
         dispatch({ type: "FETCH_REQUEST" });
         const response = await axios.get(
-          `/api/restaurant/${params.resName}/${params._id}/${params.source}`
+          `/api/restaurant/${params.resName}/${params.source}`
         );
         // Extract menu classifications from the response
         const classifications = response.data.menu.map(
@@ -53,12 +55,14 @@ export default function RestaurantMainView() {
         // Filter out duplicates
         const uniqueClassifications = Array.from(new Set(classifications));
         const items = response.data.menu;
+        const post = response.data.blogPosts;
         const rev = response.data.restoReview.filter(
           (review) => review.status === true
         );
         setReviews(rev);
         setMenuItems(items);
         setClassi(uniqueClassifications);
+        setPosts(post);
 
         dispatch({ type: "FETCH_SUCCESS", payload: response.data });
       } catch (error) {
@@ -186,7 +190,7 @@ export default function RestaurantMainView() {
       </div>
       <div
         id='menu'
-        className='flex flex-col h-screen w-11/12 overflow-y-hidden overflow-hidden space-y-5'
+        className='flex flex-col h-screen w-11/12 overflow-y-hidden overflow-hidden space-y-5 shadow-xl'
       >
         <div className='h-16 w-full flex justify-start items-center'>
           <i className='material-icons text-4xl '>search</i>
@@ -211,8 +215,20 @@ export default function RestaurantMainView() {
           ))}
         </div>
       </div>
-      <div id='posts' className='h-screen'>
-        Postings
+      <div id='posts' className='max-h-screen overflow-y-auto'>
+        {posts ? (
+          <div>
+            {posts.map((post) => (
+              <div key={post._id}>
+                <Posts post={post} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div>
+            <h1>No post available</h1>
+          </div>
+        )}
       </div>
       <div
         id='reviews'

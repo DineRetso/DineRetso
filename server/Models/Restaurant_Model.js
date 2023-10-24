@@ -36,6 +36,7 @@ const visitSchema = new mongoose.Schema({
   timestamp: { type: Date, default: Date.now },
 });
 
+
 const newSchema = new mongoose.Schema(
   {
     profileImage: { type: String, required: true },
@@ -60,7 +61,7 @@ const newSchema = new mongoose.Schema(
     tags: [{ type: String }],
     blogPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: "BlogPost" }],
     postCount: { type: Number, default: 0 },
-    postStatus: { type: String },
+    paymentType: { type: String },
     subscriptionStartDate: {
       type: Date,
       default: null,

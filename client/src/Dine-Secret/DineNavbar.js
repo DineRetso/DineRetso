@@ -1,17 +1,36 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Store } from "../Store";
+import { getError } from "../utils";
+import axios from "axios";
 
 export default function DineNavbar() {
-  const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { userInfo } = state;
+  const dineInfo = JSON.parse(localStorage.getItem("dineInfo"));
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [pending, setPending] = useState([]);
+
+  useEffect(() => {
+    const fetchPending = async () => {
+      try {
+        const response = await axios.get("/api/admin/getPendingPosting", {
+          headers: { Authorization: `Bearer ${dineInfo.token}` },
+        });
+        if (response.status === 200) {
+          setPending(response.data);
+        }
+      } catch (error) {
+        console.error(getError(error));
+      }
+    };
+    fetchPending();
+  }, [dineInfo.token]);
 
   const signoutHandler = () => {
     localStorage.removeItem("dineInfo");
     navigate("/login");
   };
+  console.log("pending: ", pending);
   return (
     <div className='flex z-50'>
       <nav className='bg-gradient-to-r from-orange-500 to-red-500 text-TextColor w-72 h-screen fixed top-0 left-0 overflow-y-auto font-inter space-y-10 hidden sm:flex flex-col p-5'>
@@ -65,10 +84,17 @@ export default function DineNavbar() {
           </Link>
           <Link
             to='/dine/admin/secret/posting'
-            className='flex items-center hover:bg-orange-700 p-2'
+            className='flex items-center hover:bg-orange-700 p-2 relative'
           >
             <i className='material-icons'>article</i>
-            <span className='ml-2'>Posts</span>
+            <span className='ml-2'>
+              Posts
+              {pending.length > 0 && (
+                <span className='absolute top-0 right-0 text-xs font-bold leading-none text-TextColor  rounded-full'>
+                  {pending.length}
+                </span>
+              )}
+            </span>
           </Link>
           <Link
             to='/dashboard'

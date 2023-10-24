@@ -161,7 +161,7 @@ export default function Restaurant() {
                   >
                     <div className='flex justify-start items-start bg-cover max-h-80 w-5/12'>
                       <Link
-                        to={`/Restaurant/${subscribedResto.resName}/${subscribedResto._id}/${source}`}
+                        to={`/Restaurant/${subscribedResto.resName}/${source}`}
                       >
                         <img
                           src={subscribedResto.profileImage}

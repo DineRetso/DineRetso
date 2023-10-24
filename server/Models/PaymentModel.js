@@ -8,6 +8,7 @@ const paymentSchema = new mongoose.Schema(
     linkId: { type: String },
     startDate: { type: Date },
     endDate: { type: Date },
+    paymentType: { type: String },
     status: {
       type: String,
       enum: [

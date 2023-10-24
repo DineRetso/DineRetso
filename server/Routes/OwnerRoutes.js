@@ -324,13 +324,13 @@ ownerRouter.get("/getMenu/:resto", async (req, res) => {
 });
 //getOwnerPosting
 ownerRouter.get(
-  "/getPosting/:resId",
+  "/getPosting/:resId/:status",
   isAuth,
   isOwner,
   expressAsyncHandler(async (req, res) => {
-    const { resId } = req.params;
+    const { resId, status } = req.params;
     try {
-      const posts = await Posting.find({ resId: resId });
+      const posts = await Posting.find({ resId: resId, status: status });
       if (posts) {
         res.status(200).json(posts);
       } else {
@@ -362,6 +362,7 @@ ownerRouter.get(
           webLink: restaurant.webLink,
           category: restaurant.category,
           postCount: restaurant.postCount,
+          paymentType: restaurant.paymentType,
         };
         res.status(200).json(resto);
       } else {
@@ -373,46 +374,6 @@ ownerRouter.get(
     }
   })
 );
-
-function sendEmailPosting(userEmails, blogPost) {
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.DineE,
-      pass: process.env.DineP,
-    },
-  });
-  const mailPromises = userEmails.map((userEmail) => {
-    return new Promise((resolve, reject) => {
-      const mailOptions = {
-        from: `DineRetso <${process.env.DineE}>`,
-        to: userEmail,
-        subject: "New Blog Post Created",
-        html: `
-          <p>Hello,</p>
-          <p>A new blog post "${blogPost.title}" has been created for your restaurant "${blogPost.resName}".</p>
-          <img src="${blogPost.images[0].secure_url}" alt="Blog Post Image" />
-          <p><strong>Description:</strong></p>
-          ${blogPost.description}
-          <p>Read the post <a href="URL_TO_THE_POST">here</a>.</p>
-          <p>Thank you for using our service.</p>
-        `,
-      };
-
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.error(`Error sending email to ${userEmail}: ${error}`);
-          reject(error);
-        } else {
-          console.log(`Email sent to ${userEmail}: ${info.response}`);
-          resolve(info);
-        }
-      });
-    });
-  });
-
-  return Promise.all(mailPromises);
-}
 
 ownerRouter.post(
   "/posting/create",
@@ -432,7 +393,9 @@ ownerRouter.post(
         igLink,
         webLink,
         category,
+        video,
       } = req.body;
+      console.log(video);
       const blogPost = new Posting({
         resId,
         title,
@@ -443,23 +406,14 @@ ownerRouter.post(
         address,
         fbLink,
         igLink,
+        status: "Pending",
         webLink,
         category,
         images: images,
+        video,
       });
 
       await blogPost.save();
-      console.log(blogPost);
-      const restaurant = await Restaurant.findById(resId);
-      if (restaurant) {
-        restaurant.blogPosts.push(blogPost._id);
-        restaurant.postCount += 1;
-        await restaurant.save();
-      }
-      const users = await User.find({}, "email");
-      const userEmails = users.map((user) => user.email);
-      await sendEmailPosting(userEmails, blogPost);
-
       res.status(200).json({ message: "Post Created" });
     } catch (error) {
       console.error(error);
@@ -521,6 +475,8 @@ ownerRouter.delete(
       for (const image of deletedPost.images) {
         await cloudinary.uploader.destroy(image.public_id);
       }
+
+      await cloudinary.uploader.destroy(deletedPost.video.public_id);
 
       await Posting.deleteOne({ _id: postId });
 

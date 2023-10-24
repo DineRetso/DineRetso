@@ -37,23 +37,16 @@ export default function ViewPosting() {
   const filteredAndSortedPosts = posts.filter((post) => {
     const searchLower = searchQuery.toLowerCase();
     const tagsString = post.tags.join(" ").toLowerCase();
+    const formattedDate = formatDate(post.createdAt);
+    const postDate = formattedDate.toLowerCase();
+
     return (
       (selectedCategory === "All" || post.category === selectedCategory) &&
       (post.resName.toLowerCase().includes(searchLower) ||
         post.address.toLowerCase().includes(searchLower) ||
         tagsString.includes(searchLower) ||
+        postDate.includes(searchLower) ||
         post.title.toLowerCase().includes(searchLower))
-    );
-  });
-
-  const filteredPosts = posts.filter((post) => {
-    const searchLower = searchQuery.toLowerCase();
-    const tagsString = post.tags.join(" ").toLowerCase();
-    return (
-      post.resName.toLowerCase().includes(searchLower) ||
-      post.address.toLowerCase().includes(searchLower) ||
-      tagsString.includes(searchLower) ||
-      post.title.toLowerCase().includes(searchLower)
     );
   });
 

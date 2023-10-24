@@ -11,7 +11,13 @@ export default function OwnerDashboard() {
   const [menu, setMenu] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [fbVisit, setFbVisit] = useState("");
+  const [profileVisit, setProfileVisit] = useState("");
+  const [emailVisit, setEmailVisit] = useState("");
+  const [totalReviewToday, setTotalReviewToday] = useState("");
+  const [totalPending, setTotalPending] = useState("");
 
+  ///restaurant/:owner/:restaurantID"
   useEffect(() => {
     const fetchMenu = async () => {
       try {
@@ -22,7 +28,10 @@ export default function OwnerDashboard() {
           }
         );
         if (response.status === 200) {
-          const sortedMenu = response.data.menu.sort((a, b) => {
+          const filteredMenu = response.data.menu.filter(
+            (men) => men.menuReview.length !== 0
+          );
+          const sortedMenu = filteredMenu.sort((a, b) => {
             const ratingA = calculateAverageRating(a.menuReview);
             const ratingB = calculateAverageRating(b.menuReview);
             return ratingB - ratingA;
@@ -38,8 +47,70 @@ export default function OwnerDashboard() {
         setError(getError(error));
       }
     };
+    const fetchVisitsAndReviews = async () => {
+      try {
+        const response = await axios.get(
+          `/api/owner/restaurant/${userInfo.fName}/${userInfo.myRestaurant}`,
+          { headers: { Authorization: `Bearer ${userInfo.token}` } }
+        );
+
+        if (response.status === 200) {
+          const visits = response.data.visits || [];
+          const restoReviews = response.data.restoReview || [];
+          const menuReviews =
+            (response.data.menu && response.data.menu.menuReview) || [];
+          const currentDate = new Date();
+
+          const fbVisitsToday = visits.filter(
+            (visit) =>
+              visit.source === "facebook" &&
+              formatDate(visit.timestamp) === formatDate(currentDate)
+          );
+
+          const emailVisitsToday = visits.filter(
+            (visit) =>
+              visit.source === "email" &&
+              formatDate(visit.timestamp) === formatDate(currentDate)
+          );
+
+          const webVisitsToday = visits.filter(
+            (visit) =>
+              visit.source === "web" &&
+              formatDate(visit.timestamp) === formatDate(currentDate)
+          );
+          const restoReviewsToday = restoReviews.filter(
+            (review) => formatDate(review.createdAt) === formatDate(currentDate)
+          );
+          const menuReviewsToday = menuReviews.filter(
+            (review) => formatDate(review.createdAt) === formatDate(currentDate)
+          );
+          const restoPending = restoReviews.filter(
+            (review) => review.status === "pending"
+          );
+          const menuPending = menuReviews.filter(
+            (review) => review.status === "pending"
+          );
+
+          setFbVisit(fbVisitsToday.length);
+          setEmailVisit(emailVisitsToday.length);
+          setProfileVisit(webVisitsToday.length);
+          setTotalReviewToday(
+            restoReviewsToday.length + menuReviewsToday.length
+          );
+          setTotalPending(restoPending.length + menuPending.length);
+          setLoading(false);
+        } else {
+          setError("Failed to fetch visits and reviews.");
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error(getError(error));
+        setError(getError(error));
+      }
+    };
     fetchMenu();
-  }, [userInfo.token, userInfo.myRestaurant]);
+    fetchVisitsAndReviews();
+  }, [userInfo.token, userInfo.myRestaurant, userInfo.fName]);
 
   const calculateAverageRating = (menuReview) => {
     if (menuReview.length === 0) {
@@ -52,6 +123,14 @@ export default function OwnerDashboard() {
     return totalRating / menuReview.length;
   };
 
+  function formatDate(dateString) {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    const formattedDate = new Date(dateString).toLocaleDateString(
+      undefined,
+      options
+    );
+    return formattedDate;
+  }
   return (
     <div className='lg:ml-72 md:ml-72 sm:ml-72 relative flex p-5'>
       {error ? (
@@ -67,40 +146,62 @@ export default function OwnerDashboard() {
               <div className='w-10 h-10 border flex justify-center items-center border-orange-500 rounded-md'>
                 <i className='material-icons text-orange-500'>facebook</i>
               </div>
-              <h1 className='text-neutrals-500'>
-                Total Facebook Page Visits Today
-              </h1>
-              <h2 className='text-xl text-neutrals-500 font-semibold'></h2>
+              <div className='flex flex-col'>
+                <h2 className='text-2xl text-orange-500 font-semibold'>
+                  {fbVisit}
+                </h2>
+                <h1 className='text-neutrals-500'>
+                  Total Facebook Page Visits Today
+                </h1>
+              </div>
             </div>
             <div className='border h-28 rounded-md bg-TextColor p-2 flex flex-row justify-start items-center space-x-2 shadow-lg border-orange-500'>
               <div className='w-10 h-10 border flex justify-center items-center border-orange-500 rounded-md'>
                 <i className='material-icons text-orange-500'>account_circle</i>
               </div>
-              <h1 className='text-neutrals-500'>
-                Total DineRetso Profile Visits Today
-              </h1>
-              <h2 className='text-xl text-neutrals-500 font-semibold'></h2>
+              <div className='flex flex-col'>
+                <h2 className='text-2xl text-orange-500 font-semibold'>
+                  {profileVisit}
+                </h2>
+                <h1 className='text-neutrals-500'>
+                  Total DineRetso Profile Visits Today
+                </h1>
+              </div>
             </div>
             <div className='border h-28 rounded-md bg-TextColor p-2 flex flex-row justify-start items-center space-x-2 shadow-lg border-orange-500'>
               <div className='w-10 h-10 border flex justify-center items-center border-orange-500 rounded-md'>
                 <i className='material-icons text-orange-500'>email</i>
               </div>
-              <h1 className='text-neutrals-500'>Total of Email Click Today</h1>
-              <h2 className='text-xl text-neutrals-500 font-semibold'></h2>
+              <div className='flex flex-col'>
+                <h2 className='text-2xl text-orange-500 font-semibold'>
+                  {emailVisit}
+                </h2>
+                <h1 className='text-neutrals-500'>
+                  Total of Email Click Today
+                </h1>
+              </div>
             </div>
             <div className='border h-28 rounded-md bg-TextColor p-2 flex flex-row justify-start items-center space-x-2 shadow-lg border-orange-500'>
               <div className='w-10 h-10 border flex justify-center items-center border-orange-500 rounded-md'>
                 <i className='material-icons text-orange-500'>feedback</i>
               </div>
-              <h1 className='text-neutrals-500'>Total Customers Feedback</h1>
-              <h2 className='text-xl text-neutrals-500 font-semibold'></h2>
+              <div className='flex flex-col'>
+                <h2 className='text-2xl text-orange-500 font-semibold'>
+                  {totalReviewToday}
+                </h2>
+                <h1 className='text-neutrals-500'>Total Customers Feedback</h1>
+              </div>
             </div>
             <div className='border h-28 rounded-md bg-TextColor p-2 flex flex-row justify-start items-center space-x-2 shadow-lg border-orange-500'>
               <div className='w-10 h-10 border flex justify-center items-center border-orange-500 rounded-md'>
                 <i className='material-icons text-orange-500'>rate_review</i>
               </div>
-              <h1 className='text-neutrals-500'>Total Pending Reviews</h1>
-              <h2 className='text-xl text-neutrals-500 font-semibold'></h2>
+              <div className='flex flex-col'>
+                <h2 className='text-2xl text-orange-500 font-semibold'>
+                  {totalPending}
+                </h2>
+                <h1 className='text-neutrals-500'>Total Pending Reviews</h1>
+              </div>
             </div>
           </div>
           <div className='w-full p-5 border shadow-md max-h-[500px] overflow-y-auto flex flex-col space-y-5'>
@@ -109,7 +210,7 @@ export default function OwnerDashboard() {
                 Top Rating Menu
               </h1>
             </div>
-            <div className='grid grid-cols-2 w-full'>
+            <div className='grid sm:grid-cols-2 grid-cols-1 w-full'>
               {menu.map((menuItem) => (
                 <div
                   key={menuItem._id}

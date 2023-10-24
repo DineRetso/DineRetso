@@ -69,11 +69,13 @@ resRouter.get(
   })
 );
 resRouter.get(
-  "/:resName/:_id/:source",
+  "/:resName/:source",
   expressAsyncHandler(async (req, res) => {
-    const { _id, source } = req.params;
+    const { resName, source } = req.params;
     try {
-      const restaurant = await Restaurant.findById(_id);
+      const restaurant = await Restaurant.findOne({
+        resName: resName,
+      }).populate("blogPosts");
       if (!restaurant) {
         return res.status(401).send("No restaurant found!");
       } else {
@@ -249,7 +251,7 @@ resRouter.get(
   "/getPosting",
   expressAsyncHandler(async (req, res) => {
     try {
-      const posts = await Posting.find();
+      const posts = await Posting.find({ status: "Approved" });
       if (posts) {
         res.status(200).json(posts);
       } else {
@@ -258,6 +260,46 @@ resRouter.get(
     } catch (error) {
       console.error(error);
       res.status(500).send({ message: "Internal server error " + error });
+    }
+  })
+);
+resRouter.get(
+  "/getResto/posting/:id/:postSource",
+  expressAsyncHandler(async (req, res) => {
+    const { id, postSource } = req.params;
+    console.log(id);
+    try {
+      const posts = await Posting.findById(id);
+      if (posts) {
+        const restaurant = await Restaurant.findOne({ resName: posts.resName });
+        if (restaurant) {
+          if (postSource === "web") {
+            restaurant.visits.push({
+              source: postSource,
+              timestamp: new Date(),
+            });
+          } else if (postSource === "email") {
+            restaurant.visits.push({
+              source: postSource,
+              timestamp: new Date(),
+            });
+          } else {
+            restaurant.visits.push({
+              source: "facebook",
+              timestamp: new Date(),
+            });
+          }
+          await restaurant.save();
+        }
+
+        res.status(200).json(posts);
+      } else {
+        res.status(404).send({ message: "No posts found." });
+      }
+      console.log(posts);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Internal Server Error: " + error });
     }
   })
 );

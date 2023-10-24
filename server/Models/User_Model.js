@@ -14,11 +14,13 @@ const userSchema = new mongoose.Schema(
     resetToken: { type: String },
     resetTokenExpires: { type: Date },
     linkId: { type: String },
+    emailSent: { type: Boolean, default: false },
     subscriptionStatus: {
       type: String,
       enum: ["subscribed", "not subscribed", "expired"],
       default: "not subscribed",
     },
+    subscriptionType: { type: String },
     subscriptionStartDate: {
       type: Date,
       default: null, // Set to null if user is not subscribed

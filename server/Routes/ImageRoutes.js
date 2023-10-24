@@ -33,6 +33,41 @@ imageRouter.post("/", isAuth, upload.single("file"), async (req, res) => {
   res.send(result);
 });
 
+//uploadVideo
+imageRouter.post("/video", isAuth, upload.single("file"), async (req, res) => {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_KEY,
+    api_secret: process.env.CLOUDINARY_API,
+    secure: true,
+  });
+
+  const streamUpload = (req) => {
+    return new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        { resource_type: "video" },
+        (error, result) => {
+          if (result) {
+            resolve(result);
+          } else {
+            reject(error);
+          }
+        }
+      );
+      streamifier.createReadStream(req.file.buffer).pipe(stream);
+    });
+  };
+
+  try {
+    const result = await streamUpload(req);
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to upload video" });
+  }
+});
+
+//imageDelete
 imageRouter.delete("/:public_id", isAuth, async (req, res) => {
   const public_id = req.params.public_id; // Extract the public_id from the URL parameter
 
@@ -48,6 +83,32 @@ imageRouter.delete("/:public_id", isAuth, async (req, res) => {
     res.send(deletionResult);
   } catch (error) {
     res.status(500).send("Image deletion failed.");
+  }
+});
+
+//videoDelete
+imageRouter.delete("/video/delete/:public_id", async (req, res) => {
+  const public_id = req.params.public_id;
+
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_KEY,
+    api_secret: process.env.CLOUDINARY_API,
+    secure: true,
+  });
+  try {
+    const result = await cloudinary.uploader.destroy(public_id, {
+      resource_type: "video",
+    });
+
+    if (result.result === "ok") {
+      res.json({ message: "Video deleted successfully" });
+    } else {
+      res.status(500).json({ error: "Failed to delete video" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to delete video" });
   }
 });
 

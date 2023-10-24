@@ -48,6 +48,7 @@ import PostingDashboard from "./Pages/Owner/Posting/PostingDashboard";
 import AddPosting from "./Pages/Owner/Posting/AddPosting";
 import ViewOwnerPosting from "./Pages/Owner/Posting/ViewOwnerPosting";
 import EditPosting from "./Pages/Owner/Posting/EditPosting";
+import PostView from "./Pages/Restaurants/Restaurant View/PostView";
 
 function App() {
   return (
@@ -249,7 +250,11 @@ function App() {
                   <Route path='/AboutUs' element={<AboutUs />} />
                   <Route path='/Menus' element={<RestaurantMenu />} />
                   <Route
-                    path='/Restaurant/:resName/:_id/:source'
+                    path='/ViewRestoPost/:id/:postSource'
+                    element={<PostView />}
+                  />
+                  <Route
+                    path='/Restaurant/:resName/:source'
                     element={<RestaurantMainView />}
                   />
                   <Route

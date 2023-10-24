@@ -24,6 +24,7 @@ export default function AddPosting() {
   const [newTag, setNewTag] = useState("");
   const [currentDate, setCurrentDate] = useState("");
   const [selectedImages, setSelectedImages] = useState([]);
+  const [selectedVideo, setSelectedVideo] = useState(null);
 
   useEffect(() => {
     const fetchResto = async () => {
@@ -100,6 +101,55 @@ export default function AddPosting() {
     }
   };
 
+  const uploadVideo = async (e) => {
+    e.preventDefault();
+    const file = e.target.files[0];
+    if (!file) {
+      return; // No file selected
+    }
+    setImageLoading(true);
+    try {
+      const bodyFormData = new FormData();
+      bodyFormData.append("file", file);
+      const { data } = await axios.post(`/api/image/video`, bodyFormData, {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      });
+
+      setSelectedVideo({
+        public_id: data.public_id,
+        secure_url: data.secure_url,
+      });
+
+      setImageLoading(false);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to upload video!");
+
+      setImageLoading(false);
+    }
+  };
+
+  const handleRemoveVideo = async (public_id) => {
+    try {
+      const response = await axios.delete(
+        `/api/image/video/delete/${public_id}`,
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+
+      if (response.status === 200) {
+        setSelectedVideo(null);
+      } else {
+        toast.error("Failed to delete the image.");
+      }
+    } catch (error) {
+      // Handle errors
+      console.error(error);
+      toast.error("Failed to delete the image.");
+    }
+  };
+
   const handleReturnButton = (e) => {
     e.preventDefault();
     navigate(`/dineretso-restaurant/${userInfo.myRestaurant}/owner-posting`);
@@ -120,6 +170,7 @@ export default function AddPosting() {
   const handlePublish = async (e) => {
     e.preventDefault();
     setDataLoading(true);
+
     try {
       const blogPost = {
         title,
@@ -132,16 +183,18 @@ export default function AddPosting() {
         webLink: resto.webLink,
         category: resto.category,
         images: selectedImages,
+        video: selectedVideo,
       };
+
       const response = await axios.post("/api/owner/posting/create", blogPost, {
         headers: { Authorization: `Bearer ${userInfo.token}` },
       });
       if (response.status === 200) {
         setDataLoading(false);
-        toast.success("Post Created");
+        toast.success("Post submitted.");
         navigate(`/dineretso-restaurant/${resto.resName}/owner-posting`);
       } else {
-        toast.error("Error creating post.");
+        toast.error("Error submitting post.");
         setDataLoading(false);
       }
     } catch (error) {
@@ -153,11 +206,11 @@ export default function AddPosting() {
   return (
     <div className='lg:ml-72 md:ml-72 sm:ml-72 p-5 font-inter'>
       {dataLoading ? (
-        <LoadingSpinner />
+        <LoadingSpinner type='getPublish' />
       ) : (
         <div className='flex w-full flex-col space-y-5'>
           <div className='text-center text-4xl text-orange-500 font-bold'>
-            <h1>Add New Post</h1>
+            <h1>Submit New Post</h1>
           </div>
 
           {error ? (
@@ -184,6 +237,7 @@ export default function AddPosting() {
                     required
                   ></input>
                 </div>
+                <label>Content</label>
                 <ReactQuill value={description} onChange={setDescription} />
                 <div>
                   <label>Tags</label>
@@ -246,10 +300,45 @@ export default function AddPosting() {
                     />
                   </label>
                 </div>
+
+                {resto.paymentType && resto.paymentType === "Premium" && (
+                  <div className='w-full'>
+                    {selectedVideo ? (
+                      <div className='relative inline-block m-2'>
+                        <video
+                          src={selectedVideo.secure_url}
+                          alt='Uploaded Video'
+                          className='max-w-full max-h-36 mb-2'
+                          controls
+                        />
+                        <button
+                          type='button'
+                          className='absolute top-0 right-0 text-red-500 hover:text-red-700'
+                          onClick={() =>
+                            handleRemoveVideo(selectedVideo.public_id)
+                          }
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ) : (
+                      <label className='cursor-pointer text-blue-500'>
+                        Add Video
+                        <input
+                          type='file'
+                          className='hidden'
+                          onChange={uploadVideo}
+                          accept='video/*'
+                        />
+                      </label>
+                    )}
+                  </div>
+                )}
+
                 <div className='w-full flex flex-row justify-center items-center mt-2 space-x-2'>
                   <div className='border p-3 flex justify-center items-center px-3 rounded-lg border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-TextColor transition-all'>
                     <button type='submit' className='w-full'>
-                      Publish
+                      Submit
                     </button>
                   </div>
                   <div className='border p-3 flex justify-center items-center px-3 rounded-lg border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-TextColor transition-all'>

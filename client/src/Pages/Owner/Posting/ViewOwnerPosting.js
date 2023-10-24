@@ -101,10 +101,12 @@ export default function ViewOwnerPosting() {
             </div>
           </div>
           <div className='flex w-full justfy-start'>Post Content</div>
-          <div
-            dangerouslySetInnerHTML={{ __html: postData.description }}
-            className='text-justify text-gray-700 mt-2 border p-2'
-          />
+          <div className='w-full justify-center items-center border'>
+            <div
+              dangerouslySetInnerHTML={{ __html: postData.description }}
+              className='text-justify text-gray-700 p-2'
+            />
+          </div>
           <div className='w-full grid grid-cols-3 gap-3 p-5'>
             {postData.images.map((image, index) => (
               <img
@@ -116,16 +118,6 @@ export default function ViewOwnerPosting() {
             ))}
           </div>
           <div className='w-full flex justify-center space-x-2'>
-            <div className='border p-3 flex justify-center items-center px-3 rounded-lg border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-TextColor transition-all w-32'>
-              <button
-                className='w-full'
-                onClick={() =>
-                  navigate(`/dineretso-restaurant/editPost/${postData._id}`)
-                }
-              >
-                Edit
-              </button>
-            </div>
             <div className='border p-3 flex justify-center items-center px-3 rounded-lg border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-TextColor transition-all w-32'>
               <button className='w-full' onClick={handleDelete}>
                 Delete
