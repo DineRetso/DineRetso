@@ -509,4 +509,110 @@ ownerRouter.get(
     }
   })
 );
+ownerRouter.get(
+  "/getProfile/:userId",
+  isAuth,
+  isOwner,
+  expressAsyncHandler(async (req, res) => {
+    const { userId } = req.params;
+    try {
+      const response = await User.findById(userId);
+      const restaurants = await Restaurant.find({});
+      const userReviews = [];
+      restaurants.forEach((restaurant) => {
+        if (restaurant) {
+          const userRestoReviews = restaurant.restoReview.filter(
+            (review) => review.reviewerId === userId
+          );
+          const userMenuReviews = [];
+          restaurant.menu.forEach((menu) => {
+            const menuReviews = menu.menuReview.filter(
+              (review) => review.reviewerId === userId
+            );
+            userMenuReviews.push(...menuReviews);
+          });
+          userReviews.push(...userRestoReviews, ...userMenuReviews);
+        }
+      });
+      if (response) {
+        const resto = await Restaurant.findById(response.myRestaurant);
+
+        if (resto) {
+          const responseData = {
+            user: response,
+            restaurant: resto,
+            userReviews: userReviews,
+          };
+          res.status(200).json(responseData);
+        } else {
+          res.status(404).send({ message: "Restaurant Unavailable" });
+        }
+      } else {
+        res.status(404).send({ message: "User Unavailable" });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Internal Server Error: " + error });
+    }
+  })
+);
+ownerRouter.put(
+  "/updateProfile/:userId",
+  isAuth,
+  isOwner,
+  expressAsyncHandler(async (req, res) => {
+    const { userId } = req.params;
+    const { fName, lName, image, imagePublicId, password, address, mobileNo } =
+      req.body;
+    try {
+      const user = await User.findById(userId);
+      if (user) {
+        if (bcrypt.compareSync(password, user.password)) {
+          user.fName = fName;
+          user.lName = lName;
+          user.image = image;
+          user.imagePublicId = imagePublicId;
+          user.address = address;
+          user.mobileNo = mobileNo;
+          await user.save();
+          res.status(200).json({ message: "Profile updated successfully" });
+        } else {
+          res.status(400).send({ message: "Invalid Password!" });
+        }
+      } else {
+        res.status(404).send({ message: "User Unavailable." });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Internal Server Error: " + error });
+    }
+  })
+);
+ownerRouter.put(
+  "/changePassword/:userId",
+  isAuth,
+  isOwner,
+  expressAsyncHandler(async (req, res) => {
+    const { userId } = req.params;
+    const { newPassword, password } = req.body;
+    try {
+      const user = await User.findById(userId);
+      if (!user) {
+        res.status(404).send({ message: "User Unavailable." });
+      } else {
+        if (bcrypt.compareSync(password, user.password)) {
+          const hashedPassword = await bcrypt.hash(newPassword, 10);
+          user.password = hashedPassword;
+          await user.save();
+          res.status(200).send({ message: "Password Updated" });
+        } else {
+          res.status(400).send({ message: "Invalid Password!" });
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Internal Server Error: " + error });
+    }
+  })
+);
 module.exports = ownerRouter;

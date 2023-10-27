@@ -110,7 +110,7 @@ export default function RestaurantMainView() {
     const rating = Math.round(rates * 2) / 2;
     try {
       const response = await axios.post(
-        `/api/restaurant/add-review/${params._id}`,
+        `/api/restaurant/add-review/${params.resName}`,
         { reviewerId, reviewerName, comment, rating, location },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },

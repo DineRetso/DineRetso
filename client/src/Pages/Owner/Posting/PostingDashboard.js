@@ -4,6 +4,7 @@ import { getError } from "../../../utils";
 import axios from "axios";
 import LoadingSpinner from "../../../Components/LoadingSpinner";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function PostingDashboard() {
   const { state } = useContext(Store);
@@ -64,9 +65,13 @@ export default function PostingDashboard() {
 
   const handleAddButton = (e) => {
     e.preventDefault();
-    navigate(
-      `/dineretso-restaurant/${userInfo.myRestaurant}/owner-posting/add`
-    );
+    if (remainingPosts >= 15) {
+      toast.info("Maximum posts have reached their limit.");
+    } else {
+      navigate(
+        `/dineretso-restaurant/${userInfo.myRestaurant}/owner-posting/add`
+      );
+    }
   };
 
   function formatDate(dateString) {

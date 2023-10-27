@@ -445,7 +445,7 @@ adminRouter.put(
       updatedPost.images = images;
       updatedPost.video = video;
       updatedPost.status = "Approved";
-      await updatedPost.save();
+
       const restaurant = await Restaurant.findById(updatedPost.resId);
       if (restaurant) {
         restaurant.blogPosts.push(updatedPost._id);
@@ -454,7 +454,16 @@ adminRouter.put(
       }
       const users = await User.find({}, "email");
       const userEmails = users.map((user) => user.email);
-      await sendEmailPosting(userEmails, updatedPost);
+      const emailSentSuccessfully = await sendEmailPosting(
+        userEmails,
+        updatedPost
+      );
+      const successfulEmailRecipients = emailSentSuccessfully.filter(
+        (sent) => sent
+      );
+
+      updatedPost.expectedVisit = successfulEmailRecipients.length;
+      await updatedPost.save();
       res.status(200).json({ message: "Post Updated" });
     } catch (error) {
       console.error(error);

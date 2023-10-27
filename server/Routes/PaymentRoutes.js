@@ -195,6 +195,7 @@ const getPaymentLinkDetails = async (linkId) => {
         restaurant.subscriptionStartDate = currentDate;
         restaurant.subscriptionEndDate = endDate;
         restaurant.paymentType = paymentstatus.paymentType;
+        restaurant.postCount = 0;
         await paymentstatus.save();
         await user.save();
         await restaurant.save();

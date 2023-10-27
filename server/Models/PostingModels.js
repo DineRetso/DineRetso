@@ -8,6 +8,10 @@ const videoSchema = new mongoose.Schema({
   secure_url: String,
 });
 
+const visitSchema = new mongoose.Schema({
+  source: { type: String },
+  timestamp: { type: Date, default: Date.now },
+});
 const blogPostSchema = new mongoose.Schema(
   {
     resName: { type: String, required: true },
@@ -18,7 +22,8 @@ const blogPostSchema = new mongoose.Schema(
     webLink: { type: String },
     category: { type: String, required: true },
     status: { type: String },
-    visits: { type: Number, default: 0 },
+    visits: [visitSchema],
+    expectedVisit: { type: Number, default: 0 },
     tags: [{ type: String }],
     title: { type: String, required: true },
     description: { type: String, required: true },

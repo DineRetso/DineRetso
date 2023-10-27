@@ -93,12 +93,12 @@ resRouter.get(
   })
 );
 resRouter.post(
-  "/add-review/:_id",
+  "/add-review/:resName",
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    const { _id } = req.params;
+    const { resName } = req.params;
     try {
-      const restaurant = await Restaurant.findById(_id);
+      const restaurant = await Restaurant.findOne({ resName: resName });
       if (!restaurant) {
         return res.status(401).send("No restaurant found!");
       } else {
@@ -278,8 +278,16 @@ resRouter.get(
               source: postSource,
               timestamp: new Date(),
             });
+            posts.visits.push({
+              source: postSource,
+              timestamp: new Date(),
+            });
           } else if (postSource === "email") {
             restaurant.visits.push({
+              source: postSource,
+              timestamp: new Date(),
+            });
+            posts.visits.push({
               source: postSource,
               timestamp: new Date(),
             });
@@ -288,8 +296,13 @@ resRouter.get(
               source: "facebook",
               timestamp: new Date(),
             });
+            posts.visits.push({
+              source: postSource,
+              timestamp: new Date(),
+            });
           }
           await restaurant.save();
+          await posts.save();
         }
 
         res.status(200).json(posts);
@@ -297,6 +310,29 @@ resRouter.get(
         res.status(404).send({ message: "No posts found." });
       }
       console.log(posts);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Internal Server Error: " + error });
+    }
+  })
+);
+
+resRouter.get(
+  "/Menu/getMenuItem/:menuId",
+  expressAsyncHandler(async (req, res) => {
+    const { menuId } = req.params;
+    try {
+      const menuItem = await Restaurant.findOne({ "menu._id": menuId });
+      if (!menuItem) {
+        return res.status(404).json({ error: "Menu item not found" });
+      }
+      const specificMenuItem = menuItem.menu.find(
+        (item) => item._id.toString() === menuId
+      );
+      if (!specificMenuItem) {
+        return res.status(404).json({ error: "Specific menu item not found" });
+      }
+      res.json(specificMenuItem);
     } catch (error) {
       console.error(error);
       res.status(500).send({ message: "Internal Server Error: " + error });

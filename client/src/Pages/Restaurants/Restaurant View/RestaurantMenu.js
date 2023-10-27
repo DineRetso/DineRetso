@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useReducer, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../../Components/LoadingSpinner";
 import { Rating } from "@mui/material";
 
@@ -242,28 +242,32 @@ export default function RestaurantMenu() {
                 key={menuItem._id}
                 className='p-5 border flex flex-col justify-start items-center shadow-xl drop-shadow-xl rounded-lg'
               >
-                <div className=''>
-                  <img
-                    className='w-80 h-60 rounded-lg object-cover'
-                    src={menuItem.menuImage}
-                    alt='menu'
-                  />
-                </div>
-                <div className='w-full justify-start items-center pl-5 pt-2 '>
-                  <div className='w-full justify-start items-center border-l border-orange-500 p-2'>
-                    <Rating
-                      name='read-only'
-                      size='medium'
-                      value={calculateTotalRatings(menuItem)}
-                      precision={0.1}
-                      readOnly
+                <Link to={`/Menu/${menuItem._id}`}>
+                  <div className=''>
+                    <img
+                      className='w-80 h-60 rounded-lg object-cover'
+                      src={menuItem.menuImage}
+                      alt='menu'
                     />
-                    <h2 className='text-orange-500 text-xl font-semibold'>
-                      {menuItem.menuName}
-                    </h2>
-                    <p className='text-neutrals-500'>{menuItem.description}</p>
                   </div>
-                </div>
+                  <div className='w-full justify-start items-center pl-5 pt-2 '>
+                    <div className='w-full justify-start items-center border-l border-orange-500 p-2'>
+                      <Rating
+                        name='read-only'
+                        size='medium'
+                        value={calculateTotalRatings(menuItem)}
+                        precision={0.1}
+                        readOnly
+                      />
+                      <h2 className='text-orange-500 text-xl font-semibold'>
+                        {menuItem.menuName}
+                      </h2>
+                      <p className='text-neutrals-500'>
+                        {menuItem.description}
+                      </p>
+                    </div>
+                  </div>
+                </Link>
               </div>
             ))}
           </div>

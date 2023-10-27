@@ -196,7 +196,7 @@ export default function OwnerNavbar() {
                 <span className='ml-2'>Plans and Subscriptions</span>
               </Link>
               <Link
-                to='/settings'
+                to={`/dineretso-restaurant/${myRestaurant.resName}/settings`}
                 className='flex items-center hover:bg-orange-700 p-2'
               >
                 <i className='material-icons'>settings</i>
@@ -329,7 +329,7 @@ export default function OwnerNavbar() {
                     <span className='ml-2'>Plans and Subscriptions</span>
                   </Link>
                   <Link
-                    to='/settings'
+                    to={`/dineretso-restaurant/${myRestaurant.resName}/settings`}
                     className='flex items-center hover:bg-neutrals-600 p-3'
                     onClick={() => setIsMobileMenuOpen(false)}
                   >

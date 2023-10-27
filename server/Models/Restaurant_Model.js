@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const reviewSchema = new mongoose.Schema(
   {
     image: { type: String },
+    resName: { type: String },
     reviewerId: { type: String, required: true },
     comment: { type: String, required: true },
     reviewerName: { type: String, required: true },
@@ -36,11 +37,12 @@ const visitSchema = new mongoose.Schema({
   timestamp: { type: Date, default: Date.now },
 });
 
-
 const newSchema = new mongoose.Schema(
   {
     profileImage: { type: String, required: true },
+    profileImageId: { type: String },
     bgPhoto: { type: String },
+    bgPhotoId: { type: String },
     resName: { type: String, required: true, unique: true },
     owner: { type: String, required: true },
     email: { type: String, required: true },
@@ -51,7 +53,6 @@ const newSchema = new mongoose.Schema(
     webLink: { type: String },
     category: { type: String, required: true },
     address: { type: String, required: true },
-    pinLocation: { type: String },
     openAt: { type: Date },
     closeAt: { type: Date },
     restoReview: [reviewSchema],
@@ -70,8 +71,19 @@ const newSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    location: {
+      type: {
+        type: String,
+        enum: ["Point"],
+        default: "Point",
+      },
+      coordinates: {
+        type: [Number], // [longitude, latitude]
+      },
+    },
   },
   { timestamps: true, collection: "Restaurants" }
 );
+newSchema.index({ location: "2dsphere" });
 const Restaurant = mongoose.model("Restaurants", newSchema);
 module.exports = Restaurant;

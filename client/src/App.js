@@ -49,6 +49,8 @@ import AddPosting from "./Pages/Owner/Posting/AddPosting";
 import ViewOwnerPosting from "./Pages/Owner/Posting/ViewOwnerPosting";
 import EditPosting from "./Pages/Owner/Posting/EditPosting";
 import PostView from "./Pages/Restaurants/Restaurant View/PostView";
+import MenuView from "./Pages/Restaurants/Restaurant View/MenuView";
+import Settings from "./Pages/Owner/Settings/Settings";
 
 function App() {
   return (
@@ -232,6 +234,14 @@ function App() {
                       </OwnerRoute>
                     }
                   />
+                  <Route
+                    path='/:resname/settings'
+                    element={
+                      <OwnerRoute>
+                        <Settings />
+                      </OwnerRoute>
+                    }
+                  />
                 </Routes>
               </div>
             }
@@ -249,6 +259,7 @@ function App() {
                   <Route path='/Restaurants' element={<Restaurant />} />
                   <Route path='/AboutUs' element={<AboutUs />} />
                   <Route path='/Menus' element={<RestaurantMenu />} />
+                  <Route path='/Menu/:menuId' element={<MenuView />} />
                   <Route
                     path='/ViewRestoPost/:id/:postSource'
                     element={<PostView />}
