@@ -1,16 +1,12 @@
 import React, { useContext, useRef, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { Store } from "../Store";
 import bcrypt from "bcryptjs";
 import LoadingSpinner from "../Components/LoadingSpinner";
 import { toast } from "react-toastify";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
 import SignupTermsandConditions from "../Components/SignupTermsandConditions";
 
 const Signup = () => {
-  const { state, dispatch: ctxDispatch } = useContext(Store);
   const [fName, setfName] = useState("");
   const [lName, setlName] = useState("");
   const [address, setAdd] = useState("");
@@ -106,8 +102,7 @@ const Signup = () => {
       otp: hashedOTP,
       expiration: expirationTime,
     };
-    ctxDispatch({ type: "USER_SIGNIN", payload: userData });
-    localStorage.setItem("userInfo", JSON.stringify(userData));
+    localStorage.setItem("signupData", JSON.stringify(userData));
     if (email) {
       sendOTPEmail();
     } else {

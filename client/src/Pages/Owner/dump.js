@@ -77,6 +77,19 @@
 //                     ))}
 
 
+//   <div className='flex justify-center items-center px-2'>
+//               <select
+//                 className='lg:w-32 md:w-20 sm:w-20 w-10'
+//                 value={available}
+//                 onChange={(e) => handleAvailability(e.target.value)}
+//               >
+//                 <option value='All'>All</option>
+//                 <option value='true'>Available</option>
+//                 <option value='false'>Hidden</option>
+//               </select>
+//             </div>
+
+
 // <div>
 //   <div className='h-28 w-ful bg-red-200 flex justify-center items-center'>
 //     <h1 className='text-5xl font-bold text-TextColor'>

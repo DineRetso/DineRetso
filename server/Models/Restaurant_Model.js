@@ -36,6 +36,10 @@ const visitSchema = new mongoose.Schema({
   source: { type: String },
   timestamp: { type: Date, default: Date.now },
 });
+const locationSchema = new mongoose.Schema({
+  lat: { type: Number },
+  lng: { type: Number },
+});
 
 const newSchema = new mongoose.Schema(
   {
@@ -53,8 +57,9 @@ const newSchema = new mongoose.Schema(
     webLink: { type: String },
     category: { type: String, required: true },
     address: { type: String, required: true },
-    openAt: { type: Date },
-    closeAt: { type: Date },
+    pinLocation: locationSchema,
+    openAt: { type: String },
+    closeAt: { type: String },
     restoReview: [reviewSchema],
     visits: [visitSchema],
     isSubscribed: { type: String, default: "not subscribed" },
@@ -71,19 +76,8 @@ const newSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
-    location: {
-      type: {
-        type: String,
-        enum: ["Point"],
-        default: "Point",
-      },
-      coordinates: {
-        type: [Number], // [longitude, latitude]
-      },
-    },
   },
   { timestamps: true, collection: "Restaurants" }
 );
-newSchema.index({ location: "2dsphere" });
 const Restaurant = mongoose.model("Restaurants", newSchema);
 module.exports = Restaurant;

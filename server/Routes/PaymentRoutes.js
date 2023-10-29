@@ -178,8 +178,14 @@ const getPaymentLinkDetails = async (linkId) => {
     return result;
   }
   const restaurant = await Restaurant.findOne({ _id: user.myRestaurant });
+
   if (paymentstatus) {
     if (responseData.data.attributes.status === "paid") {
+      const paymentMode =
+        responseData.data.attributes.payments[0].data.attributes.source.type;
+      const totalAmount =
+        paymentstatus.amount -
+        responseData.data.attributes.payments[0].data.attributes.fee / 100;
       const currentDate = new Date();
       if (!paymentstatus.subscriptionUpdated) {
         paymentstatus.startDate = currentDate;
@@ -188,6 +194,8 @@ const getPaymentLinkDetails = async (linkId) => {
         paymentstatus.endDate = endDate;
         paymentstatus.subscriptionUpdated = true;
         paymentstatus.status = "subscribed";
+        paymentstatus.paymentMode = paymentMode;
+        paymentstatus.totalAmount = totalAmount;
         user.subscriptionStatus = "subscribed";
         user.subscriptionStartDate = currentDate;
         user.subscriptionEndDate = endDate;

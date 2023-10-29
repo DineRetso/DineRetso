@@ -106,6 +106,7 @@ resRouter.post(
           req.body;
         const review = {
           reviewerName: reviewerName,
+          resName: resName,
           comment: comment,
           rating: rating,
           location: location,
@@ -132,7 +133,7 @@ resRouter.post(
   expressAsyncHandler(async (req, res) => {
     const { pid } = req.params;
     try {
-      const restaurant = await Restaurant.findById(pid);
+      const restaurant = await Restaurant.findOne({ resName: pid });
       if (!restaurant) {
         return res.status(404).json({ message: "Restaurant not found!" });
       }
@@ -145,6 +146,7 @@ resRouter.post(
       const newReview = {
         status: "pending",
         source: "Menu",
+        resName: pid,
         menuId: menuId,
         reviewerId: reviewerId,
         reviewerName,

@@ -9,6 +9,7 @@ export default function DineNavbar() {
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [pending, setPending] = useState([]);
+  const [loc, setLoc] = useState("dashboard");
 
   useEffect(() => {
     const fetchPending = async () => {
@@ -30,7 +31,6 @@ export default function DineNavbar() {
     localStorage.removeItem("dineInfo");
     navigate("/login");
   };
-  console.log("pending: ", pending);
   return (
     <div className='flex z-50'>
       <nav className='bg-gradient-to-r from-orange-500 to-red-500 text-TextColor w-72 h-screen fixed top-0 left-0 overflow-y-auto font-inter space-y-10 hidden sm:flex flex-col p-5'>
@@ -49,42 +49,60 @@ export default function DineNavbar() {
         <div className='w-full h-auto space-y-1 font-thin text-2xl'>
           <Link
             to='/dine/admin/secret/admin-dashboard'
-            className='flex items-center hover:bg-orange-700 p-2'
+            className={`flex items-center hover:bg-orange-700 p-2 ${
+              loc === "dashboard" && "bg-orange-700"
+            }`}
+            onClick={() => setLoc("dashboard")}
           >
             <i className='material-icons'>dashboard</i>
             <span className='ml-2'>Dashboard</span>
           </Link>
           <Link
             to='/dine/admin/secret/restaurants'
-            className='flex items-center hover:bg-orange-700 p-2'
+            className={`flex items-center hover:bg-orange-700 p-2 ${
+              loc === "restaurants" && "bg-orange-700"
+            }`}
+            onClick={() => setLoc("restaurants")}
           >
             <i className='material-icons'>restaurant</i>
             <span className='ml-2'>Restaurant</span>
           </Link>
           <Link
             to='/dine/admin/secret/registration'
-            className='flex items-center hover:bg-orange-700 p-2'
+            className={`flex items-center hover:bg-orange-700 p-2 ${
+              loc === "registration" && "bg-orange-700"
+            }`}
+            onClick={() => setLoc("registration")}
           >
             <i className='material-icons'>person_add</i>
             <span className='ml-2'>Registration</span>
           </Link>
           <Link
-            to='/dashboard'
-            className='flex items-center hover:bg-orange-700 p-2'
+            to='/dine/admin/secret/payments'
+            className={`flex items-center hover:bg-orange-700 p-2 ${
+              loc === "payments" && "bg-orange-700"
+            }`}
+            onClick={() => setLoc("payments")}
           >
-            <i className='material-icons'>reviews</i>
-            <span className='ml-2'>Reviews</span>
+            <i className='material-icons'>attach_money</i>
+            <span className='ml-2'>Payments</span>
           </Link>
           <Link
             to='/dine/admin/secret/customers'
-            className='flex items-center hover:bg-orange-700 p-2'
+            className={`flex items-center hover:bg-orange-700 p-2 ${
+              loc === "customers" && "bg-orange-700"
+            }`}
+            onClick={() => setLoc("customers")}
           >
             <i className='material-icons'>people</i>
             <span className='ml-2'>Customers</span>
           </Link>
           <Link
             to='/dine/admin/secret/posting'
-            className='flex items-center hover:bg-orange-700 p-2 relative'
+            className={`flex items-center hover:bg-orange-700 p-2 ${
+              loc === "posting" && "bg-orange-700"
+            }`}
+            onClick={() => setLoc("posting")}
           >
             <i className='material-icons'>article</i>
             <span className='ml-2'>
@@ -98,7 +116,10 @@ export default function DineNavbar() {
           </Link>
           <Link
             to='/dashboard'
-            className='flex items-center hover:bg-orange-700 p-2'
+            className={`flex items-center hover:bg-orange-700 p-2 ${
+              loc === "settings" && "bg-orange-700"
+            }`}
+            onClick={() => setLoc("settings")}
           >
             <i className='material-icons'>settings</i>
             <span className='ml-2'>Settings</span>

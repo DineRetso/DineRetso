@@ -51,6 +51,7 @@ import EditPosting from "./Pages/Owner/Posting/EditPosting";
 import PostView from "./Pages/Restaurants/Restaurant View/PostView";
 import MenuView from "./Pages/Restaurants/Restaurant View/MenuView";
 import Settings from "./Pages/Owner/Settings/Settings";
+import PaymentDashboard from "./Dine-Secret/Payments/PaymentDashboard";
 
 function App() {
   return (
@@ -64,10 +65,21 @@ function App() {
             path='/dine/admin/secret/*'
             element={
               <div>
-                <DineNavbar />
-                <Static />
+                <AdminRoute>
+                  <DineNavbar />
+                </AdminRoute>
+                <AdminRoute>
+                  <Static />
+                </AdminRoute>
                 <Routes>
-                  <Route path='/admin-dashboard' element={<Dashboard />} />
+                  <Route
+                    path='/admin-dashboard'
+                    element={
+                      <AdminRoute>
+                        <Dashboard />
+                      </AdminRoute>
+                    }
+                  />
                   <Route
                     path='/manage-restaurants'
                     element={
@@ -132,12 +144,22 @@ function App() {
                       </AdminRoute>
                     }
                   />
+                  <Route
+                    path='/payments'
+                    element={
+                      <AdminRoute>
+                        <PaymentDashboard />
+                      </AdminRoute>
+                    }
+                  />
                 </Routes>
               </div>
             }
           />
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<Signup />} />
+          <Route path='/verifyOTP' element={<VerifyOTP />} />
+          <Route path='/reset-password' element={<ResetPassword />} />
           <Route
             path='/dineretso-restaurant/*'
             element={
@@ -254,8 +276,7 @@ function App() {
                 <Routes>
                   <Route path='/' element={<MainDashboard />} />
                   <Route path='/qr' element={<QRCodeGenerator />} />
-                  <Route path='/verifyOTP' element={<VerifyOTP />} />
-                  <Route path='/reset-password' element={<ResetPassword />} />
+
                   <Route path='/Restaurants' element={<Restaurant />} />
                   <Route path='/AboutUs' element={<AboutUs />} />
                   <Route path='/Menus' element={<RestaurantMenu />} />

@@ -59,39 +59,7 @@ export default function ProfileSettings({
   const closeChangePass = () => {
     setIsChangeOpen(false);
   };
-  const uploadimg = async (e) => {
-    const file = e.target.files[0];
-    const bodyFormData = new FormData();
-    bodyFormData.append("file", file);
-    try {
-      setImageLoading(true);
-      const { data } = await axios.post(`/api/image`, bodyFormData, {
-        headers: { Authorization: `Bearer ${userInfo.token}` },
-      });
-      setImage(data.secure_url);
-      setImagePublicId(data.public_id);
-      setImageLoading(false);
-    } catch (err) {
-      console.error(err);
-      setImageLoading(false);
-      toast.error("Failed to upload image!");
-    }
-  };
-  const removeImage = async () => {
-    try {
-      setImageLoading(true);
-      await axios.delete(`/api/image/${imagePublicId}`, {
-        headers: { Authorization: `Bearer ${userInfo.token}` },
-      });
-      setImage("");
-      setImagePublicId("");
-      setImageLoading(false);
-    } catch (err) {
-      console.error(err);
-      setImageLoading(false);
-      toast.error("Failed to remove image!");
-    }
-  };
+ 
   return (
     <div className='w-full flex flex-col font-inter'>
       <div>

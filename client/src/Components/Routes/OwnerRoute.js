@@ -8,11 +8,7 @@ export default function OwnerRoute({ children }) {
   const { state } = useContext(Store);
   const { userInfo } = state;
   const navigate = useNavigate();
-
-  // State to track if user information is loading
   const [isLoading, setIsLoading] = useState(true);
-
-  // State to store user information
   const [isOwner, setIsOwner] = useState(false);
   useEffect(() => {
     const fetchUserInfo = async () => {

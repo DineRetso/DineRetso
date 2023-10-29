@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 
 const registeredReducer = (state, action) => {
   switch (action.type) {
@@ -26,6 +26,7 @@ export default function Static() {
     initialRegisteredState
   );
   const { loading, error, Resto } = registeredState;
+  const [totalAmount, setTotalAmount] = useState("");
 
   useEffect(() => {
     const fetchRestaurants = async () => {
@@ -34,6 +35,11 @@ export default function Static() {
         const response = await axios.get("/api/admin/getRestaurants", {
           headers: { Authorization: `Bearer ${dineInfo.token}` },
         });
+        const totalAmount = await axios.get("/api/admin/getIncome", {
+          headers: { Authorization: `Bearer ${dineInfo.token}` },
+        });
+        setTotalAmount(totalAmount.data);
+        console.log(totalAmount);
         registeredDispatch({ type: "GET_SUCCESS", payload: response.data });
       } catch (error) {
         if (error.response && error.response.status === 401) {
@@ -66,6 +72,11 @@ export default function Static() {
   };
   const { totalActive, totalInactive } = calulateTotalActiveRestaurants();
 
+  const formattedTotalAmount = new Intl.NumberFormat("en-PH", {
+    style: "currency",
+    currency: "PHP",
+  }).format(totalAmount);
+
   return (
     <div className='lg:ml-72 md:ml-72 sm:ml-72 relative flex flex-col p-5 bg-neutrals-400  font-inter'>
       <div className='flex justify-start items-center w-full p-5 border-b border-orange-500'>
@@ -95,6 +106,9 @@ export default function Static() {
             <i className='material-icons text-orange-500'>attach_money</i>
           </div>
           <h1 className='text-neutrals-500'>Total Revenue</h1>
+          <h2 className='text-xl text-neutrals-500 font-semibold'>
+            {formattedTotalAmount}
+          </h2>
         </div>
       </div>
     </div>

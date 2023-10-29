@@ -6,6 +6,7 @@ import { Store } from "../Store";
 import Axios from "axios";
 import LoadingSpinner from "../Components/LoadingSpinner";
 import { toast } from "react-toastify";
+import { getError } from "../utils";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -33,11 +34,8 @@ const Login = () => {
         navigate(`/dineretso-restaurant/${data.myRestaurant}/dashboard`);
       }
     } catch (err) {
-      if (err.response && err.response.data && err.response.data.message) {
-        toast.error(err.response.data.message);
-      } else {
-        toast.error("An error occurred. Please try again.");
-      }
+      console.error(getError(err));
+      toast.error(getError(err));
     }
   };
   const resetPassword = async (e) => {
@@ -52,7 +50,7 @@ const Login = () => {
     } catch (err) {
       console.error(err);
       setLoading(false);
-      toast.error(err.response.data.message);
+      toast.error(getError(err));
       navigate("/login");
     }
   };

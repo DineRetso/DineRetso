@@ -5,10 +5,12 @@ const paymentSchema = new mongoose.Schema(
     payeeName: { type: String, required: true },
     payeeResId: { type: String, required: true },
     amount: { type: Number, default: 200 },
+    totalAmount: { type: Number },
     linkId: { type: String },
     startDate: { type: Date },
     endDate: { type: Date },
     paymentType: { type: String },
+    paymentMode: { type: String },
     status: {
       type: String,
       enum: [

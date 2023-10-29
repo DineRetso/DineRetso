@@ -8,6 +8,7 @@ const Restaurant = require("../Models/Restaurant_Model.js");
 const User = require("../Models/User_Model.js");
 const Dine = require("../Models/AdminModel.js");
 const Posting = require("../Models/PostingModels.js");
+const Payments = require("../Models/PaymentModel.js");
 const { generateAdminToken, isAdminAuth, isAdmin } = require("../utils.js");
 
 const adminRouter = express.Router();
@@ -488,6 +489,51 @@ adminRouter.put(
       await updatedPost.save();
 
       res.status(200).json({ message: "Post Updated" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Internal Server Error:" + error });
+    }
+  })
+);
+
+adminRouter.get(
+  "/getPayments",
+  isAdminAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const payments = await Payments.find();
+      if (payments) {
+        res.status(200).json(payments);
+      } else {
+        return res.status(401).send({ message: "Payment Unavailable" });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Internal Server Error:" + error });
+    }
+  })
+);
+
+adminRouter.get(
+  "/getIncome",
+  isAdminAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const payments = await Payments.find({
+        status: { $in: ["expired", "subscribed"] },
+      });
+
+      if (payments) {
+        const totalAmount = payments.reduce((total, payment) => {
+          return total + payment.totalAmount;
+        }, 0);
+
+        res.status(200).json(totalAmount);
+      } else {
+        return res.status(401).send({ message: "Payment Unavailable" });
+      }
     } catch (error) {
       console.error(error);
       res.status(500).send({ message: "Internal Server Error:" + error });

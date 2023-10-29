@@ -36,7 +36,6 @@ export default function OwnerView() {
     setActiveLink(sectionId);
   };
   const navigate = useNavigate();
-
   useEffect(() => {
     const fetchUser = async () => {
       try {

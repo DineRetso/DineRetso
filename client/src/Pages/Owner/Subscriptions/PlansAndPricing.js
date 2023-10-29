@@ -56,9 +56,6 @@ export default function PlansAndPricing() {
         dispatch({ type: "FETCH_FAIL", payload: getError(error) });
       }
     };
-    fetchUser();
-  }, [userInfo._id, userInfo.token]);
-  useEffect(() => {
     const checkPaymentStatusAndRedirect = async () => {
       try {
         if (owner.linkId) {
@@ -86,8 +83,18 @@ export default function PlansAndPricing() {
         console.error("Error checking payment status:", error);
       }
     };
+    fetchUser();
     checkPaymentStatusAndRedirect();
-  }, [owner.linkId, setPaymentLink, setResto, setPayments, setPStat, error]);
+  }, [
+    userInfo._id,
+    userInfo.token,
+    owner.linkId,
+    setPaymentLink,
+    setResto,
+    setPayments,
+    setPStat,
+    error,
+  ]);
 
   const handleFormOpen = (e) => {
     e.preventDefault();

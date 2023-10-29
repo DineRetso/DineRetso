@@ -7,6 +7,7 @@ import LoadingSpinner from "../../Components/LoadingSpinner";
 import AddMenuItem from "../../Components/Owner/AddMenuItem";
 import { Rating } from "@mui/material";
 import EditMenuItem from "../../Components/Owner/EditMenuItem";
+import { getError } from "../../utils";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -35,12 +36,12 @@ export default function OwnerMenu() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedRating, setSelectedRating] = useState("All");
   const [userData, setUserData] = useState(null);
+  const [available, setAvailable] = useState("All");
+  const falseStatus = false;
+  const trueStatus = true;
 
   const showSort = () => {
-    setShowSorting(true);
-  };
-  const closeSort = () => {
-    setShowSorting(false);
+    setShowSorting(!showSorting);
   };
 
   const [{ loading, error, myRestaurant }, dispatch] = useReducer(reducer, {
@@ -70,24 +71,10 @@ export default function OwnerMenu() {
         );
         dispatch({ type: "FETCH_SUCCESS", payload: restaurantResponse.data });
       } catch (error) {
-        // Handle errors for both fetch operations
-        if (
-          error.response &&
-          error.response.data &&
-          error.response.data.message
-        ) {
-          toast.error(error.response.data.message);
-          dispatch({
-            type: "FETCH_FAIL",
-            payload: error.response.data.message,
-          });
-        } else {
-          toast.error("Internal Server Error");
-          dispatch({
-            type: "FETCH_FAIL",
-            payload: "An unexpected error occurred.",
-          });
-        }
+        dispatch({
+          type: "FETCH_FAIL",
+          payload: getError(error),
+        });
       }
     };
 
@@ -99,7 +86,6 @@ export default function OwnerMenu() {
     userInfo.token,
     dispatch,
     setStatus,
-    toast,
   ]);
 
   const handleAddMenuItem = async (menuItemData) => {
@@ -113,27 +99,15 @@ export default function OwnerMenu() {
       );
       if (response.status === 200) {
         const updatedMenu = [...myRestaurant.menu, response.data];
-
-        // Update the state with the new menu item
         dispatch({
           type: "FETCH_SUCCESS",
           payload: { ...myRestaurant, menu: updatedMenu },
         });
-
-        // Close the AddMenuItem component
         toast.success("New menu added to your restaurant!");
       }
     } catch (error) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        toast.error(error.response.data.message);
-      } else {
-        console.error(error);
-        toast.error("Internal Server Error. Please Contact the DineRetso!");
-      }
+      console.error(getError(error));
+      toast.error(getError(error));
     }
   };
   const handleEditMenuItem = async (editItemData) => {
@@ -158,59 +132,34 @@ export default function OwnerMenu() {
         toast.success("Menu item updated successfully");
       }
     } catch (error) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        toast.error(error.response.data.message);
-      } else {
-        console.error(error);
-        toast.error("Internal Server Error. Please Contact the DineRetso!");
-      }
+      console.error(getError(error));
+      toast.error(getError(error));
     }
   };
-  const deleteMenu = async (menuId, imagePublicId) => {
-    if (window.confirm("Menu will be deleted?")) {
-      try {
-        const response = await axios.delete(
-          `/api/owner/${myRestaurant._id}/${menuId}`,
-          {
-            headers: { Authorization: `Bearer ${userInfo.token}` },
-          }
-        );
-        if (response.status === 200) {
-          const updatedMenu = myRestaurant.menu.filter(
-            (menuItem) => menuItem._id !== menuId
-          );
-          dispatch({
-            type: "FETCH_SUCCESS",
-            payload: { ...myRestaurant, menu: updatedMenu },
-          });
-          if (imagePublicId) {
-            // If there is an imagePublicId, make an HTTP DELETE request to delete the image
-            const imageDeletionResponse = await axios.delete(
-              `/api/image/${imagePublicId}`,
-              {
-                headers: { Authorization: `Bearer ${userInfo.token}` },
-              }
-            );
-
-            if (imageDeletionResponse.status === 200) {
-              toast.success("Menu item and image deleted successfully");
-            } else {
-              toast.error("Image deletion failed.");
-            }
-          } else {
-            toast.success("Menu item deleted successfully");
-          }
-        } else {
-          toast.error("Menu deletion failed.");
+  const hideMenu = async (menuData, status) => {
+    try {
+      const response = await axios.put(
+        `/api/owner/${myRestaurant._id}/${menuData._id}/${status}`,
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
         }
-      } catch (error) {
-        console.error(error);
-        toast.error("An error occurred while deleting the menu item.");
+      );
+      if (response.status === 200) {
+        const updatedMenu = myRestaurant.menu.map((menuItem) =>
+          menuItem._id === menuData._id
+            ? { ...menuItem, isAvailable: status }
+            : menuItem
+        );
+        dispatch({
+          type: "FETCH_SUCCESS",
+          payload: { ...myRestaurant, menu: updatedMenu },
+        });
+      } else {
+        toast.error("Hiding failed.");
       }
+    } catch (error) {
+      console.error(getError(error));
+      toast.error(getError(error));
     }
   };
   const handleSearchInputChange = (event) => {
@@ -231,12 +180,16 @@ export default function OwnerMenu() {
   //sorting
   const handleCategorySelection = (classification) => {
     setSelectedCategory(classification);
-    applyFilters(classification, selectedRating);
+    applyFilters(classification, selectedRating, available);
   };
 
   const handleRatingSelection = (rating) => {
     setSelectedRating(rating);
-    applyFilters(selectedCategory, rating);
+    applyFilters(selectedCategory, rating, available);
+  };
+  const handleAvailability = (avail) => {
+    setAvailable(avail);
+    applyFilters(selectedCategory, selectedRating, avail);
   };
 
   useEffect(() => {
@@ -248,9 +201,21 @@ export default function OwnerMenu() {
     setSelectedMenuItem(menuItem);
     setShowEditMenu(true);
   };
-  const applyFilters = (classification, rating) => {
+  const applyFilters = (classification, rating, available) => {
     if (myRestaurant && myRestaurant.menu) {
       let filteredItems = myRestaurant.menu;
+      //availability
+      if (available !== "All") {
+        if (available === "true") {
+          filteredItems = filteredItems.filter(
+            (menuItem) => menuItem.isAvailable
+          );
+        } else if (available === "false") {
+          filteredItems = filteredItems.filter(
+            (menuItem) => !menuItem.isAvailable
+          );
+        }
+      }
       //category
       if (classification !== "All") {
         filteredItems = filteredItems.filter(
@@ -276,65 +241,70 @@ export default function OwnerMenu() {
   };
 
   return (
-    <div className='ml-0 lg:ml-72 md:ml-72 sm:ml-72 p-10 font-inter'>
+    <div className='ml-0 lg:ml-72 md:ml-72 sm:ml-72 lg:p-10 md:p-8 sm:p-5 p-2 font-inter '>
       <div className='flex flex-col justify-center items-center space-y-5'>
         <div className='flex justify-center items-center'>
           <h1 className='lg:text-4xl md:text-3xl text-2xl font-semibold text-orange-500'>
             MENU
           </h1>
         </div>
-        <div className='sticky top-0 flex shadow-md w-full h-20 p-3 z-40 bg-TextColor'>
-          <div className='flex justify-start items-center w-1/4 border-r border-neutrals-700'>
-            <i className='material-icons text-orange-500 lg:text-4xl md:text-2xl sm:lg'>
-              add
-            </i>
-            <div className='w-full flex justify-center items-center lg:text-xl md:text-lg sm:text-sm text-xs'>
-              {showAddMenu ? (
-                status === "subscribed" ? (
-                  <AddMenuItem
-                    onAddMenuItem={handleAddMenuItem}
-                    onClose={() => setShowAddMenu(false)}
-                  />
+        <div className='sticky top-0 flex shadow-md w-full lg:h-20 md:h-16 h-14 lg:p-3 md:p-2 p-1 -z-10 bg-TextColor flex-row justify-between items-center transition-all '>
+          <div className='flex flex-row justify-start items-end w-full h-full'>
+            <div className='flex justify-start items-center w-auto border-r border-neutrals-700'>
+              <i className='material-icons text-orange-500 lg:text-4xl md:text-3xl sm:text-2xl'>
+                add
+              </i>
+
+              <div className='w-full flex justify-center items-end lg:text-2xl md:text-xl sm:text-xl text-lg'>
+                {showAddMenu ? (
+                  status === "subscribed" ? (
+                    <AddMenuItem
+                      onAddMenuItem={handleAddMenuItem}
+                      onClose={() => setShowAddMenu(false)}
+                    />
+                  ) : (
+                    <div className='w-auto text-neutrals-500 bg-OrangeDefault rounded-md p-1 flex justify-center items-center'>
+                      <button
+                        onClick={() =>
+                          toast.info("Please subscribe for full access.")
+                        }
+                      >
+                        Add
+                      </button>
+                    </div>
+                  )
                 ) : (
-                  <div className='w-auto text-neutrals-500 bg-OrangeDefault rounded-md p-1 flex justify-center items-center'>
-                    <button
-                      onClick={() =>
-                        toast.info("Please subscribe for full access.")
-                      }
-                    >
-                      Add Menu
-                    </button>
+                  <div className='w-auto bg-OrangeDefault rounded-md p-1 flex justify-center items-center text-neutrals-500 '>
+                    <button onClick={() => setShowAddMenu(true)}>Add</button>
                   </div>
-                )
-              ) : (
-                <div className='w-auto bg-OrangeDefault rounded-md p-1 flex justify-center items-center text-neutrals-500 lg:text-xl md:text-md text-small'>
-                  <button onClick={() => setShowAddMenu(true)}>Add Menu</button>
-                </div>
-              )}
+                )}
+              </div>
+            </div>
+            <div className='w-auto flex justify-start items-center lg:px-2 md:px-2 px-1'>
+              <i className='material-icons lg:text-4xl md:text-3xl sm:text-2xl text-orange-500'>
+                search
+              </i>
+              <input
+                className='w-full h-full px-2 lg:text-2xl md:text-xl sm:text-xl text-lg border-b outline-none border-orange-500'
+                placeholder='Search here...'
+                value={searchQuery}
+                onChange={handleSearchInputChange}
+              ></input>
             </div>
           </div>
-          <div className='w-3/4 flex justify-start items-center px-5'>
-            <i className='material-icons lg:text-4xl md:text-md text-small text-orange-500'>
-              search
-            </i>
-            <input
-              className='w-full h-full px-2 lg:text-xl md:text-md text-small'
-              placeholder='Search here...'
-              value={searchQuery}
-              onChange={handleSearchInputChange}
-            ></input>
-          </div>
-          <div
-            className='w-auto flex justify-center items-center bg-orange-500 p-3 rounded-r-lg'
-            onClick={showSort}
-          >
-            <i className='material-icons text-4xl text-TextColor'>sort</i>
+          <div className='flex flex-row'>
+            <div
+              className='w-auto flex justify-center items-center bg-orange-500 lg:p-2 md:p-2 p-1 rounded-r-lg'
+              onClick={showSort}
+            >
+              <i className='material-icons text-4xl text-TextColor'>sort</i>
+            </div>
           </div>
           {showSorting && (
-            <div className='fixed flex flex-col right-10 top-40 max-w-[350px] h-[500px] bg-neutrals-200 rounded-lg p-5'>
-              <div className='border p-3 h-[280px] overflow-y-auto'>
+            <div className='fixed flex flex-col right-10 lg:top-40 md:top-40 sm:top-40 top-52 max-w-[400px] h-[400px] bg-neutrals-200 rounded-lg p-5'>
+              <div className='border p-3'>
                 <h1 className='p-2 mb-2'>By Category</h1>
-                <div className='grid grid-cols-2 gap-2'>
+                <div className='grid grid-cols-2 gap-2 max-h-[100px] overflow-y-auto'>
                   <div
                     className={`flex justify-center items-center bg-neutrals-400 rounded-md p-2 ${
                       selectedCategory === "All"
@@ -371,7 +341,7 @@ export default function OwnerMenu() {
               <div className='border p-3'>
                 <h1 className='p-2 mb-2'>By Ratings</h1>
 
-                <div className='grid grid-cols-2 gap-2'>
+                <div className='grid grid-cols-2 gap-2 max-h-[100px] overflow-y-auto'>
                   <div
                     className={`flex justify-center items-center bg-neutrals-400 rounded-md p-2 ${
                       selectedRating === "All"
@@ -397,17 +367,61 @@ export default function OwnerMenu() {
                   ))}
                 </div>
               </div>
-              <div className='flex justify-center items-center space-x-2'>
-                <div className='border border-red-200 flex justify-center items-center w-32 hover:bg-red-200 text-red-200 hover:text-TextColor transition-all duration-300 p-1 rounded-md'>
-                  <button className='w-full' onClick={closeSort}>
-                    Close
-                  </button>
-                </div>
-              </div>
             </div>
           )}
         </div>
-        <div className='menu-container'>
+        <div className='sticky lg:top-20 md:top-16 top-14 w-full flex justify-center items-center space-x-4 p-2 bg-TextColor -z-10'>
+          <div
+            className={`${
+              available === "All"
+                ? "bg-orange-500 text-TextColor border flex justify-center items-center w-24 p-2 rounded-md"
+                : "border border-orange-500 flex justify-center items-center w-24 hover:bg-orange-500 text-orange-500 hover:text-TextColor transition-all duration-300 p-2 rounded-md"
+            }
+          `}
+          >
+            <button
+              className='rounded-xl w-full'
+              value='All'
+              onClick={(e) => handleAvailability(e.target.value)}
+            >
+              All
+            </button>
+          </div>
+          <div
+            className={`${
+              available === "true"
+                ? "bg-orange-500 text-TextColor border flex justify-center items-center w-24 p-2 rounded-md"
+                : "border border-orange-500 flex justify-center items-center w-24 hover:bg-orange-500 text-orange-500 hover:text-TextColor transition-all duration-300 p-2 rounded-md"
+            }
+        `}
+          >
+            <button
+              className='rounded-xl w-full'
+              value='true'
+              onClick={(e) => handleAvailability(e.target.value)}
+            >
+              Shown
+            </button>
+          </div>
+          <div
+            className={`${
+              available === "false"
+                ? "bg-orange-500 text-TextColor border flex justify-center items-center w-24 p-2 rounded-md"
+                : "border border-orange-500 flex justify-center items-center w-24 hover:bg-orange-500 text-orange-500 hover:text-TextColor transition-all duration-300 p-2 rounded-md"
+            }
+        `}
+          >
+            {" "}
+            <button
+              className='rounded-xl w-full'
+              value='false'
+              onClick={(e) => handleAvailability(e.target.value)}
+            >
+              Hidden
+            </button>
+          </div>
+        </div>
+        <div className='menu-container -z-20'>
           {loading ? (
             <LoadingSpinner />
           ) : (
@@ -444,7 +458,7 @@ export default function OwnerMenu() {
                       <div className='lg:text-2xl md:text-md text-sm text-md text-neutrals-700 font-semibold'>
                         <p>P {menuItem.price}</p>
                       </div>
-                      <div>
+                      <div className='-z-50'>
                         <Rating
                           name='read-only'
                           className={`lg:${"size='large'"}`}
@@ -484,16 +498,23 @@ export default function OwnerMenu() {
                             </button>
                           </div>
                         )}
-
-                        <div className='border border-orange-700 flex justify-center items-center w-auto hover:bg-orange-700 text-orange-700 hover:text-TextColor transition-all duration-300 p-1 rounded-md'>
-                          <button
-                            onClick={() =>
-                              deleteMenu(menuItem._id, menuItem.imagePublicId)
-                            }
-                          >
-                            Delete
-                          </button>
-                        </div>
+                        {menuItem.isAvailable ? (
+                          <div className='border border-orange-700 flex justify-center items-center w-auto hover:bg-orange-700 text-orange-700 hover:text-TextColor transition-all duration-300 p-1 rounded-md'>
+                            <button
+                              onClick={() => hideMenu(menuItem, falseStatus)}
+                            >
+                              Hide
+                            </button>
+                          </div>
+                        ) : (
+                          <div className='border border-orange-700 flex justify-center items-center w-auto hover:bg-orange-700 text-orange-700 hover:text-TextColor transition-all duration-300 p-1 rounded-md'>
+                            <button
+                              onClick={() => hideMenu(menuItem, trueStatus)}
+                            >
+                              Unhide
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

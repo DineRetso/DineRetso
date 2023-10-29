@@ -49,10 +49,24 @@ userRouter.post(
       });
 
       const mailOption = {
-        from: process.env.DineE,
+        from: '"DineRetso" <reset@dineretso.com>',
         to: email,
         subject: "Your OTP Verification Code",
-        text: `Your OTP code is: ${otp}`,
+        html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>DineRetso OTP Verification</title>
+        </head>
+        <body>
+        <p>Hello,</p>
+        <p>Your OTP code for verification is:</p>
+        <p style="font-size: 24px; font-weight: bold;">${otp}</p>
+        <p>Use this code to complete your verification process.</p>
+        <p>Thank you for using DineRetso.</p>
+        </body>
+        </html>
+      `,
       };
       const info = await transporter.sendMail(mailOption);
       console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));

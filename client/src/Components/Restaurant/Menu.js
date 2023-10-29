@@ -22,7 +22,6 @@ export default function Menu(props) {
     location
   ) => {
     try {
-      console.log(menuId);
       const response = await axios.post(
         `/api/restaurant/add-menu-review/${pid}`,
         { reviewerId, reviewerName, comment, rating, location, menuId },

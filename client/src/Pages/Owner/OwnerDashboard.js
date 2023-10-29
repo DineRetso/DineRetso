@@ -57,8 +57,8 @@ export default function OwnerDashboard() {
         if (response.status === 200) {
           const visits = response.data.visits || [];
           const restoReviews = response.data.restoReview || [];
-          const menuReviews =
-            (response.data.menu && response.data.menu.menuReview) || [];
+          const men = response.data.menu || [];
+          const menuReviews = men.flatMap((menuItem) => menuItem.menuReview);
           const currentDate = new Date();
 
           const fbVisitsToday = visits.filter(
@@ -90,7 +90,6 @@ export default function OwnerDashboard() {
           const menuPending = menuReviews.filter(
             (review) => review.status === "pending"
           );
-
           setFbVisit(fbVisitsToday.length);
           setEmailVisit(emailVisitsToday.length);
           setProfileVisit(webVisitsToday.length);

@@ -7,15 +7,13 @@ import { toast } from "react-toastify";
 
 export default function AdminRoute({ children }) {
   const dineInfo = JSON.parse(localStorage.getItem("dineInfo"));
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
-
   useEffect(() => {
     const fetchDineInfo = async () => {
       if (dineInfo === null) {
-        toast.info("Unauthorized!");
         setIsAdmin(false);
         setIsLoading(false);
         return;
@@ -39,7 +37,6 @@ export default function AdminRoute({ children }) {
         }
       }
     };
-
     fetchDineInfo();
   }, [dineInfo]);
 

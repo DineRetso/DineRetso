@@ -69,6 +69,32 @@ ownerRouter.post(
     }
   })
 );
+ownerRouter.put(
+  "/:id/:menuId/:status",
+  expressAsyncHandler(async (req, res) => {
+    const { id, menuId, status } = req.params;
+    try {
+      const restaurant = await Restaurant.findById(id);
+      if (!restaurant) {
+        return res.status(404).json({ message: "Restaurant not found" });
+      }
+      const menuItem = restaurant.menu.find(
+        (item) => item._id.toString() === menuId
+      );
+      if (!menuItem) {
+        return res
+          .status(404)
+          .json({ message: "Menu item not found in the restaurant" });
+      }
+      menuItem.isAvailable = status;
+      await restaurant.save();
+      return res.status(200).json({ message: "Menu updated successfully" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Internal server error: " + error });
+    }
+  })
+);
 
 //manageReview
 ownerRouter.post(
@@ -163,6 +189,7 @@ ownerRouter.post(
         menuImage: menuImage,
         classification: classification,
         imagePublicId: imagePublicId,
+        isAvailable: true,
       });
     } catch (error) {
       console.error(error);
@@ -171,35 +198,6 @@ ownerRouter.post(
   })
 );
 
-ownerRouter.delete(
-  "/:_id/:menuId",
-  expressAsyncHandler(async (req, res) => {
-    const { _id, menuId } = req.params;
-    try {
-      const restaurant = await Restaurant.findById(_id);
-      console.log(restaurant);
-      if (!restaurant) {
-        console.log(`Restaurant with ID ${_id} not found.`);
-        return res.status(404).json({ message: "Restaurant not found" });
-      }
-      const menuIndex = restaurant.menu.findIndex(
-        (menuItem) => menuItem._id.toString() === menuId
-      );
-
-      if (menuIndex === -1) {
-        return res.status(404).json({ message: "Menu item not found" });
-      }
-      restaurant.menu.splice(menuIndex, 1);
-      await restaurant.save();
-      res.status(200).json({ message: "Menu item deleted successfully" });
-    } catch (error) {
-      console.error(error);
-      res
-        .status(500)
-        .json({ message: "An error occurred while deleting the menu item" });
-    }
-  })
-);
 ownerRouter.get(
   "/payment/:_id",
   isAuth,
@@ -608,6 +606,60 @@ ownerRouter.put(
         } else {
           res.status(400).send({ message: "Invalid Password!" });
         }
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Internal Server Error: " + error });
+    }
+  })
+);
+ownerRouter.put(
+  "/edit-restoprofile/:restoId",
+  isAuth,
+  isOwner,
+  expressAsyncHandler(async (req, res) => {
+    const { restoId } = req.params;
+    const {
+      profileImage,
+      profileImageId,
+      resName,
+      bgPhoto,
+      bgPhotoId,
+      owner,
+      address,
+      category,
+      phoneNo,
+      openAt,
+      closeAt,
+      description,
+      pinLocation,
+      fbLink,
+      igLink,
+      webLink,
+    } = req.body;
+    try {
+      const resto = await Restaurant.findById(restoId);
+      if (!resto) {
+        return res.status(404).send({ message: "Restaurant Unavailable" });
+      } else {
+        resto.profileImage = profileImage;
+        resto.profileImageId = profileImageId;
+        resto.bgPhoto = bgPhoto;
+        resto.bgPhotoId = bgPhotoId;
+        resto.resName = resName;
+        resto.owner = owner;
+        resto.phoneNo = phoneNo;
+        resto.description = description;
+        resto.category = category;
+        resto.address = address;
+        resto.pinLocation = pinLocation;
+        resto.openAt = openAt;
+        resto.closeAt = closeAt;
+        resto.fbLink = fbLink;
+        resto.igLink = igLink;
+        resto.webLink = webLink;
+        await resto.save();
+        res.status(200).json({ message: "Restaurant updated" });
       }
     } catch (error) {
       console.error(error);

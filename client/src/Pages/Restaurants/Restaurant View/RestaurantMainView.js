@@ -8,6 +8,7 @@ import { Store } from "../../../Store";
 import Menu from "../../../Components/Restaurant/Menu";
 import Review from "../../../Components/Restaurant/Review";
 import Posts from "../../../Components/Restaurant/Posts";
+import { getError } from "../../../utils";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -88,7 +89,6 @@ export default function RestaurantMainView() {
   }, [params.resName, params._id, params.source]);
 
   useEffect(() => {
-    // Set reviewerName to userInfo.fName when userInfo is available
     if (userInfo && userInfo.fName) {
       setReviewerName(userInfo.fName + " " + userInfo.lName);
       setLocation(userInfo.address);
@@ -99,7 +99,6 @@ export default function RestaurantMainView() {
   const rateHandler = async (e) => {
     e.preventDefault();
     if (!userInfo || !userInfo.token) {
-      // Redirect to the login page if userInfo is missing
       navigate("/login");
       return;
     }
@@ -124,16 +123,8 @@ export default function RestaurantMainView() {
         toast.error("Failed to submit review.");
       }
     } catch (error) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        toast.error(error.response.data.message);
-      } else {
-        console.error(error);
-        toast.error("Internal Server Error. Please Contact the DineRetso!");
-      }
+      console.error(getError(error));
+      toast.error(getError(error));
     }
   };
   const calculateAverage = () => {
@@ -160,25 +151,24 @@ export default function RestaurantMainView() {
         </div>
       </div>
       <div className='w-3/4 flex justify-evenly items-center space-x-5'>
-        <div className='flex justify-center items-center w-80 h-80 border-b border-orange-700 '>
+        <div className='flex justify-center items-center w-80 h-80 border-orange-700 '>
           <img
             src={Restaurant.profileImage}
             alt={Restaurant.resName}
-            className='w-80 h-80 object-cover'
+            className='w-80 h-80 '
           />
         </div>
-        <div className='flex flex-col space-y-2'>
-          <span className='text-2xl font-semibold'>Welcome to </span>
+        <div className='flex flex-col space-y-2 w-full'>
           <h1 className='text-5xl font-bold text-orange-500 capitalize'>
             {Restaurant.resName}
           </h1>
-          <div className='flex flex-col space-y-1 pl-10 text-lg'>
+          <div className='flex flex-col space-y-1 pl-10 text-lg w-full text-justify'>
             <h3>{Restaurant.description}</h3>
             <h3>{Restaurant.address}</h3>
             <h3>{Restaurant.phoneNo}</h3>
             <span>Links:</span>
-            <a href={Restaurant.webLink}>{Restaurant.webLink}</a>
-            <a href={Restaurant.webLink}>{Restaurant.webLink}</a>
+            <a href={Restaurant.fbLink}>{Restaurant.fbLink}</a>
+            <a href={Restaurant.igLink}>{Restaurant.igLink}</a>
             <a href={Restaurant.webLink}>{Restaurant.webLink}</a>
           </div>
         </div>
@@ -210,7 +200,7 @@ export default function RestaurantMainView() {
         <div className='grid grid-cols-5 gap-5'>
           {menuItem.map((menu, index) => (
             <div key={index} className='flex flex-col shadow-lg'>
-              <Menu menu={menu} pid={params._id} />
+              <Menu menu={menu} pid={params.resName} />
             </div>
           ))}
         </div>
