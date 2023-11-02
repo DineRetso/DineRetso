@@ -99,12 +99,18 @@ resRouter.post(
     const { resName } = req.params;
     try {
       const restaurant = await Restaurant.findOne({ resName: resName });
+
       if (!restaurant) {
         return res.status(401).send("No restaurant found!");
       } else {
         const { reviewerId, reviewerName, comment, rating, location } =
           req.body;
+        const user = await User.findById(reviewerId);
+        if (!user) {
+          return res.status(401).send("Invalid User");
+        }
         const review = {
+          image: user.image,
           reviewerName: reviewerName,
           resName: resName,
           comment: comment,
@@ -139,11 +145,16 @@ resRouter.post(
       }
       const { reviewerId, reviewerName, comment, rating, location, menuId } =
         req.body;
+      const user = await User.findById(reviewerId);
+      if (!user) {
+        return res.status(401).send("Invalid User");
+      }
       const menuItem = restaurant.menu.id(menuId);
       if (!menuItem) {
         return res.status(404).json({ message: "Menu item not found!" });
       }
       const newReview = {
+        image: user.image,
         status: "pending",
         source: "Menu",
         resName: pid,

@@ -12,10 +12,10 @@ function ShowManageReview({
   status,
 }) {
   return (
-    <div className='w-auto flex lg:flex-row md:flex-row sm:flex-row flex-col'>
+    <div className='border rounded-xl w-auto flex lg:flex-row md:flex-row sm:flex-row flex-col'>
       <div className='lg:w-3/4 md:w-3/4 sm:w-3/4 w-full flex lg:flex-row md:flex-row flex-col border-b'>
-        <div className='w-auto flex flex-row space-x-2 justify-start items-center border-r'>
-          <div className='w-14'>
+        <div className='w-auto flex flex-row space-x-2 justify-start items-center sm:border-r '>
+          <div className='flex justify-center items-center w-14'>
             {review.image ? (
               <div>
                 <img
@@ -36,7 +36,7 @@ function ShowManageReview({
           </div>
           <div className='w-40'>
             <h1>{review.reviewerName}</h1>
-            <h1 className='text-sm'>
+            <h1 className='text-sm text-neutrals-500'>
               {formatDistanceToNow(new Date(review.createdAt))} ago
             </h1>
             <Rating value={review.rating} readOnly precision={0.1} />
@@ -44,12 +44,12 @@ function ShowManageReview({
         </div>
         <div className='w-full h-full flex flex-col justify-start items-start p-2'>
           <div className='mb-2'>
-            <h1 className='text-orange-500 font-bold'>
-              Source: {review.source}
+            <h1 className=' font-bold'>
+              Source: <span className='text-orange-500'>{review.source}</span>
             </h1>
           </div>
           <div>
-            <h1>{review.comment}</h1>
+            <h1 className='text-neutrals-500 text-justify'>{review.comment}</h1>
           </div>
         </div>
       </div>
@@ -63,10 +63,10 @@ function ShowManageReview({
           <div className='flex justify-center lg:space-x-0 md:space-x-0 sm:space-x-0 space-x-0 space-y-2 lg:flex-col md:flex-col sm:flex-col flex-row'>
             <form
               onSubmit={(e) => manageReview(e, review._id, review.menuId)}
-              className='w-full'
+              className='w-full flex lg:flex-col md:flex-col sm:flex-col flex-row justify-evenly'
             >
               <select
-                className='p-2 w-24 h-full rounded-md text-sm border outline-primary-500 shadow-md'
+                className='p-2 rounded-md text-sm border outline-primary-500 shadow-md'
                 onChange={(e) => setReviewStatus(e.target.value)}
               >
                 <option value=''>Manage</option>
@@ -96,7 +96,7 @@ function ShowManageReview({
                   />
                 </div>
               )}
-              <div className='p-2 w-full h-full rounded-md text-sm border outline-primary-500 shadow-md'>
+              <div className='p-2 rounded-md text-sm border outline-primary-500 shadow-md'>
                 {status === "subscribed" ? (
                   <button type='submit'>Respond</button>
                 ) : (

@@ -72,7 +72,7 @@ export default function AddMenuItem({ onAddMenuItem, onClose }) {
   };
 
   return (
-    <div className='fixed flex inset-0 items-center justify-center z-50 top-0 left-0 sm:left-auto w-full sm:w-3/4 h-screen'>
+    <div className='fixed flex inset-0 items-center justify-center z-[1] top-0 left-0 sm:left-auto w-full sm:w-3/4 h-screen'>
       <div
         className='bg-TextColor flex flex-col justify-center items-center p-5 sm:p-10 rounded-md w-full sm:w-1/2
     border border-orange-500'

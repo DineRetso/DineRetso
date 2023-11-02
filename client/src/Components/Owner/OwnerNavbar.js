@@ -30,11 +30,7 @@ export default function OwnerNavbar() {
     error: "",
   });
 
-  const [navHeight, setNavHeight] = useState("50vh"); // Initial height, you can set it to any value you like
-
-  const handleResize = (newHeight) => {
-    setNavHeight(newHeight);
-  };
+  const [loc, setLoc] = useState("");
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -98,49 +94,70 @@ export default function OwnerNavbar() {
         <div className='w-full h-auto space-y-1 font-thin text-2xl'>
           <Link
             to={`/dineretso-restaurant/${myRestaurant.resName}/dashboard`}
-            className='flex items-center hover:bg-orange-700 p-2'
+            className={`flex items-center hover:bg-orange-700 p-2 ${
+              loc === "dashboard" && "bg-orange-700"
+            }`}
+            onClick={() => setLoc("dashboard")}
           >
             <i className='material-icons'>dashboard</i>
             <span className='ml-2'>Dashboard</span>
           </Link>
           <Link
             to={`/dineretso-restaurant/${myRestaurant.resName}/Menu`}
-            className='flex items-center hover:bg-orange-700 p-2'
+            className={`flex items-center hover:bg-orange-700 p-2 ${
+              loc === "menu" && "bg-orange-700"
+            }`}
+            onClick={() => setLoc("menu")}
           >
             <i className='material-icons'>restaurant_menu</i>
             <span className='ml-2'>Menu</span>
           </Link>
           <Link
             to={`/dineretso-restaurant/${myRestaurant.resName}/customers`}
-            className='flex items-center hover:bg-orange-700 p-2'
+            className={`flex items-center hover:bg-orange-700 p-2 ${
+              loc === "customers" && "bg-orange-700"
+            }`}
+            onClick={() => setLoc("customers")}
           >
             <i className='material-icons'>people</i>
             <span className='ml-2'>Customers</span>
           </Link>
           <Link
             to={`/dineretso-restaurant/${myRestaurant.resName}/analytics`}
-            className='flex items-center hover:bg-orange-700 p-2'
+            className={`flex items-center hover:bg-orange-700 p-2 ${
+              loc === "analytics" && "bg-orange-700"
+            }`}
+            onClick={() => setLoc("analytics")}
           >
             <i className='material-icons'>analytics</i>
             <span className='ml-2'>Analytics</span>
           </Link>
           <Link
             to={`/dineretso-restaurant/${myRestaurant.resName}/owner-posting`}
-            className='flex items-center hover:bg-orange-700 p-2'
+            className={`flex items-center hover:bg-orange-700 p-2 ${
+              loc === "description" && "bg-orange-700"
+            }`}
+            onClick={() => setLoc("description")}
           >
             <i className='material-icons'>description</i>
             <span className='ml-2'>Posting</span>
           </Link>
           <Link
             to={`/dineretso-restaurant/${myRestaurant.resName}/PlansNPricing`}
-            className='flex items-center hover:bg-orange-700 p-2'
+            className={`flex items-center hover:bg-orange-700 p-2 ${
+              loc === "plans" && "bg-orange-700"
+            }`}
+            onClick={() => setLoc("plans")}
           >
             <i className='material-icons'>subscriptions</i>
             <span className='ml-2'>Plans and Subscriptions</span>
           </Link>
           <Link
             to={`/dineretso-restaurant/${myRestaurant.resName}/settings`}
-            className='flex items-center hover:bg-orange-700 p-2'
+            className={`flex items-center hover:bg-orange-700 p-2 ${
+              loc === "settings" && "bg-orange-700"
+            }`}
+            onClick={() => setLoc("settings")}
           >
             <i className='material-icons'>settings</i>
             <span className='ml-2'>Settings</span>
@@ -180,11 +197,7 @@ export default function OwnerNavbar() {
           </div>
         </div>
       </div>
-      <div
-        className={`${
-          isMobileMenuOpen ? "opacity-100" : "opacity-0"
-        } transition-opacity duration-500 ease-in-out`}
-      >
+      <div className={`${isMobileMenuOpen ? "block" : "hidden"} `}>
         {isMobileMenuOpen && (
           <nav className='bg-orange-200 text-TextColor w-full h-screen fixed top-0 left-0 overflow-y-auto font-inter space-y-10 p-7 sm:hidden z-50 '>
             <div className='fixed top-0 w-full'>
@@ -260,6 +273,14 @@ export default function OwnerNavbar() {
               >
                 <i className='material-icons'>analytics</i>
                 <span className='ml-2'>Analytics</span>
+              </Link>
+              <Link
+                to={`/dineretso-restaurant/${myRestaurant.resName}/owner-posting`}
+                className='flex items-center hover:bg-neutrals-600 p-3'
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <i className='material-icons'>description</i>
+                <span className='ml-2'>Posting</span>
               </Link>
               <Link
                 to={`/dineretso-restaurant/${myRestaurant.resName}/PlansNPricing`}

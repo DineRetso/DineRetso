@@ -248,7 +248,7 @@ export default function OwnerMenu() {
             MENU
           </h1>
         </div>
-        <div className='sticky top-0 flex shadow-md w-full lg:h-20 md:h-16 h-14 lg:p-3 md:p-2 p-1 -z-10 bg-TextColor flex-row justify-between items-center transition-all '>
+        <div className='sticky top-0 flex shadow-md w-full lg:h-20 md:h-16 h-14 lg:p-3 md:p-2 p-1 bg-TextColor flex-row justify-between items-center transition-all '>
           <div className='flex flex-row justify-start items-end w-full h-full'>
             <div className='flex justify-start items-center w-auto border-r border-neutrals-700'>
               <i className='material-icons text-orange-500 lg:text-4xl md:text-3xl sm:text-2xl'>
@@ -370,12 +370,12 @@ export default function OwnerMenu() {
             </div>
           )}
         </div>
-        <div className='sticky lg:top-20 md:top-16 top-14 w-full flex justify-center items-center space-x-4 p-2 bg-TextColor -z-10'>
+        <div className='w-full flex justify-center items-center space-x-4 p-2 bg-TextColor'>
           <div
             className={`${
               available === "All"
-                ? "bg-orange-500 text-TextColor border flex justify-center items-center w-24 p-2 rounded-md"
-                : "border border-orange-500 flex justify-center items-center w-24 hover:bg-orange-500 text-orange-500 hover:text-TextColor transition-all duration-300 p-2 rounded-md"
+                ? "bg-orange-500 text-TextColor border flex justify-center items-center w-24 p-2 rounded-md "
+                : "border border-orange-500 flex justify-center items-center w-24 hover:bg-orange-500 text-orange-500 hover:text-TextColor transition-all duration-300 p-2 rounded-md "
             }
           `}
           >
@@ -421,7 +421,7 @@ export default function OwnerMenu() {
             </button>
           </div>
         </div>
-        <div className='menu-container -z-20'>
+        <div className='menu-container'>
           {loading ? (
             <LoadingSpinner />
           ) : (
@@ -458,7 +458,7 @@ export default function OwnerMenu() {
                       <div className='lg:text-2xl md:text-md text-sm text-md text-neutrals-700 font-semibold'>
                         <p>P {menuItem.price}</p>
                       </div>
-                      <div className='-z-50'>
+                      <div className='-z-10'>
                         <Rating
                           name='read-only'
                           className={`lg:${"size='large'"}`}

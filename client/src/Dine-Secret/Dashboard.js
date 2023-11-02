@@ -172,17 +172,19 @@ export default function Dashboard() {
   return (
     <div className='lg:ml-72 md:ml-72 sm:ml-72 font-inter'>
       {loading ? (
-        <LoadingSpinner />
+        <div className='flex w-full justify-center items-center'>
+          <LoadingSpinner />
+        </div>
       ) : (
         <div className='w-full flex flex-col p-5 space-y-2'>
           <div
-            className='w-24 border border-orange-500 flex justify-between items-center p-1 hover:cursor-pointer'
+            className='w-24 border border-orange-500 flex justify-between items-center p-1 hover:cursor-pointer rounded-lg'
             onClick={showFiltering}
           >
             <button>Filter</button>
             <i className='material-icons text-orange-500'>event</i>
           </div>
-          <div className='w-32 relative'>
+          <div className='w-32 relative bg-TextColor'>
             {showFilter && (
               <div className='w-32 flex-col absolute top-[100%] left-0'>
                 <label>Start Date:</label>
@@ -203,8 +205,8 @@ export default function Dashboard() {
               </div>
             )}
           </div>
-          <div className='w-full flex flex-row space-x-2'>
-            <div className='max-w-[60%] w-[60%] border overflow-x-auto p-2'>
+          <div className='w-full flex lg:flex-row flex-col space-x-2'>
+            <div className='lg:max-w-[60%] lg:w-[60%] w-full border overflow-x-auto p-2'>
               <div className='w-full flex flex-row justify-start items-center '>
                 <i className='material-icons text-orange-500 font-thin'>
                   trending_up
@@ -215,7 +217,7 @@ export default function Dashboard() {
               </div>
               <Line data={chartData} />
             </div>
-            <div className='border h-72 max-h-72 overflow-y-auto w-[40%] flex flex-col justify-start items-center'>
+            <div className='border h-72 max-h-72 lg:w-[40%] flex flex-col justify-start items-center'>
               <div className='w-full flex flex-row justify-start items-start h-full'>
                 <i className='material-icons text-orange-500 font-thin'>
                   restaurant
@@ -227,8 +229,8 @@ export default function Dashboard() {
               <Bar data={barData} options={barOptions} />
             </div>
           </div>
-          <div className='w-full flex flex-row space-x-2'>
-            <div className='max-w-[60%] w-[60%] border overflow-x-auto p-2'>
+          <div className='w-full flex lg:flex-row flex-col space-x-2 mt-2'>
+            <div className='lg:max-w-[60%] lg:w-[60%] h-60 overflow-y-auto border overflow-x-auto p-2'>
               <div className='w-full flex flex-row justify-start items-center '>
                 <i className='material-icons text-orange-500 font-thin'>done</i>
                 <h1 className='font-semibold text-xl text-neutrals-700'>
@@ -263,7 +265,7 @@ export default function Dashboard() {
                 </tbody>
               </table>
             </div>
-            <div className='border h-72 max-h-72 overflow-y-auto w-[40%] p-2'>
+            <div className='border h-72 max-h-72 overflow-y-auto lg:w-[40%] p-2'>
               <div className='w-full flex flex-row justify-start items-center'>
                 <i className='material-icons text-orange-500 font-thin'>
                   payment

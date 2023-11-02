@@ -42,6 +42,7 @@ export default function OwnerAnalytics() {
   const [loading, setLoading] = useState(false);
   const [emailAnalytics, setEmailAnalytics] = useState([]);
   const [profileVisit, setProfileVisit] = useState([]);
+  const [showFilter, setShowFilter] = useState(false);
 
   const [lineChartData, setLineChartData] = useState({
     labels: [], // X-axis labels (e.g., dates)
@@ -265,15 +266,15 @@ export default function OwnerAnalytics() {
         {
           label: "Email Visits",
           data: emailVisits,
-          backgroundColor: "rgba(54, 162, 235, 0.2)",
-          borderColor: "rgba(54, 162, 235, 1)",
+          backgroundColor: "#F3782C",
+          borderColor: "#414a4e",
           borderWidth: 1,
         },
         {
           label: "Expected Visits",
           data: expectedVisits,
-          backgroundColor: "rgba(255, 99, 132, 0.2)",
-          borderColor: "rgba(255, 99, 132, 1)",
+          backgroundColor: "#862B2A",
+          borderColor: "#414a4e",
           borderWidth: 1,
         },
       ],
@@ -290,67 +291,105 @@ export default function OwnerAnalytics() {
     },
   };
 
+  const showFiltering = (e) => {
+    e.preventDefault();
+    setShowFilter(!showFilter);
+  };
+
   return (
-    <div className='lg:ml-72 md:ml-72 sm:ml-72 p-5'>
-      <div>
-        <h1>Analytics</h1>
+    <div className='lg:ml-72 md:ml-72 sm:ml-72 p-5 font-inter'>
+      <div className='w-full flex justify-center items-center'>
+        <h1 className='text-orange-500 lg:text-4xl md:text-3xl text-2xl lg:font-bold font-semibold'>
+          Analytics
+        </h1>
       </div>
-      <div className='grid grid-cols-3 lg:gap-10 md:gap-8 gap-5 p-5 border-b'>
-        <div className='border h-28 max-h-28'>
-          <h1>Profile Visit</h1>
-          <i className='material-icons'>person</i>
-          <h1>{profileVisit.length}</h1>
+      <div className='grid grid-cols-3 lg:gap-10 md:gap-5 gap-2 p-5 border-b'>
+        <div className='border h-28 max-h-28 border-orange-500 flex justify-center items-center flex-col'>
+          <h1 className='lg:text-2xl lg:font-bold text-xl font-semibold text-orange-500'>
+            {profileVisit.length}
+          </h1>
+          <h1 className='text-neutrals-500 lg:text-xl md:text-xl sm:text-md text-sm text-center'>
+            Profile Visit
+          </h1>
+          <i className='material-icons text-neutrals-500'>person</i>
         </div>
-        <div className='border h-28 max-h-28'>
-          <h1>Customer Engagement</h1>
-          <i className='material-icons'>favorite</i>
-          <h1>{totalRev.length}</h1>
+        <div className='border h-28 max-h-28 border-orange-500 flex justify-center items-center flex-col'>
+          <h1 className='lg:text-2xl lg:font-bold text-xl font-semibold text-orange-500'>
+            {totalRev.length}
+          </h1>
+          <h1 className='text-neutrals-500 lg:text-xl md:text-xl sm:text-md text-sm text-center'>
+            Customer Engagement
+          </h1>
+          <i className='material-icons text-neutrals-500'>notifications</i>
         </div>
-        <div className='border h-28 max-h-28'>
-          <h1>Total of Post Click</h1>
-          <i className='material-icons'>insert_drive_file</i>
-          <h1>{postVisit}</h1>
+        <div className='border h-28 max-h-28 border-orange-500 flex justify-center items-center flex-col'>
+          <h1 className='lg:text-2xl lg:font-bold text-xl font-semibold text-orange-500'>
+            {postVisit}
+          </h1>
+          <h1 className='text-neutrals-500 lg:text-xl md:text-xl sm:text-md text-sm text-center'>
+            Total of Post Click
+          </h1>
+          <i className='material-icons text-neutrals-500'>insert_drive_file</i>
         </div>
       </div>
       <div className='flex flex-col'>
-        <div>
-          <label htmlFor='startDate'>Start Date: </label>
-          <input
-            type='date'
-            id='startDate'
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-          />
-          <label htmlFor='endDate'>End Date: </label>
-          <input
-            type='date'
-            id='endDate'
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-          />
+        <div
+          className='w-24 border border-orange-500 flex justify-between items-center p-1 hover:cursor-pointer'
+          onClick={showFiltering}
+        >
+          <button>Filter</button>
+          <i className='material-icons text-orange-500'>event</i>
         </div>
-        <div className='w-full '>
-          <div className='line-chart-container'>
-            <h1>Customer Engagement</h1>
+        <div className='w-40 relative rounded-xl'>
+          {showFilter && (
+            <div className='w-40 flex-col absolute top-[100%] left-0 bg-TextColor rounded-xl'>
+              <label className='text-orange-500'>Start Date:</label>
+              <input
+                className='w-full outline-none text-neutrals-500'
+                type='date'
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+              <label className='text-orange-500'>End Date:</label>
+              <input
+                className='w-full outline-none text-neutrals-500'
+                type='date'
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </div>
+          )}
+        </div>
+
+        <div className='w-full border p-2 mt-2'>
+          <div className='w-full'>
+            <h1 className='text-center text-2xl font-semibold'>
+              Customer Engagement
+            </h1>
             <Line data={lineChartData} />
           </div>
         </div>
-        <div className='grid grid-cols-2 gap-2'>
-          <div className='flex flex-col shadow-xl justify-center items-center'>
-            <h1>Email Analytics</h1>
-
+        <div className='lg:grid lg:grid-cols-2 gap-2 mt-2'>
+          <div className='flex flex-col shadow-xl justify-center items-center w-full border p-2 mb-2'>
+            <h1 className='text-center text-2xl font-semibold'>
+              Email Analytics
+            </h1>
             <Bar data={generateGroupedBarChartData()} options={chartOptions} />
           </div>
-          <div className='flex flex-col shadow-xl justify-center items-center'>
-            <div className='w-full flex max-h-60 object-cover'>
+          <div className='flex flex-col shadow-xl justify-center items-center border p-2 w-full'>
+            <div className='w-full flex'>
               <div className='w-full'>
                 {chartData && chartData.data && chartData.data.labels ? (
-                  <div>
-                    <h1>Ratings</h1>
+                  <div className='w-full'>
+                    <h1 className='text-center text-2xl font-semibold'>
+                      Ratings
+                    </h1>
                     <Pie data={chartData.data} options={chartData.options} />
                   </div>
                 ) : (
-                  <div>No ratings Yet.</div>
+                  <div className='text-center text-2xl font-semibold'>
+                    No ratings Yet.
+                  </div>
                 )}
               </div>
             </div>

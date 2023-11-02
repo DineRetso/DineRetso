@@ -341,25 +341,30 @@ export default function Customers() {
   }, [selectedMenuItem, sortOption]);
 
   return (
-    <div className='ml-0 lg:ml-72 md:ml-72 sm:ml-72  p-4 font-inter'>
+    <div className='lg:ml-72 md:ml-72 sm:ml-72  p-4 font-inter'>
       {loading ? (
         <LoadingSpinner />
       ) : (
         <div className=''>
-          <div className='flex justify-center'>
-            <h1 className='font-bold lg:text-5xl md:text-3xl text-2xl'>
+          <div className='flex justify-start'>
+            <h1 className='font-semibold lg:text-3xl md:text-2xl text-xl text-orange-500'>
               Reviews
             </h1>
           </div>
-          <div className='flex flex-row w-full h-24 border-b border-neutrals-700 space-x-2 justify-evenly p-3'>
-            <div className='flex w-1/2 justify-center items-center flex-col'>
-              <h1 className='font-bold text-xl'>Total Reviews</h1>
-              <h1>{totalReview}</h1>
+          <div className='flex flex-row w-full  border-neutrals-700 space-x-2 justify-evenly sm:p-3 p-1 mb-3  '>
+            <div className='flex w-1/2 justify-center items-center flex-col border p-2 '>
+              <h1 className='lg:text-5xl text-3xl text-orange-500'>
+                {totalReview}
+              </h1>
+              <h1 className='font-bold lg:text-xl text-md text-neutrals-500'>
+                Total Reviews
+              </h1>
             </div>
-            <div className='flex w-1/2 justify-center items-center flex-col'>
-              <h1 className='font-bold text-xl'>Average Ratings</h1>
-              <div className='flex justify-center items-center'>
-                <h1>{averageRatings}</h1>
+            <div className='flex w-1/2 justify-center items-center border p-2'>
+              <div className='flex flex-col justify-center items-center'>
+                <h1 className='lg:text-5xl text-3xl text-orange-500'>
+                  {averageRatings}/5
+                </h1>
                 <Rating
                   name='read-only'
                   size='large'
@@ -371,13 +376,13 @@ export default function Customers() {
               </div>
             </div>
           </div>
-          <div className='flex flex-col'>
-            <div>
-              <h1>Recent Activity</h1>
+          <div className='flex flex-col lg:px-3 md:px-2 mb-2'>
+            <div className='flex w-full'>
+              <h1 className='text-orange-500 font-semibold'>Recent Activity</h1>
             </div>
-            <div className='flex flex-row'>
+            <div className='flex flex-row lg:space-x-5'>
               <select
-                className='p-2 w-full rounded-md text-sm border outline-primary-500 shadow-md'
+                className='p-2 w-full rounded-md text-sm border outline-orange-500 text-neutrals-500 shadow-md'
                 value={filterOption}
                 onChange={(e) => setFilterOption(e.target.value)}
               >
@@ -386,7 +391,7 @@ export default function Customers() {
                 <option value='resto'>Restaurant</option>
               </select>
               <select
-                className='p-2 w-full rounded-md text-sm border outline-primary-500 shadow-md'
+                className='p-2 w-full rounded-md text-sm border outline-orange-500 text-neutrals-500 shadow-md'
                 value={sortOption}
                 onChange={(e) => setSortOption(e.target.value)}
               >
@@ -395,7 +400,7 @@ export default function Customers() {
                 <option value='date'>Date</option>
               </select>
               <select
-                className='p-2 w-full rounded-md text-sm border outline-primary-500 shadow-md'
+                className='p-2 w-full rounded-md text-sm border outline-orange-500 text-neutrals-500 s shadow-md'
                 value={statusOption}
                 onChange={(e) => setStatusOption(e.target.value)}
               >
@@ -406,9 +411,10 @@ export default function Customers() {
               </select>
             </div>
           </div>
-          <div className='w-full flex justify-between p-3 h-20 border-b '>
+          <div className='w-full flex justify-start h-20 items-center border-b lg:px-3 md:px-2'>
+            <i className='material-icons text-3xl text-orange-500'>search</i>
             <input
-              className='w-full'
+              className='w-full outline-none border-b focus:border-orange-500 text-xl'
               type='text'
               placeholder='Search here...'
               value={searchQuery}
@@ -416,12 +422,12 @@ export default function Customers() {
             />
           </div>
           <div className='w-full lg:p-4 md:p-3 sm:p-2 p-1 h-screen'>
-            <div className='container border h-full overflow-hidden overflow-y-auto '>
+            <div className='container h-full overflow-hidden overflow-y-auto '>
               <div className='h-full w-full'>
-                <div className='Customer-reviews space-y-4 p-5'>
+                <div className='Customer-reviews space-y-4 lg:p-5 md:p-3 p-1'>
                   {/* Display Menu and its reviews */}
                   {filterOption === "menu" && (
-                    <div className='w-full grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 grid-cols-1 gap-4 overflow-x-auto'>
+                    <div className='w-full grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 grid-cols-2 gap-4 overflow-x-auto'>
                       {filteredMenuItems.map(
                         (menuItem) =>
                           menuItem.menuReview.length > 0 && (
@@ -446,91 +452,60 @@ export default function Customers() {
                                     </div>
                                   )}
                                 </div>
-                                <div>
-                                  <h1
-                                  // Set selectedMenuItem when a menuItem is clicked
-                                  >
+                                <div className='w-auto '>
+                                  <h1 className='w-full py-2 bg-orange-200 text-center text-TextColor text-xl font-semibold'>
                                     {menuItem.menuName}
                                   </h1>
-                                  <h1>
-                                    Total reviews: {menuItem.menuReview.length}
-                                  </h1>
-                                  <h1>
-                                    Approved:{" "}
-                                    {
-                                      menuItem.menuReview.filter(
-                                        (review) => review.status === "approved"
-                                      ).length
-                                    }
-                                  </h1>
-                                  <h1>
-                                    Pending:{" "}
-                                    {
-                                      menuItem.menuReview.filter(
-                                        (review) => review.status === "pending"
-                                      ).length
-                                    }
-                                  </h1>
-                                  <h1>
-                                    Hidden:{" "}
-                                    {
-                                      menuItem.menuReview.filter(
-                                        (review) => review.status === "hidden"
-                                      ).length
-                                    }
-                                  </h1>
-                                  <div>
-                                    <h1>Average Rating</h1>
-                                    {menuItem.menuReview.length > 0
-                                      ? (
-                                          menuItem.menuReview.reduce(
-                                            (totalRating, review) =>
-                                              totalRating + review.rating,
-                                            0
-                                          ) / menuItem.menuReview.length
-                                        ).toFixed(1)
-                                      : "No Ratings"}
-                                    <Rating
-                                      name='read-only'
-                                      size='large'
-                                      value={
-                                        menuItem.menuReview.length > 0
-                                          ? (
-                                              menuItem.menuReview.reduce(
-                                                (totalRating, review) =>
-                                                  totalRating + review.rating,
-                                                0
-                                              ) / menuItem.menuReview.length
-                                            ).toFixed(1)
-                                          : 0
-                                      }
-                                      readOnly
-                                      precision={0.1}
-                                    />
+                                  <div className='bg-neutrals-200 flex justify-center items-center flex-col'>
+                                    <h1>
+                                      {menuItem.menuReview.length} Reviews
+                                    </h1>
+                                    <div className='flex justify-center items-center'>
+                                      <Rating
+                                        name='read-only'
+                                        size='medium'
+                                        value={
+                                          menuItem.menuReview.length > 0
+                                            ? (
+                                                menuItem.menuReview.reduce(
+                                                  (totalRating, review) =>
+                                                    totalRating + review.rating,
+                                                  0
+                                                ) / menuItem.menuReview.length
+                                              ).toFixed(1)
+                                            : 0
+                                        }
+                                        readOnly
+                                        precision={0.1}
+                                      />
+                                    </div>
                                   </div>
                                 </div>
                               </div>
                               {/* Display Menu Reviews */}
                               {selectedMenuItem === menuItem && (
-                                <div
-                                  className='fixed top-[300px] lg:left-72 md:left-72 sm:left-72 w-[80%] bg-white z-50 p-10 shadow-md overflow-y-auto bg-neutrals-600'
-                                  style={{ maxHeight: "400px" }}
-                                >
-                                  {filterAndSearchMenuReviews().map(
-                                    (review) => (
-                                      <ShowManageReview
-                                        key={review._id}
-                                        review={review}
-                                        manageReview={manageReview}
-                                        setReviewStatus={setReviewStatus}
-                                        setReviewId={setReviewId}
-                                        setMenuId={setMenuId}
-                                        status={status}
-                                      />
-                                    )
-                                  )}
-                                  <div className='fixed top-[300px] right-0'>
+                                <div className='fixed top-0 sm:left-72 left-0 right-0 h-screen max-h-screen bg-white z-50 sm:p-10 p-2 pt-5 shadow-md overflow-y-auto bg-TextColor'>
+                                  <h1 className='text-center text-2xl font-semibold text-orange-500'>
+                                    {menuItem.menuName}
+                                  </h1>
+                                  <div className='w-full space-y-3'>
+                                    {filterAndSearchMenuReviews().map(
+                                      (review) => (
+                                        <ShowManageReview
+                                          key={review._id}
+                                          review={review}
+                                          manageReview={manageReview}
+                                          setReviewStatus={setReviewStatus}
+                                          setReviewId={setReviewId}
+                                          setMenuId={setMenuId}
+                                          status={status}
+                                        />
+                                      )
+                                    )}
+                                  </div>
+                                  <div className='fixed top-2 right-2 border border-orange-500 p-2 rounded-md text-orange-500 hover:bg-orange-500 hover:text-TextColor transition-all'>
                                     <button
+                                      className='w-full'
                                       onClick={(e) => setSelectedMenuItem(null)}
                                     >
                                       Close

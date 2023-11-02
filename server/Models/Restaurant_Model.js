@@ -67,7 +67,7 @@ const newSchema = new mongoose.Schema(
     tags: [{ type: String }],
     blogPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: "BlogPost" }],
     postCount: { type: Number, default: 0 },
-    paymentType: { type: String },
+    paymentType: { type: String, default: "None" },
     subscriptionStartDate: {
       type: Date,
       default: null,

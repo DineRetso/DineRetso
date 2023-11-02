@@ -12,7 +12,6 @@ import VerifyOTP from "./Pages/VerifyOTP";
 import ResetPassword from "./Pages/ResetPassword";
 import Register from "./Pages/Restaurants/Register/Register";
 import ConfirmRegister from "./Pages/Restaurants/Register/ConfirmRegister";
-import ManageRestaurant from "./Dine-Secret/ManageResto/ManageRestaurant";
 import ShowPendingResto from "./Dine-Secret/ManageResto/ShowPendingResto";
 import AdminRoute from "./Components/Routes/AdminRoute";
 import OwnerRoute from "./Components/Routes/OwnerRoute";
@@ -52,6 +51,7 @@ import PostView from "./Pages/Restaurants/Restaurant View/PostView";
 import MenuView from "./Pages/Restaurants/Restaurant View/MenuView";
 import Settings from "./Pages/Owner/Settings/Settings";
 import PaymentDashboard from "./Dine-Secret/Payments/PaymentDashboard";
+import RestaurantView2 from "./Components/Dine/RestaurantView2";
 
 function App() {
   return (
@@ -80,14 +80,7 @@ function App() {
                       </AdminRoute>
                     }
                   />
-                  <Route
-                    path='/manage-restaurants'
-                    element={
-                      <AdminRoute>
-                        <ManageRestaurant />
-                      </AdminRoute>
-                    }
-                  />
+                
                   <Route
                     path='/registration/pendingResto/:id'
                     element={
@@ -101,6 +94,14 @@ function App() {
                     element={
                       <AdminRoute>
                         <Restaurants />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path='/restaurant/:id'
+                    element={
+                      <AdminRoute>
+                        <RestaurantView2 />
                       </AdminRoute>
                     }
                   />

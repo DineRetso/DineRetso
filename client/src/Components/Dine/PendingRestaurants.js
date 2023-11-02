@@ -5,25 +5,22 @@ export default function PendingRestaurants(props) {
   const { pending } = props;
   const navigate = useNavigate();
   return (
-    <div className='border rounded p-4 my-2 border-main space-y-2'>
-      <div className='bg-BackgroundGray text-warning rounded-md p-1'>
-        <p>Pending...</p>
+    <div className='border border-orange-500 rounded-xl p-4 my-2 border-main space-y-2 flex justify-center items-center flex-col'>
+      <div className='w-full p-2 flex justify-center items-center'>
+        <img src={pending.image} alt='resto registration' className='h-32' />
+      </div>
+      <div className='text-2xl text-orange-500 font-semibold'>
+        {pending.resName}
       </div>
       <div>
-        <div className='w-full'>
-          <div className='w-1/2'>
-            <h2 className='text-sm font-semibold'>Restaurant Name:</h2>
-          </div>
-          <div className='w-1/2'>{pending.resName}</div>
-        </div>
-        <div>
-          <p className='text-gray-600 mb-2'>
-            Date: {new Date(pending.createdAt).toLocaleString()}
-          </p>
-        </div>
-        <div className='flex justify-center'>
+        <p className='text-neutrals-500 mb-2'>
+          Date: {new Date(pending.createdAt).toLocaleString()}
+        </p>
+      </div>
+      <div className='w-full flex justify-center items-center'>
+        <div className='flex justify-center border rounded-xl p-1 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-TextColor transition-all w-32'>
           <button
-            className='bg-ButtonColor text-white px-3 py-1 text-center rounded hover:bg-main'
+            className='text-center'
             onClick={() =>
               navigate(
                 `/dine/admin/secret/registration/pendingResto/${pending._id}`

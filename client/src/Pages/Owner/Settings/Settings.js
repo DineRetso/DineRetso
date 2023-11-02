@@ -61,7 +61,7 @@ export default function Settings() {
   return (
     <div className='sm:ml-72 p-5 font-inter'>
       {loading ? (
-        <div>
+        <div className='w-full flex justify-center items-center'>
           <LoadingSpinner />
         </div>
       ) : error ? (
@@ -71,10 +71,24 @@ export default function Settings() {
           <div className='w-full h-20 shadow-xl flex flex-col justify-between p-2'>
             <h1 className='text-2xl text-orange-500 font-semibold'>Settings</h1>
             <div className='w-full flex flex-row space-x-2'>
-              <div className='border' onClick={setProfile}>
+              <div
+                className={`${
+                  chosenData === "Profile"
+                    ? "border-b border-orange-500 rounded-xl p-1"
+                    : " text-neutrals-500"
+                } hover:cursor-pointer`}
+                onClick={setProfile}
+              >
                 <h1>User Profile</h1>
               </div>
-              <div onClick={setResto}>
+              <div
+                className={`${
+                  chosenData === "Resto"
+                    ? "border-b border-orange-500 rounded-xl p-1"
+                    : " text-neutrals-500"
+                } hover:cursor-pointer`}
+                onClick={setResto}
+              >
                 <h1>Resto Profile</h1>
               </div>
             </div>

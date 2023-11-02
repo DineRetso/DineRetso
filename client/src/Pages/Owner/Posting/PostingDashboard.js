@@ -46,7 +46,7 @@ export default function PostingDashboard() {
     };
     fetchPosts();
   }, [userInfo.myRestaurant, userInfo.token, setPost, setResto, pStatus]);
-  const remainingPosts = 15 - resto.postCount;
+  const remainingPosts = resto.postCount;
 
   const filteredPosts = posts.filter((post) => {
     const searchLower = searchQuery.toLowerCase();
@@ -89,44 +89,46 @@ export default function PostingDashboard() {
           <LoadingSpinner />
         </div>
       ) : (
-        <div className='flex w-full justify-center items-center flex-col'>
+        <div className='flex full justify-center items-center flex-col'>
           <div className='flex space-x-2 justify-between items-center w-full p-5 border-b'>
-            <div>
+            <div className='w-full flex justify-center items-center'>
               <h1 className='text-orange-500 text-2xl font-bold'>
                 Posting Dashboard
               </h1>
             </div>
           </div>
-          <div className='mt-2 flex justify-between items-center w-full space-x-5 p-5 '>
-            <div>
-              <h1 className='text-neutrals-500'>
-                Remaining Post: {remainingPosts}
-              </h1>
+          <div className='mt-2 flex justify-between items-center w-full space-x-5 p-5 lg:flex-row flex-col'>
+            <div className='flex flex-row justify-between items-center w-full'>
+              <div>
+                <h1 className='text-neutrals-500'>
+                  Remaining Post: {remainingPosts}
+                </h1>
+              </div>
+              <div>
+                <select
+                  className='p-2 w-full rounded-md text-sm border outline-orange-500 shadow-md text-neutrals-500'
+                  value={pStatus}
+                  onChange={(e) => setPstatus(e.target.value)}
+                >
+                  <option value='Pending'>Pending</option>
+                  <option value='Approved'>Approved</option>
+                  <option value='Cancelled'>Cancelled</option>
+                </select>
+              </div>
             </div>
-            <div>
-              <select
-                className='p-2 w-full rounded-md text-sm border outline-orange-500 shadow-md text-neutrals-500'
-                value={pStatus}
-                onChange={(e) => setPstatus(e.target.value)}
-              >
-                <option value='Pending'>Pending</option>
-                <option value='Approved'>Approved</option>
-                <option value='Cancelled'>Cancelled</option>
-              </select>
-            </div>
-            <div className='flex flex-row justify-center items-center'>
-              <div className='flex flex-row justify-center items-center '>
+            <div className='w-full flex flex-row justify-between items-center'>
+              <div className='w-auto flex flex-row justify-center items-center '>
                 <i className='material-icons text-2xl text-orange-500'>
                   search
                 </i>
                 <input
-                  className='p-3 border-b '
+                  className='p-3 border-b lg:w-full md:w-60 sm:w-60 w-32'
                   placeholder='Search here...'
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <div className='border p-3 flex justify-center items-center px-3 rounded-lg border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-TextColor transition-all'>
+              <div className='w-32 py-2 border flex justify-center items-center rounded-lg border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-TextColor transition-all'>
                 <button className='w-full' onClick={handleAddButton}>
                   Submit Post
                 </button>
@@ -139,7 +141,7 @@ export default function PostingDashboard() {
                 <h1>{error}</h1>
               </div>
             ) : filteredPosts.length === 0 ? (
-              <div>
+              <div className='text-center text-orange-500 text-2xl'>
                 <h1>No Posts available.</h1>
               </div>
             ) : (

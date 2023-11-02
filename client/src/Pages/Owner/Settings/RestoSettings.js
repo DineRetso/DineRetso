@@ -47,6 +47,9 @@ export default function RestoSettings({ restoData, userInfo }) {
   );
 
   const uploadimg = async (e) => {
+    if (restoData.isSubscribed !== "subscribed") {
+      return toast.error("Please Subscribed for full acess.");
+    }
     const file = e.target.files[0];
     const bodyFormData = new FormData();
     bodyFormData.append("file", file);
@@ -65,6 +68,9 @@ export default function RestoSettings({ restoData, userInfo }) {
     }
   };
   const uploadBg = async (e) => {
+    if (restoData.isSubscribed !== "subscribed") {
+      return toast.error("Please Subscribed for full acess.");
+    }
     const file = e.target.files[0];
     const bodyFormData = new FormData();
     bodyFormData.append("file", file);
@@ -157,7 +163,7 @@ export default function RestoSettings({ restoData, userInfo }) {
     }
   };
   return (
-    <div className='w-full flex flex-col font-inter p-5'>
+    <div className='w-full flex flex-col font-inter lg:p-5 md:p-4 sm:p-3 p-2'>
       <form onSubmit={handleSaveButton}>
         <div className='flex flex-col'>
           <div className='w-full object-cover max-h-72 h-60 border flex justify-center items-center'>
@@ -180,9 +186,9 @@ export default function RestoSettings({ restoData, userInfo }) {
                 </div>
               </div>
             ) : (
-              <div>
-                <h1>No Background Image</h1>
-                <label className='cursor-pointer p-1 rounded-md text-main'>
+              <div className='w-full flex justify-center items-center flex-col'>
+                <h1 className='text-neutrals-500'>No Background Image</h1>
+                <label className='cursor-pointer p-1 rounded-md text-main border text-orange-500'>
                   Add Image
                   <input
                     type='file'
@@ -195,10 +201,12 @@ export default function RestoSettings({ restoData, userInfo }) {
               </div>
             )}
           </div>
-          <div className='flex sm:flex-row flex-col'>
+          <div className='flex lg:flex-row  flex-col'>
             <div className='sm:w-[40%] w-full'>
               {profileLoading ? (
-                <LoadingSpinner type='uploading' />
+                <div className='w-full flex justify-center items-center'>
+                  <LoadingSpinner type='uploading' />
+                </div>
               ) : profileImage ? (
                 <div className='w-full object-cover relative'>
                   <img
@@ -216,9 +224,9 @@ export default function RestoSettings({ restoData, userInfo }) {
                   </div>
                 </div>
               ) : (
-                <div>
-                  <h1>No Profile Image</h1>
-                  <label className='cursor-pointer bg-ButtonColor p-1 rounded-md text-main'>
+                <div className='w-full flex justify-center items-center flex-col h-full'>
+                  <h1 className='text-neutrals-500'>No Profile Image</h1>
+                  <label className='cursor-pointer bg-ButtonColor p-1 rounded-md text-main border text-orange-500'>
                     Add Image
                     <input
                       type='file'
@@ -231,17 +239,17 @@ export default function RestoSettings({ restoData, userInfo }) {
                 </div>
               )}
             </div>
-            <div className='w-full flex flex-col'>
+            <div className='w-full flex flex-col sm:p-2'>
               <input
-                className='border-b p-2 w-full'
+                className='border-b p-2 w-full text-xl text-orange-500 outline-none focus:border-orange-500 font-semibold'
                 type='text'
                 value={resName}
                 onChange={(e) => setResname(e.target.value)}
               />
               <div className='w-full flex justify-center'>
-                <h2 className='w-32 p-2 '>Owned by: </h2>
+                <h2 className='w-32 p-2'>Owned by: </h2>
                 <input
-                  className='border-b p-2 w-full'
+                  className='border-b p-2 w-full outline-none focus:border-orange-500 text-neutrals-500'
                   type='text'
                   value={owner}
                   onChange={(e) => setOwner(e.target.value)}
@@ -250,7 +258,7 @@ export default function RestoSettings({ restoData, userInfo }) {
               <div className='w-full flex justify-center'>
                 <h2 className='w-32 p-2 '>Address: </h2>
                 <input
-                  className='border-b p-2 w-full'
+                  className='border-b p-2 w-full outline-none focus:border-orange-500 text-neutrals-500'
                   type='text'
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
@@ -260,7 +268,7 @@ export default function RestoSettings({ restoData, userInfo }) {
                 <h2 className='w-32 p-2 '>Category: </h2>
                 <select
                   onChange={(e) => setCategory(e.target.value)}
-                  className='w-full p-2'
+                  className='w-full p-2 outline-none focus:border-orange-500 text-neutrals-500'
                 >
                   <option value={category}>{category}</option>
                   <option value='Famous'>Famous</option>
@@ -271,7 +279,7 @@ export default function RestoSettings({ restoData, userInfo }) {
               <div className='w-full flex justify-center'>
                 <h2 className='w-32 p-2 '>Phone No: </h2>
                 <input
-                  className='border-b p-2 w-full'
+                  className='border-b p-2 w-full outline-none focus:border-orange-500 text-neutrals-500'
                   type='text'
                   value={phoneNo}
                   onChange={(e) => setPhoneNo(e.target.value)}
@@ -281,7 +289,7 @@ export default function RestoSettings({ restoData, userInfo }) {
                 <div className='flex w-full'>
                   <h2 className='w-32 p-2 '>Open At: </h2>
                   <input
-                    className='border-b p-2 w-full'
+                    className='border-b p-2 w-full outline-none focus:border-orange-500 text-neutrals-500'
                     type='time'
                     value={openAt}
                     onChange={(e) => setOpenAt(e.target.value)}
@@ -290,7 +298,7 @@ export default function RestoSettings({ restoData, userInfo }) {
                 <div className='flex w-full'>
                   <h2 className='w-32 p-2 '>Close At: </h2>
                   <input
-                    className='border-b p-2 w-full'
+                    className='border-b p-2 w-full outline-none focus:border-orange-500 text-neutrals-500'
                     type='time'
                     value={closeAt}
                     onChange={(e) => setCloseAt(e.target.value)}
@@ -303,7 +311,7 @@ export default function RestoSettings({ restoData, userInfo }) {
             <div className='w-full flex p-2'>
               <h2 className='w-40 p-2 '>Facebook Link: </h2>
               <input
-                className='border-b p-2 w-full'
+                className='border-b p-2 w-full outline-none focus:border-orange-500 text-neutrals-500'
                 type='text'
                 value={fbLink}
                 onChange={(e) => setFbLink(e.target.value)}
@@ -312,7 +320,7 @@ export default function RestoSettings({ restoData, userInfo }) {
             <div className='w-full flex p-2'>
               <h2 className='w-40 p-2 '>Instagram Link: </h2>
               <input
-                className='border-b p-2 w-full'
+                className='border-b p-2 w-full outline-none focus:border-orange-500 text-neutrals-500'
                 type='text'
                 value={igLink}
                 onChange={(e) => setIgLink(e.target.value)}
@@ -321,24 +329,26 @@ export default function RestoSettings({ restoData, userInfo }) {
             <div className='w-full flex p-2'>
               <h2 className='w-40 p-2 '>Website Link: </h2>
               <input
-                className='border-b p-2 w-full'
+                className='border-b p-2 w-full outline-none focus:border-orange-500 text-neutrals-500'
                 type='text'
                 value={webLink}
                 onChange={(e) => setWebLink(e.target.value)}
               />
             </div>
           </div>
-          <div className='w-full flex flex-col'>
-            <label>Description:</label>
+          <div className='w-full flex flex-col sm:p-2 mt-2'>
+            <label className='text-xl text-orange-500'>Description:</label>
             <textarea
-              className='w-full h-60'
+              className='w-full h-60 text-sm text-justify p-2 border outline-neutrals-500'
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             ></textarea>
           </div>
 
-          <div className='w-full flex flex-col'>
-            <label>Pin Location:</label>
+          <div className='w-full flex flex-col sm:p-2'>
+            <label className='text-xl text-orange-500 font-semibold'>
+              Pin Location:
+            </label>
             <div id='map' style={{ height: "300px" }}>
               <MapContainer
                 center={[pinLocation.lat, pinLocation.lng]}
@@ -361,7 +371,7 @@ export default function RestoSettings({ restoData, userInfo }) {
               </MapContainer>
             </div>
           </div>
-          <div>
+          <div className='w-full flex justify-center items-center mt-5'>
             <div className='border border-red-200 flex justify-center items-center w-40 hover:bg-red-200 text-red-200 hover:text-TextColor transition-all duration-300 p-2 rounded-md'>
               <button type='submit'>Save</button>
             </div>

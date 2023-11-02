@@ -114,7 +114,7 @@ export default function ShowPendingResto() {
       );
       if (response.status === 201) {
         toast.success(response.data.message);
-        navigate("/admin/manage-restaurants");
+        navigate("/dine/admin/secret/registration");
       } else {
         toast.error("Cancellation Failed!");
       }
@@ -127,11 +127,11 @@ export default function ShowPendingResto() {
     }
   };
   return (
-    <div className='font-sans'>
+    <div className='font-inter sm:ml-72 p-2'>
       {loading ? (
         <LoadingSpinner />
       ) : error ? (
-        <div className='text-center text-warning mt-28'>
+        <div className='text-center'>
           {typeof error === "string" ? (
             <p>{error}</p>
           ) : (
@@ -142,112 +142,101 @@ export default function ShowPendingResto() {
           )}
         </div>
       ) : (
-        <div className='flex justify-center items-center flex-col mt-24 py-5 space-y-5'>
-          <div
-            className=' bg-trans-background flex w-3/4 flex-col h-auto md:flex-row justify-center items-center lg:mx-24 md:mx-20 mx-5 sm:mx-14 shadow-md
-            lg:pt-0 md:pt-0 sm:pt-5 pt-10 p-5 rounded-md'
-          >
-            <div className='flex justify-center items-center w-full md:w-1/2'>
-              <div className=''>
-                <div className='h-80 flex items-center justify-center bg-cover'>
-                  {image ? (
-                    <img
-                      src={image}
-                      alt='Restaurant'
-                      className='h-auto w-64 border-black p-5 shadow-md'
-                    />
-                  ) : (
-                    <div className='text-black font-bold text-lg text-center'>
-                      No image uploaded
-                    </div>
-                  )}
-                </div>
+        <div className='flex justify-center items-center flex-col w-full'>
+          <div className='w-full flex flex-col'>
+            <div className='flex flex-row justify-center items-center w-full p-2 bg-orange-200'>
+              <div className='w-64 flex items-center justify-center bg-cover'>
+                {image ? (
+                  <img
+                    src={image}
+                    alt='Restaurant'
+                    className='h-auto w-64 border-black p-1 shadow-md'
+                  />
+                ) : (
+                  <div className='text-black font-bold text-lg text-center'>
+                    No image uploaded
+                  </div>
+                )}
+              </div>
+              <div className='w-full'>
+                <h1 className='text-TextColor text-2xl font-semibold'>
+                  {resName}
+                </h1>
+                <p className='text-justify text-sm'>{description}</p>
               </div>
             </div>
-            <div className='w-full md:w-1/2'>
-              <div className='flex flex-col space-y-4 w-full'>
-                <div className='w-full'>
-                  <p className='block text-first-text font-bold mb-2'>
-                    Restaurant Name:{" "}
-                    <span className='font-thin'>{resName}</span>
-                  </p>
+            <div className='w-full p-2 text-neutrals-500'>
+              <h1 className='text-xl font-semibold text-neutrals-500'>
+                Restaurant Information
+              </h1>
+              <div className='flex flex-col space-y-4 w-full p-2'>
+                <div className='w-full p-1 border border-orange-500 rounded-md flex flex-col justify-center items-start'>
+                  <p className=''>Address:</p>
+                  <p className='font-bold'>{address}</p>
                 </div>
-                <div className='w-full'>
-                  <p className='block text-first-text font-bold mb-2'>
-                    Owner: <span className='font-thin'>{owner}</span>
-                  </p>
+                <div className='w-full p-1 border border-orange-500 rounded-md flex flex-col justify-center items-start'>
+                  <p className=''>Category:</p>
+                  <p className=' font-bold '>{category} Restaurant</p>
                 </div>
-                <div className='w-full'>
-                  <p className='block text-first-text font-bold mb-2'>
-                    Email: <span className='font-thin'>{email}</span>
-                  </p>
+              </div>
+              <h1 className='text-xl font-semibold text-neutrals-500'>
+                Contact Information
+              </h1>
+              <div className='flex flex-col space-y-4 w-full p-2'>
+                <div className='w-full p-1 border border-orange-500 rounded-md flex flex-col justify-center items-start'>
+                  <p className=''>Contact No:</p>
+                  <p className='font-bold'>{phoneNo}</p>
                 </div>
-                <div className='w-full'>
-                  <p className='block text-first-text font-bold mb-2'>
-                    Phone Number: <span className='font-thin'>{phoneNo}</span>
-                  </p>
-                </div>
-                <div className='w-full'>
-                  <p className='block text-first-text font-bold mb-2'>
-                    Address: <span className='font-thin'>{address}</span>
-                  </p>
-                </div>
-                <div className='w-full'>
-                  <p className='block text-first-text font-bold mb-2'>
-                    Category: <span className='font-thin'>{category}</span>
-                  </p>
-                </div>
-                <div className='w-full'>
-                  <p className='block text-first-text font-bold mb-2'>
-                    Description:{" "}
-                    <span className='font-thin'>{description}</span>
-                  </p>
+                <div className='w-full p-1 border border-orange-500 rounded-md flex flex-col justify-center items-start'>
+                  <p className=''>Email:</p>
+                  <p className='font-bold'>{email}</p>
                 </div>
               </div>
             </div>
           </div>
-          <div className='flex space-x-5'>
-            <button
-              onClick={confirmRegistration}
-              className='bg-ButtonColor text-white px-3 py-1 text-center rounded hover:bg-green'
-            >
-              Confirm
-            </button>
-            <button
-              onClick={() => setShowCancelReason(true)}
-              className='bg-ButtonColor text-white px-3 py-1 text-center rounded hover:bg-warning'
-            >
-              Cancel
-            </button>
-            {showCancelReason && (
-              <div className='absolute inset-0 bg-main bg-opacity-80 flex justify-center items-center'>
-                <div className='w-3/4 h-auto bg-nav-text p-5 rounded-md'>
-                  <h2 className='text-lg font-bold mb-3'>
-                    Reason for Cancellation
-                  </h2>
-                  <textarea
-                    className='w-full h-3/4 p-2 border border-gray-300 rounded'
-                    placeholder='Enter the reason for cancellation...'
-                    value={reasonCancelled}
-                    onChange={(e) => setReason(e.target.value)}
-                  />
-                  <div className='mt-3 flex justify-end space-x-2'>
-                    <button
-                      onClick={() => setShowCancelReason(false)}
-                      className='bg-ButtonColor text-white px-3 py-1 text-center rounded hover:bg-warning'
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      className='bg-ButtonColor text-white px-3 py-1 text-center rounded hover:bg-green'
-                      onClick={cancelRegistration}
-                    >
-                      Confirm Cancellation
-                    </button>
-                  </div>
+          {showCancelReason && (
+            <div className='relative bg-main bg-opacity-80 flex justify-center items-center w-full'>
+              <div className='w-full h-auto bg-nav-text p-5 rounded-md'>
+                <h2 className='text-lg font-semibold text-neutrals-500 mb-3'>
+                  Reason for Cancellation
+                </h2>
+                <textarea
+                  className='w-full outline-none p-2 border  rounded'
+                  placeholder='Enter the reason for cancellation...'
+                  value={reasonCancelled}
+                  onChange={(e) => setReason(e.target.value)}
+                />
+                <div className='mt-3 flex justify-end space-x-2'>
+                  <button
+                    onClick={() => setShowCancelReason(false)}
+                    className='bg-ButtonColor text-white px-3 py-1 text-center rounded hover:bg-warning'
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className='bg-ButtonColor text-white px-3 py-1 text-center rounded hover:bg-green'
+                    onClick={cancelRegistration}
+                  >
+                    Confirm Cancellation
+                  </button>
                 </div>
               </div>
-            )}
+            </div>
+          )}
+          <div className='flex space-x-5'>
+            <div className='w-24 flex justify-center items-center p-1 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-TextColor transition-all border rounded-xl'>
+              <button onClick={confirmRegistration} className='w-full'>
+                Confirm
+              </button>
+            </div>
+            <div className='w-24 flex justify-center items-center p-1 border-orange-500 text-orange-500 hover:bg-red-500 hover:text-TextColor transition-all border rounded-xl'>
+              <button
+                onClick={() => setShowCancelReason(true)}
+                className='bg-ButtonColor text-white px-3 py-1 text-center rounded hover:bg-warning'
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}

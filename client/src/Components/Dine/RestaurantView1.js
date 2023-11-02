@@ -1,19 +1,22 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function RestaurantView1(props) {
   const { resto } = props;
+  const navigate = useNavigate();
+
   return (
-    <div className='flex flex-col lg:flex-row border-2 border-main rounded-md p-5 space-x-2 w-full'>
-      <div className='flex justify-center lg:w-1/2 w-90 h-auto'>
+    <div className='flex flex-col border-2 border-main rounded-md p-1 space-x-2 w-full font-inter'>
+      <div className='flex justify-center h-auto'>
         <img
-          className='w-90 lg:w-3/4 h-60 rounded-xl shadow-md'
+          className='rounded-xl shadow-md'
           src={resto.profileImage}
-          alt='profile image'
+          alt='resto profile'
         />
       </div>
-      <div className='flex flex-col  h-auto justify-evenly w-1/2'>
+      <div className='flex flex-col  h-auto justify-evenly w-full text-sm text-neutrals-500'>
         <div>
-          <p className='font-bold text-xl'>{resto.resName}</p>
+          <p className='font-bold text-xl text-orange-500'>{resto.resName}</p>
         </div>
         <div>
           <p>
@@ -25,26 +28,17 @@ export default function RestaurantView1(props) {
             Category: <span>{resto.category}</span>
           </p>
         </div>
-        <div>
-          <p>Phone No: {resto.phoneNo}</p>
-        </div>
-        <div className='flex flex-col'>
-          <p>Social Media:</p>
-          <div className='flex flex-row space-x-2 text-2xl'>
-            <a href={resto.fbLink} target='_blank' rel='noopener noreferrer'>
-              <img
-                src='../facebook.png'
-                alt='Facebook'
-                width='32'
-                height='32'
-              />
-            </a>
-            <img src='../instagram.png' alt='Facebook' width='32' height='32' />
+        <div className='w-full flex flex-row justify-evenly items-center p-1'>
+          <div className='border p-1 w-16 flex justify-center items-center rounded-xl border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-TextColor transition-all'>
+            <button
+              className='w-full'
+              onClick={() =>
+                navigate(`/dine/admin/secret/restaurant/${resto._id}`)
+              }
+            >
+              View
+            </button>
           </div>
-        </div>
-        <div>
-          <button>Edit</button>
-          <button>Delete</button>
         </div>
       </div>
     </div>

@@ -24,6 +24,9 @@ export default function ProfileSettings({
 
   const handleSaveProfile = async (e) => {
     e.preventDefault();
+    if (restoData.isSubscribed !== "subscribed") {
+      return toast.info("Please Subscribed for full access");
+    }
     try {
       const response = await axios.put(
         `/api/owner/updateProfile/${userData._id}`,
@@ -59,15 +62,24 @@ export default function ProfileSettings({
   const closeChangePass = () => {
     setIsChangeOpen(false);
   };
- 
+
+  function formatDate(dateString) {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    const formattedDate = new Date(dateString).toLocaleDateString(
+      undefined,
+      options
+    );
+    return formattedDate;
+  }
+
   return (
     <div className='w-full flex flex-col font-inter'>
       <div>
-        <h1 className='text-2xl font-semibold'>Profile</h1>
+        <h1 className='text-2xl font-semibold'>User Profile</h1>
       </div>
       <div>
         <form className='flex flex-col w-full' onSubmit={handleSaveProfile}>
-          <div className='flex sm:flex-row flex-col max-h-96'>
+          <div className='flex sm:flex-row flex-col max-h-[400px]'>
             <div className='sm:w-[30%] flex justify-center items-center'>
               {imageLoading ? (
                 <LoadingSpinner type='uploading' />
@@ -88,13 +100,13 @@ export default function ProfileSettings({
             <div className='sm:w-[70%] flex flex-col'>
               <div className='flex space-x-3 w-full'>
                 <input
-                  className='border-b p-2 w-full'
+                  className='border-b p-2 w-full outline-none focus:border-orange-500'
                   type='text'
                   value={fName}
                   onChange={(e) => setFname(e.target.value)}
                 />
                 <input
-                  className='border-b p-2 w-full'
+                  className='border-b p-2 w-full outline-none focus:border-orange-500'
                   type='text'
                   value={lName}
                   onChange={(e) => setLname(e.target.value)}
@@ -102,15 +114,16 @@ export default function ProfileSettings({
               </div>
               <div>
                 <input
-                  className='border-b p-2 w-full'
+                  className='border-b p-2 w-full outline-none focus:border-orange-500'
                   type='text'
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  disabled
                 />
               </div>
               <div>
                 <input
-                  className='border-b p-2 w-full'
+                  className='border-b p-2 w-full outline-none focus:border-orange-500'
                   type='text'
                   value={mobileNo}
                   onChange={(e) => setMobileNo(e.target.value)}
@@ -118,7 +131,7 @@ export default function ProfileSettings({
               </div>
               <div>
                 <input
-                  className='border-b p-2 w-full'
+                  className='border-b p-2 w-full outline-none focus:border-orange-500'
                   type='text'
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
@@ -126,14 +139,14 @@ export default function ProfileSettings({
               </div>
               <div className='w-full'>
                 <input
-                  className='border-b p-2 w-full'
+                  className='border-b p-2 w-full outline-none focus:border-orange-500'
                   placeholder='Enter password save.'
                   type='password'
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              <div className='flex flex-row justify-center items-center space-x-2'>
+              <div className='flex flex-row justify-center items-center space-x-2 p-2'>
                 <div
                   className='border border-red-200 flex justify-center items-center w-72 hover:bg-red-200 text-red-200 hover:text-TextColor transition-all duration-300 p-2 rounded-md hover:cursor-pointer'
                   onClick={openChangePass}
@@ -155,18 +168,29 @@ export default function ProfileSettings({
           closeChangePass={closeChangePass}
         />
       )}
-      <div>
+      <div className='w-full mt-5'>
         {userReview.length > 0 ? (
-          <div>
+          <div className='w-full flex flex-col space-y-2'>
             {userReview.map((review) => (
-              <div key={review._id}>
-                <h1>Restaurant name: {review.resName}</h1>
-                {review.comment}
+              <div
+                key={review._id}
+                className='flex flex-row border rounded-xl p-2 justify-start items-center space-x-2'
+              >
+                <div className='border-r border-orange-500 pr-3'>
+                  <h1 className='font-semibold'>{review.resName}</h1>
+                  <h1 className='text-sm text-neutrals-500'>
+                    {formatDate(review.createdAt)}
+                  </h1>
+                </div>
+                <div className='text-justify text-sm text-neutrals-500'>
+                  {" "}
+                  {review.comment}
+                </div>
               </div>
             ))}
           </div>
         ) : (
-          <div>
+          <div className='flex w-full justify-center items-center text-orange-500 font-semibold'>
             <h1>No Reviews submitted</h1>
           </div>
         )}

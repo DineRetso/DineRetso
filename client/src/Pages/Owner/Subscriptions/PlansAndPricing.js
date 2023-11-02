@@ -95,15 +95,6 @@ export default function PlansAndPricing() {
     setPStat,
     error,
   ]);
-
-  const handleFormOpen = (e) => {
-    e.preventDefault();
-    setFormOpen(true);
-  };
-  const handleFormClose = (e) => {
-    e.preventDefault();
-    setFormOpen(false);
-  };
   const seeSub = (e) => [
     navigate(
       `/dineretso-restaurant/${owner.myRestaurant}/subscription/dashboard`
@@ -150,21 +141,17 @@ export default function PlansAndPricing() {
   };
 
   return (
-    <div className='lg:ml-72 md:ml-72 sm:ml-72 p-5'>
+    <div className='lg:ml-72 md:ml-72 sm:ml-72 font-inter'>
       {loading ? (
         <LoadingSpinner />
       ) : error ? (
         <div>{error}</div>
       ) : (
         <div>
-          <div className='pb-2 border-b flex flex-col'>
-            <h1 className='text-3xl font-bold text-neutrals-500 '>
-              Plans and Pricing
-            </h1>
-            <p className='font-thin'>
-              Manage your account settings and preference
-            </p>
-            <div className='font-thin flex'>
+          <div className='pb-2 border-b flex flex-col bg-orange-200 p-5 h-60'>
+            <h1 className='text-3xl font-bold  '>Plans and Pricing</h1>
+            <p className=''>Manage your account settings and preference</p>
+            <div className='flex'>
               {owner.subscriptionStatus === "not subscribed" ? (
                 <div>
                   <div>You are not subcribed</div>
@@ -220,11 +207,190 @@ export default function PlansAndPricing() {
               )}
             </div>
           </div>
-          <div></div>
-          <div className='w-full flex justify-center items-center mt-2'>
+          {!owner.linkId ? (
+            <div className='flex w-full flex-row justify-evenly -translate-y-20'>
+              <div
+                className={`${
+                  paymentType === "Basic" &&
+                  "-translate-y-5 border border-orange-500"
+                } border shadow-xl w-72 flex justify-center items-center flex-col bg-TextColor p-2`}
+              >
+                <div className='flex flex-col justify-center items-center pb-5 border-b w-full'>
+                  <h1 className='text-2xl text-orange-500 font-semibold'>
+                    Basic
+                  </h1>
+                  <h2 className='text-xl text-neutrals-500'>200</h2>
+                  <h2 className='text-sm text-neutrals-500'>monthly</h2>
+                </div>
+                <div className='flex flex-col justify-center items-center w-full'>
+                  <div className='flex justify-start items-center p-2 w-full'>
+                    <i className='material-icons text-orange-500'>
+                      check_circle
+                    </i>
+                    <h1 className='text-sm text-neutrals ml-1'>
+                      Keep your menus up-to-date
+                    </h1>
+                  </div>
+                  <div className='flex justify-start items-center p-2 w-full'>
+                    <i className='material-icons text-orange-500'>
+                      check_circle
+                    </i>
+                    <h1 className='text-sm text-neutrals ml-1'>
+                      Add & edit menus you want
+                    </h1>
+                  </div>
+                  <div className='flex justify-start items-center p-2 w-full'>
+                    <i className='material-icons text-orange-500'>
+                      check_circle
+                    </i>
+                    <h1 className='text-sm text-neutrals ml-1'>
+                      Manage customer reviews and feedback
+                    </h1>
+                  </div>
+                  <div className='flex justify-start items-center p-2 w-full'>
+                    <i className='material-icons text-orange-500'>
+                      check_circle
+                    </i>
+                    <h1 className='text-sm text-neutrals ml-1'>
+                      Track and analyze data
+                    </h1>
+                  </div>
+                  <div className='flex justify-start items-center p-2 w-full'>
+                    <i className='material-icons text-orange-500'>
+                      check_circle
+                    </i>
+                    <h1 className='text-sm text-neutrals ml-1'>
+                      Upload images to you blogpost
+                    </h1>
+                  </div>
+                  <div className='flex justify-start items-center p-2 w-full'>
+                    <i className='material-icons text-orange-500'>
+                      check_circle
+                    </i>
+                    <h1 className='text-sm text-neutrals ml-1'>
+                      Show realtime location of your map
+                    </h1>
+                  </div>
+                </div>
+                <div className='flex justify-center items-center'>
+                  {paymentType === "Basic" ? (
+                    <div className='w-32 border rounded-xl border-orange-500 bg-orange-500 text-TextColor transition-all p-2'>
+                      <button className='text-center w-full'>
+                        Selected Plan
+                      </button>
+                    </div>
+                  ) : (
+                    <div className='w-32 border rounded-xl border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-TextColor transition-all'>
+                      <button
+                        className='text-center w-full'
+                        onClick={handleBasic}
+                      >
+                        Select Plan
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div
+                className={`${
+                  paymentType === "Premium" &&
+                  "-translate-y-5  border border-orange-500"
+                } border shadow-xl w-72 flex justify-center items-center flex-col bg-TextColor p-2`}
+              >
+                <div className='flex flex-col justify-center items-center pb-5 border-b w-full'>
+                  <h1 className='text-2xl text-orange-500 font-semibold'>
+                    Premium
+                  </h1>
+                  <h2 className='text-xl text-neutrals-500'>500</h2>
+                  <h2 className='text-sm text-neutrals-500'>monthly</h2>
+                </div>
+                <div className='flex flex-col justify-center items-center w-full'>
+                  <div className='flex justify-start items-center p-2 w-full'>
+                    <i className='material-icons text-orange-500'>
+                      check_circle
+                    </i>
+                    <h1 className='text-sm text-neutrals ml-1'>
+                      Keep your menus up-to-date
+                    </h1>
+                  </div>
+                  <div className='flex justify-start items-center p-2 w-full'>
+                    <i className='material-icons text-orange-500'>
+                      check_circle
+                    </i>
+                    <h1 className='text-sm text-neutrals ml-1'>
+                      Add & edit menus you want
+                    </h1>
+                  </div>
+                  <div className='flex justify-start items-center p-2 w-full'>
+                    <i className='material-icons text-orange-500'>
+                      check_circle
+                    </i>
+                    <h1 className='text-sm text-neutrals ml-1'>
+                      Manage customer reviews and feedback
+                    </h1>
+                  </div>
+                  <div className='flex justify-start items-center p-2 w-full'>
+                    <i className='material-icons text-orange-500'>
+                      check_circle
+                    </i>
+                    <h1 className='text-sm text-neutrals ml-1'>
+                      Track and analyze data
+                    </h1>
+                  </div>
+                  <div className='flex justify-start items-center p-2 w-full'>
+                    <i className='material-icons text-orange-500'>
+                      check_circle
+                    </i>
+                    <h1 className='text-sm text-neutrals ml-1'>
+                      Upload images to you blogpost
+                    </h1>
+                  </div>
+                  <div className='flex justify-start items-center p-2 w-full'>
+                    <i className='material-icons text-orange-500'>
+                      check_circle
+                    </i>
+                    <h1 className='text-sm text-neutrals ml-1'>
+                      Show realtime location of your map
+                    </h1>
+                  </div>
+                  <div className='flex justify-start items-center p-2 w-full'>
+                    <i className='material-icons text-orange-500'>
+                      check_circle
+                    </i>
+                    <h1 className='text-sm text-neutrals ml-1'>
+                      Can upload promotional videos to blog post
+                    </h1>
+                  </div>
+                </div>
+                <div className='flex justify-center items-center'>
+                  {paymentType === "Premium" ? (
+                    <div className='w-32 border rounded-xl border-orange-500 bg-orange-500 text-TextColor transition-all p-2'>
+                      <button className='text-center w-full'>
+                        Selected Plan
+                      </button>
+                    </div>
+                  ) : (
+                    <div className='w-32 border rounded-xl border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-TextColor transition-all'>
+                      <button
+                        className='text-center w-full'
+                        onClick={handlePremium}
+                      >
+                        Select Plan
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className='text-center w-full text-3xl'>
+              Subscription Pending
+            </div>
+          )}
+          <div className='w-full flex justify-center items-center'>
             {!owner.linkId ? (
               <div className='bg-orange-200 p-3 rounded-full flex justify-center items-center w-40'>
-                <button className='w-full' onClick={handleFormOpen}>
+                <button className='w-full' onClick={createPaymentLink}>
                   Subscribe
                 </button>
               </div>
@@ -239,36 +405,6 @@ export default function PlansAndPricing() {
               </div>
             )}
           </div>
-        </div>
-      )}
-      {formOpen && (
-        <div className='fixed lg:left-72 md:left-72 sm:left-72 inset-0 h-screen w-full border bg-neutrals-500 bg-opacity-60'>
-          <form>
-            <div className='w-1/2 relative'>
-              <div className='p-10 grid grid-cols-2 gap-20 w-auto'>
-                <div className='bg-TextColor border border-orange-500'>
-                  <h1>Price: 200</h1>
-                  <p>Image for post</p>
-                  <div className='bg-orange-200 p-3 rounded-full flex justify-center items-center w-40'>
-                    <p onClick={handleBasic}>Select Service</p>
-                  </div>
-                </div>
-                <div className='bg-TextColor border border-orange-500'>
-                  <h1>Price: 500</h1>
-                  <p>Can upload image and video</p>
-                  <div className='bg-orange-200 p-3 rounded-full flex justify-center items-center w-40'>
-                    <p onClick={handlePremium}>Select Service</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <button onClick={handleFormClose}>Close</button>
-            <div className='bg-orange-200 p-3 rounded-full flex justify-center items-center w-40'>
-              <button className='w-full' onClick={createPaymentLink}>
-                Buy
-              </button>
-            </div>
-          </form>
         </div>
       )}
     </div>

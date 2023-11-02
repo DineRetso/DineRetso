@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import LoadingSpinner from "../../Components/LoadingSpinner";
 import PendingRestaurants from "../../Components/Dine/PendingRestaurants";
 
@@ -28,6 +28,9 @@ export default function Registration() {
     initialPendingState
   );
   const { loading, error, pendingResto } = pendingState;
+
+  const [searchQuery, setSearchQuery] = useState("");
+
   useEffect(() => {
     const fetchPendingResto = async () => {
       pendingDispatch({ type: "FETCH_REQUEST" });
@@ -50,9 +53,16 @@ export default function Registration() {
   }, [dineInfo.token, pendingDispatch]);
 
   return (
-    <div className='lg:ml-72 md:ml-72 sm:ml-72'>
-      <div>
-        <h1>Registration</h1>
+    <div className='lg:ml-72 md:ml-72 sm:ml-72 p-2'>
+      <div className='w-full flex flex-row p-1 justify-center items-center'>
+        <i className='material-icons text-orange-500 text-3xl'>search</i>
+        <input
+          type='text'
+          placeholder='Search here...'
+          className='w-full p-1 outline-none border-b border-orange-500'
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
       </div>
       <div>
         {loading ? (
@@ -63,7 +73,7 @@ export default function Registration() {
           </div>
         ) : (
           pendingResto.map((pending) => (
-            <div key={pending._id}>
+            <div key={pending._id} className='grid grid-cols-4'>
               <PendingRestaurants pending={pending} />
             </div>
           ))

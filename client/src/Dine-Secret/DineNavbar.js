@@ -200,42 +200,42 @@ export default function DineNavbar() {
             </div>
             <div className='w-full h-auto space-y-3 font-thin text-2xl'>
               <Link
-                to='/dashboard'
+                to='/dine/admin/secret/admin-dashboard'
                 className='flex items-center hover:bg-orange-700 p-2'
               >
                 <i className='material-icons'>dashboard</i>
                 <span className='ml-2'>Dashboard</span>
               </Link>
               <Link
-                to='/dashboard'
+                to='/dine/admin/secret/restaurants'
                 className='flex items-center hover:bg-orange-700 p-2'
               >
                 <i className='material-icons'>restaurant</i>
                 <span className='ml-2'>Restaurant</span>
               </Link>
               <Link
-                to='/dashboard'
+                to='/dine/admin/secret/registration'
                 className='flex items-center hover:bg-orange-700 p-2'
               >
                 <i className='material-icons'>person_add</i>
                 <span className='ml-2'>Registration</span>
               </Link>
               <Link
-                to='/dashboard'
+                to='/dine/admin/secret/payments'
                 className='flex items-center hover:bg-orange-700 p-2'
               >
-                <i className='material-icons'>reviews</i>
-                <span className='ml-2'>Reviews</span>
+                <i className='material-icons'>attach_money</i>
+                <span className='ml-2'>Payments</span>
               </Link>
               <Link
-                to='/dashboard'
+                to='/dine/admin/secret/customers'
                 className='flex items-center hover:bg-orange-700 p-2'
               >
                 <i className='material-icons'>people</i>
                 <span className='ml-2'>Customers</span>
               </Link>
               <Link
-                to='/dashboard'
+                to='/dine/admin/secret/posting'
                 className='flex items-center hover:bg-orange-700 p-2'
               >
                 <i className='material-icons'>article</i>
