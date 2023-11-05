@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getError } from "../../../utils";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import LoadingSpinner from "../../../Components/LoadingSpinner";
 
@@ -9,6 +9,7 @@ export default function PostView() {
   const [error, setError] = useState("");
   const [postData, setPostData] = useState({});
   const source = "web";
+  const navigate = useNavigate();
 
   const { id, postSource } = useParams();
 
@@ -52,7 +53,7 @@ export default function PostView() {
       ) : error ? (
         <div>{error}</div>
       ) : (
-        <div className='w-full flex flex-col px-20'>
+        <div className='w-full flex flex-col lg:px-20 md:px-16 sm:px-12 px-2'>
           <div className='w-full border-b p-5 mb-5'>
             <h1 className='text-center text-2xl text-orange-500 font-bold'>
               {postData.title}
@@ -60,7 +61,7 @@ export default function PostView() {
           </div>
           <div className='w-full'>
             <div className='w-full flex justify-center'>
-              <div className='grid grid-cols-3 w-full p-2 h-[500px]'>
+              <div className='grid sm:grid-cols-3 grid-cols-2 w-full p-2 overflow-y-auto'>
                 {postData.video && (
                   <video
                     src={postData.video.secure_url}
@@ -75,25 +76,34 @@ export default function PostView() {
                       key={index}
                       src={image.secure_url}
                       alt={`post`}
-                      className='max-h-[400px] max-w-full object-cover rounded-lg'
+                      className='w-full h-auto rounded-lg'
                     />
                   ))}
               </div>
             </div>
             <div className='w-full p-2'>
               <Link to={`/Restaurant/${postData.resName}/${source}`}>
-                <h2 className='text-2xl text-orange-500 font-bold'>
+                <h2 className='sm:text-2xl text-xl text-orange-500 font-bold'>
                   {postData.resName}
                 </h2>
               </Link>
-              <div className='text-orange-500 border-r'>
+              <div className='text-orange-500 border-r sm:text-xl text-sm'>
                 {formatDate(postData.createdAt)}
               </div>
-              <div className='text-orange-500 border-r'>{postData.address}</div>
+              <div className='text-orange-500 border-r sm:text-xl text-sm'>
+                {postData.address}
+              </div>
               <div
                 dangerouslySetInnerHTML={{ __html: postData.description }}
-                className='text-justify text-neutrals-500 mt-2 shadow-lg p-5'
+                className='text-justify text-neutrals-500 mt-2 sm:text-md text-sm'
               />
+            </div>
+            <div className='w-full flex justify-center items-center'>
+              <div className='border p-3 flex justify-center items-center px-3 rounded-lg border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-TextColor transition-all w-32'>
+                <button className='w-full' onClick={() => navigate(`/`)}>
+                  Back
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -4,7 +4,7 @@ import { Store } from "../../Store";
 import { toast } from "react-toastify";
 import RateMenu from "./RateMenu";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 export default function Menu(props) {
   const { menu } = props;
   const [showRateMenu, setshowRateMenu] = useState(false);
@@ -64,7 +64,6 @@ export default function Menu(props) {
 
   return (
     <div>
-    
       <div>
         {menu.menuImage ? (
           <img
@@ -112,6 +111,7 @@ export default function Menu(props) {
           </div>
         </div>
       </div>
+
       {showRateMenu && rateMenu && (
         <RateMenu
           onClose={() => setshowRateMenu(false)}

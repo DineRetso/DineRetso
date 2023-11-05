@@ -28,6 +28,9 @@ export default function RestaurantMenu() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortRatings, setSortRatings] = useState("All");
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
+
   function shuffleArray(array) {
     // Create a copy of the original array
     const shuffledArray = [...array];
@@ -162,8 +165,25 @@ export default function RestaurantMenu() {
     return Math.round(averageRating);
   };
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentMenu = menu.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(menu.length / itemsPerPage);
+
+  const nextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   return (
-    <div className='absolute top-0 w-full font-inter'>
+    <div className=' w-full font-inter'>
       <Helmet>
         <title>Different Menus of DineRetso</title>
         <meta
@@ -178,100 +198,122 @@ export default function RestaurantMenu() {
         <meta name='author' content='DineRetso' />
         <meta name='viewport' content='width=device-width, initial-scale=1.0' />
       </Helmet>
-
-      <div className='w-full bg-cover'>
-        <img
-          src='../BGMenus.png'
-          alt='DineRetso dashboard'
-          className='h-[400px] w-full object-cover'
-        />
-      </div>
-      <div className='w-full flex flex-row justify-center items-center h-20 border px-20'>
-        <div className='w-60 h-full flex justify-center items-center border-r p-5'>
-          <select
-            className='w-60 h-full'
-            id='category'
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          >
-            <option value='All'>All</option>
-            <option value='Unique'>Unique</option>
-            <option value='Famous'>Famous</option>
-            <option value='Local'>Local</option>
-          </select>
-        </div>
-        <div className='w-full h-full p-2 flex justify-center items-center'>
-          <div className='w-16 bg-orange-200 h-full flex justify-center items-center rounded-l-lg'>
-            <i className='material-icons text-TextColor text-3xl '>search</i>
-          </div>
-          <input
-            className='p-2 w-full h-full'
-            placeholder='Search here...'
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+      <div className='flex justify-center flex-col items-center space-y-4 sm:mt-[280px]'>
+        <div className='sm:block hidden'>
+          <img
+            src='../BGMenus.png'
+            alt='DineRetso dashboard'
+            className='absolute inset-0 h-[400px] w-full object-cover'
           />
-          <div>
-            <label>Sort Ratings</label>
+        </div>
+        <div className='sticky w-full sm:top-[87px] top-[70px] flex flex-row  justify-center items-center sm:h-20 h-14 border-b bg-TextColor z-10 sm:px-2 px-1'>
+          <div className=' h-full flex justify-center items-center border-r sm:p-2 p-1 text-neutrals-500'>
             <select
-              className='w-60 h-full'
+              className='w-auto h-full outline-none'
               id='category'
-              value={sortRatings}
-              onChange={(e) => setSortRatings(e.target.value)}
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
             >
               <option value='All'>All</option>
-              <option value='5'>5 Star</option>
-              <option value='4'>4 Star</option>
-              <option value='3'>3 Star</option>
-              <option value='2'>2 Star</option>
-              <option value='1'>1 Star</option>
-              <option value='noreview'>No review</option>
+              <option value='Unique'>Unique</option>
+              <option value='Famous'>Famous</option>
+              <option value='Local'>Local</option>
             </select>
           </div>
-        </div>
-      </div>
-      <div className=' w-full flex flex-col justify-center px-20 pt-5'>
-        <div className='flex w-full justify-center'>
-          <h1 className='text-3xl font-bold text-orange-500 '>MENU</h1>
-        </div>
-        {loading ? (
-          <LoadingSpinner />
-        ) : (
-          <div className='w-full grid grid-cols-3 gap-16'>
-            {menu.map((menuItem) => (
-              <div
-                key={menuItem._id}
-                className='p-5 border flex flex-col justify-start items-center shadow-xl drop-shadow-xl rounded-lg'
+          <div className='w-full h-full sm:p-2 p-1 flex justify-center items-center'>
+            <div className='sm:w-16 w-auto bg-orange-200 h-full flex justify-center items-center rounded-l-lg'>
+              <i className='material-icons text-TextColor text-3xl '>search</i>
+            </div>
+            <input
+              className='sm:p-2 p-1 w-full h-full outline-none border-b border-orange-500'
+              placeholder='Search here...'
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <div className=' h-full flex justify-center items-center border-r sm:p-2 p-1 text-neutrals-500'>
+              <select
+                className='w-auto h-full outline-none'
+                id='category'
+                value={sortRatings}
+                onChange={(e) => setSortRatings(e.target.value)}
               >
-                <Link to={`/Menu/${menuItem._id}`}>
-                  <div className=''>
-                    <img
-                      className='w-80 h-60 rounded-lg object-cover'
-                      src={menuItem.menuImage}
-                      alt='menu'
-                    />
-                  </div>
-                  <div className='w-full justify-start items-center pl-5 pt-2 '>
-                    <div className='w-full justify-start items-center border-l border-orange-500 p-2'>
-                      <Rating
-                        name='read-only'
-                        size='medium'
-                        value={calculateTotalRatings(menuItem)}
-                        precision={0.1}
-                        readOnly
-                      />
-                      <h2 className='text-orange-500 text-xl font-semibold'>
-                        {menuItem.menuName}
-                      </h2>
-                      <p className='text-neutrals-500'>
-                        {menuItem.description}
-                      </p>
-                    </div>
-                  </div>
-                </Link>
-              </div>
-            ))}
+                <option value='All'>Ratings</option>
+                <option value='5'>5 Star</option>
+                <option value='4'>4 Star</option>
+                <option value='3'>3 Star</option>
+                <option value='2'>2 Star</option>
+                <option value='1'>1 Star</option>
+                <option value='noreview'>No review</option>
+              </select>
+            </div>
           </div>
-        )}
+        </div>
+        <div className=' w-full flex flex-col justify-start items-center sm:px-10 px-2 pt-5 mt-14'>
+          <div className='flex w-full justify-center'>
+            <h1 className='text-3xl font-bold text-orange-500 '>MENU</h1>
+          </div>
+          {loading ? (
+            <LoadingSpinner />
+          ) : (
+            <div className='w-full grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 grid-cols-2 gap-2'>
+              {currentMenu.map((menuItem) => (
+                <div
+                  key={menuItem._id}
+                  className='p-2 border flex flex-col justify-start items-center shadow-xl drop-shadow-xl rounded-lg'
+                >
+                  <Link to={`/Menu/${menuItem._id}`}>
+                    <div className='flex justify-center items-center w-full'>
+                      {menuItem.menuImage ? (
+                        <img
+                          className='h-40 rounded-lg object-cover'
+                          src={menuItem.menuImage}
+                          alt='menu'
+                        />
+                      ) : (
+                        <img
+                          className='h-40 rounded-lg object-cover'
+                          src='/Logo.png'
+                          alt='menu'
+                        />
+                      )}
+                    </div>
+                    <div className='w-full justify-start items-center pl-5 pt-2 '>
+                      <div className='w-full justify-start items-center border-l border-orange-500 p-2'>
+                        <Rating
+                          name='read-only'
+                          size='medium'
+                          value={calculateTotalRatings(menuItem)}
+                          precision={0.1}
+                          readOnly
+                        />
+                        <h2 className='text-orange-500 text-xl font-semibold'>
+                          {menuItem.menuName}
+                        </h2>
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        <div className='w-full flex justify-center items-center space-x-4 mt-3'>
+          <button
+            className='px-4 py-2 bg-orange-500 text-white rounded-lg'
+            onClick={prevPage}
+          >
+            Previous
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            className='px-4 py-2 bg-orange-500 text-white rounded-lg'
+            onClick={nextPage}
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );

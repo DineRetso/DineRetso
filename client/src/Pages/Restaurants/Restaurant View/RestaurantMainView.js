@@ -41,6 +41,7 @@ export default function RestaurantMainView() {
   const { state } = useContext(Store);
   const { userInfo } = state;
   const navigate = useNavigate();
+  const [loc, setLoc] = useState("");
 
   useEffect(() => {
     const fetchRestaurant = async () => {
@@ -49,11 +50,9 @@ export default function RestaurantMainView() {
         const response = await axios.get(
           `/api/restaurant/${params.resName}/${params.source}`
         );
-        // Extract menu classifications from the response
         const classifications = response.data.menu.map(
           (menu) => menu.classification
         );
-        // Filter out duplicates
         const uniqueClassifications = Array.from(new Set(classifications));
         const items = response.data.menu;
         const post = response.data.blogPosts;
@@ -95,6 +94,7 @@ export default function RestaurantMainView() {
       setReviewerId(userInfo._id);
     }
   }, [userInfo]);
+
   //submit rating
   const rateHandler = async (e) => {
     e.preventDefault();
@@ -142,41 +142,83 @@ export default function RestaurantMainView() {
   return (
     <div className='flex flex-col justify-center items-center w-full font-inter'>
       <div className='head-container w-full mt-[-110px]'>
-        <div className='w-full h-80'>
-          <img
-            className='h-full w-full object-cover'
-            src={Restaurant.bgPhoto}
-            alt='Restaurant Background'
-          />
+        <div className='w-full h-80 border'>
+          {Restaurant.bgPhoto ? (
+            <img
+              className='h-full w-full object-cover'
+              src={Restaurant.bgPhoto}
+              alt='Restaurant Background'
+            />
+          ) : (
+            <div className='flex justify-center items-center text-neutrals-500'>
+              <h1>No Background Image</h1>
+            </div>
+          )}
         </div>
       </div>
-      <div className='w-3/4 flex justify-evenly items-center space-x-5'>
-        <div className='flex justify-center items-center w-80 h-80 border-orange-700 '>
+      <div className='sm:w-3/4 w-full sm:p-0 p-2 flex  justify-evenly items-center space-x-5 mb-3'>
+        <div className='flex justify-center items-center lg:w-80 lg:h-80 md:w-72 md:h-72 sm:w-60 sm:h-60 w-32 h-32 border-orange-700 '>
           <img
             src={Restaurant.profileImage}
             alt={Restaurant.resName}
-            className='w-80 h-80 '
+            className='lg:w-80 lg:h-80 md:w-72 md:h-72 sm:w-60 sm:h-60 w-32 h-32 object-cover'
           />
         </div>
         <div className='flex flex-col space-y-2 w-full'>
-          <h1 className='text-5xl font-bold text-orange-500 capitalize'>
+          <h1 className='lg:text-5xl md:text-4xl sm:text-2xl font-bold text-orange-500 capitalize'>
             {Restaurant.resName}
           </h1>
-          <div className='flex flex-col space-y-1 pl-10 text-lg w-full text-justify'>
+          <div className='sm:text-lg text-xs flex flex-col space-y-1 sm:pl-10 pl-2  w-full text-justify text-neutrals-500'>
             <h3>{Restaurant.description}</h3>
-            <h3>{Restaurant.address}</h3>
-            <h3>{Restaurant.phoneNo}</h3>
-            <span>Links:</span>
-            <a href={Restaurant.fbLink}>{Restaurant.fbLink}</a>
-            <a href={Restaurant.igLink}>{Restaurant.igLink}</a>
-            <a href={Restaurant.webLink}>{Restaurant.webLink}</a>
           </div>
         </div>
       </div>
-      <div className='flex w-11/12 space-x-10 justify-center text-3xl my-5 border-b-2 p-5'>
-        <a href='#menu'>MENUS</a>
-        <a href='#posts'>BLOG POSTS</a>
-        <a href='#reviews'>REVIEWS</a>
+      <div className='sticky  w-full sm:top-[87px] top-[70px] flex justify-center items-center space-x-3 shadow-md h-14 p-3 z-40 sm:text-xl text-xs bg-TextColor bg-opacity-60  '>
+        <a
+          href='#menu'
+          onClick={() => setLoc("menu")}
+          className={`${
+            loc === "menu" && "text-orange-500 underline font-semibold"
+          }`}
+        >
+          MENUS
+        </a>
+        <a
+          href='#posts'
+          onClick={() => setLoc("posts")}
+          className={`${
+            loc === "posts" && "text-orange-500 underline font-semibold"
+          }`}
+        >
+          BLOG POSTS
+        </a>
+        <a
+          href='#reviews'
+          onClick={() => setLoc("reviews")}
+          className={`${
+            loc === "reviews" && "text-orange-500 underline font-semibold"
+          }`}
+        >
+          REVIEWS
+        </a>
+        <a
+          href='#contacts'
+          onClick={() => setLoc("contacts")}
+          className={`${
+            loc === "contacts" && "text-orange-500 underline font-semibold"
+          }`}
+        >
+          CONTACTS
+        </a>
+        <a
+          href='#about'
+          onClick={() => setLoc("about")}
+          className={`${
+            loc === "about" && "text-orange-500 underline font-semibold"
+          }`}
+        >
+          ABOUT
+        </a>
       </div>
       <div
         id='menu'
@@ -197,7 +239,7 @@ export default function RestaurantMainView() {
             </div>
           ))}
         </div>
-        <div className='grid grid-cols-5 gap-5'>
+        <div className='grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 grid-cols-2 sm:gap-5 gap-2 max-h-screen overflow-y-auto overflow-x-hidden'>
           {menuItem.map((menu, index) => (
             <div key={index} className='flex flex-col shadow-lg'>
               <Menu menu={menu} pid={params.resName} />

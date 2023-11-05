@@ -115,7 +115,7 @@ export default function DineNavbar() {
             </span>
           </Link>
           <Link
-            to='/dashboard'
+            to='/dine/admin/secret/settings'
             className={`flex items-center hover:bg-orange-700 p-2 ${
               loc === "settings" && "bg-orange-700"
             }`}
@@ -242,7 +242,7 @@ export default function DineNavbar() {
                 <span className='ml-2'>Blog Post</span>
               </Link>
               <Link
-                to='/dashboard'
+                to='/dine/admin/secret/settings'
                 className='flex items-center hover:bg-orange-700 p-2'
               >
                 <i className='material-icons'>settings</i>

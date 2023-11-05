@@ -105,7 +105,11 @@ export default function AddPosting() {
     e.preventDefault();
     const file = e.target.files[0];
     if (!file) {
-      return; // No file selected
+      return;
+    }
+    if (file.size > 25 * 1024 * 1024) {
+      toast.error("Selected video file size exceeds 25 MB.");
+      return;
     }
     setImageLoading(true);
     try {

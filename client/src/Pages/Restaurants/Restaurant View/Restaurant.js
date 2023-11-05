@@ -92,19 +92,19 @@ export default function Restaurant() {
       {loading ? (
         <LoadingSpinner />
       ) : (
-        <div className='flex justify-center flex-col items-center space-y-4 mt-[280px]'>
-          <div>
+        <div className='flex justify-center flex-col items-center space-y-4 sm:mt-[280px]'>
+          <div className='sm:block hidden'>
             <img
               src='../RestaurantImg.png'
               alt='DineRetso dashboard'
               className='absolute inset-0 h-[400px] w-full object-cover'
             />
           </div>
-          <div className='sticky w-full top-[103px] flex shadow-md h-20 p-3 z-40 bg-orange-500 bg-opacity-75'>
+          <div className='sticky w-full sm:top-[87px] top-[70px] flex shadow-md h-20 p-3 z-40 bg-TextColor'>
             <div className='w-3/4 flex justify-start items-center px-5'>
-              <i className='material-icons text-4xl '>search</i>
+              <i className='material-icons text-3xl text-orange-500'>search</i>
               <input
-                className='w-full h-full px-2 rounded-md'
+                className='w-full h-full px-2 rounded-md outline-none border-b border-orange-500'
                 placeholder='Search here...'
                 value={searchTerm}
                 onChange={handleSearchInputChange}
@@ -112,7 +112,7 @@ export default function Restaurant() {
             </div>
             <div className='w-1/4 flex justify-center items-center rounded-r-lg'>
               <select
-                className='p-3 w-full h-full rounded-md text-sm border outline-primary-500 shadow-md'
+                className='p-3 w-full h-full rounded-md text-sm border outline-none text-neutrals-500 shadow-md'
                 id='category'
                 value={cat}
                 onChange={(e) => setCat(e.target.value)}
@@ -126,8 +126,10 @@ export default function Restaurant() {
           </div>
 
           <div className='Restaurant-Content flex justify-center items-center flex-col p-5 w-full'>
-            <h1 className='text-3xl font-semibold mb-10'>{cat} Restaurants</h1>
-            <div className='grid w-full lg:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-10'>
+            <h1 className='text-3xl font-semibold sm:mb-10 mb-3 text-orange-500'>
+              {cat} Restaurants
+            </h1>
+            <div className='grid w-full lg:grid-cols-2 md:grid-cols-2 grid-cols-1 sm:gap-10 gap-3'>
               {restaurant
                 .filter((resto) => {
                   return (
@@ -159,29 +161,30 @@ export default function Restaurant() {
                     key={subscribedResto._id}
                     className='rounded flex justify-start items-center shadow-lg w-auto'
                   >
-                    <div className='flex justify-start items-start bg-cover max-h-80 w-5/12'>
+                    <div className='flex justify-start items-start bg-cover max-h-60 w-5/12'>
                       <Link
                         to={`/Restaurant/${subscribedResto.resName}/${source}`}
                       >
                         <img
                           src={subscribedResto.profileImage}
                           alt={subscribedResto.resName}
-                          className='w-auto h-60 rounded-lg'
+                          className='w-auto sm:h-52 h-36 rounded-lg'
                         />
                       </Link>
                     </div>
                     <div className='pl-5 w-full'>
                       <div className='w-full border-b border-b-red-700 mb-2'>
-                        <h1 className='text-xl font-semibold'>
+                        <h1 className='sm:text-2xl text-md font-semibold text-orange-500'>
                           {subscribedResto.resName}
                         </h1>
                       </div>
-                      <div className='pl-5'>
-                        <h1>{subscribedResto.phoneNo}</h1>
-                        <h1>{subscribedResto.category}</h1>
+                      <div className='pl-5 text-neutrals-500 sm:text-md text-sm'>
+                        <h1 className='sm:block hidden'>
+                          {subscribedResto.phoneNo}
+                        </h1>
                         <h1>{subscribedResto.address}</h1>
                         <div className='flex flex-col'>
-                          <div className='flex flex-row space-x-2 text-2xl'>
+                          <div className='flex flex-row space-x-2 mt-2'>
                             <a
                               href={subscribedResto.fbLink}
                               target='_blank'
@@ -190,15 +193,13 @@ export default function Restaurant() {
                               <img
                                 src='../facebook.png'
                                 alt='Facebook'
-                                width='32'
-                                height='32'
+                                className='sm:w-10 sm:h-10 w-5 h-5 '
                               />
                             </a>
                             <img
                               src='../instagram.png'
                               alt='Facebook'
-                              width='32'
-                              height='32'
+                              className='sm:w-10 sm:h-10 w-5 h-5 '
                             />
                           </div>
                         </div>

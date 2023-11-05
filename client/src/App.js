@@ -52,6 +52,7 @@ import MenuView from "./Pages/Restaurants/Restaurant View/MenuView";
 import Settings from "./Pages/Owner/Settings/Settings";
 import PaymentDashboard from "./Dine-Secret/Payments/PaymentDashboard";
 import RestaurantView2 from "./Components/Dine/RestaurantView2";
+import SettingsView from "./Dine-Secret/DineSettings/SettingsView";
 
 function App() {
   return (
@@ -80,7 +81,7 @@ function App() {
                       </AdminRoute>
                     }
                   />
-                
+
                   <Route
                     path='/registration/pendingResto/:id'
                     element={
@@ -150,6 +151,14 @@ function App() {
                     element={
                       <AdminRoute>
                         <PaymentDashboard />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path='/settings'
+                    element={
+                      <AdminRoute>
+                        <SettingsView />
                       </AdminRoute>
                     }
                   />

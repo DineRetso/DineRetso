@@ -32,6 +32,8 @@ export default function RestoSettings({ restoData, userInfo }) {
   const markerRef = useRef(null);
   const [profileLoading, setProfileLoading] = useState(false);
   const [bgLoading, setBgLoading] = useState(false);
+  const [password, setPassword] = useState("");
+  const userId = userInfo._id;
 
   const eventHandlers = useMemo(
     () => ({
@@ -144,6 +146,8 @@ export default function RestoSettings({ restoData, userInfo }) {
             fbLink,
             igLink,
             webLink,
+            password,
+            userId,
           },
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -371,9 +375,21 @@ export default function RestoSettings({ restoData, userInfo }) {
               </MapContainer>
             </div>
           </div>
+          <div className='w-full sm:p-2'>
+            <input
+              placeholder='Enter password here...'
+              className='w-full p-2 text-xl outline-none border-b border-orange-500'
+              required
+              type='password'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            ></input>
+          </div>
           <div className='w-full flex justify-center items-center mt-5'>
             <div className='border border-red-200 flex justify-center items-center w-40 hover:bg-red-200 text-red-200 hover:text-TextColor transition-all duration-300 p-2 rounded-md'>
-              <button type='submit'>Save</button>
+              <button type='submit' className='w-full'>
+                Save
+              </button>
             </div>
           </div>
         </div>

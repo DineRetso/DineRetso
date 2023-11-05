@@ -140,68 +140,56 @@ const MainDashboard = () => {
           <img
             src='../Dashboardimg.png'
             alt='DineRetso dashboard'
-            className='w-full lg:-mt-32 h-auto object-cover'
+            className='w-full lg:-mt-32 sm:h-screen h-auto object-cover'
           />
         </div>
-        <div className='w-full flex flex-col justify-center items-center space-y-3 z-50'>
-          <div className='flex p-2 border-b border-neutrals-500 w-9/12 justify-center items-center'>
-            <h1 className='text-4xl font-semibold text-orange-500'>
+        <div className='w-full flex flex-col justify-center items-center z-50'>
+          <div className='flex p-2 border-b border-neutrals-500 sm:w-5/6 w-[97%] justify-center items-center mb-2'>
+            <h1 className='lg:text-4xl md:text-2xl text-xl font-semibold text-neutrals-700'>
               FEATURED MENU
             </h1>
           </div>
-          <div className='flex justify-center items-center w-full'>
-            <div className='shadow-md p-2 w-3/4 object-cover'>
-              <Carousel
-                autoPlay={true}
-                interval={3000}
-                showArrows={false}
-                showStatus={true}
-                showIndicators={true}
-                infiniteLoop={true}
-              >
-                {subscribedMenus.map((menu, index) => (
-                  <div key={index} className='rounded-md'>
-                    <FeaturedMenu fMenu={menu} />
-                  </div>
-                ))}
-              </Carousel>
-            </div>
+
+          <div className=' h-full p-2 sm:w-3/4 w-[97%] object-cover'>
+            <Carousel
+              autoPlay={true}
+              interval={3000}
+              showArrows={false}
+              showStatus={true}
+              showIndicators={true}
+              infiniteLoop={true}
+            >
+              {subscribedMenus.map((menu, index) => (
+                <div key={index} className='rounded-md'>
+                  <FeaturedMenu fMenu={menu} />
+                </div>
+              ))}
+            </Carousel>
           </div>
         </div>
         <div className='w-full flex flex-col justify-center items-center space-y-3'>
-          <div className='flex p-2 border-b border-neutrals-500 w-9/12 justify-center items-center'>
-            <h1 className='text-4xl font-semibold text-neutrals-700'>
+          <div className='flex p-2 border-b border-neutrals-500 sm:w-5/6 w-[97%] justify-center items-center'>
+            <h1 className='lg:text-4xl md:text-2xl text-xl font-semibold text-neutrals-700'>
               FEATURED RESTAURANTS
             </h1>
           </div>
-          <div className='h-96 p-3 w-full flex justify-center items-center'>
-            <div className='shadow-md h-96 p-2 w-3/4 object-cover'>
-              <Carousel
-                autoPlay={false}
-                showArrows={true}
-                showStatus={true}
-                showIndicators={true}
-                infiniteLoop={false}
-              >
-                {randomFeaturedRestaurants.map((randomResto, index) => (
-                  <div
-                    key={index}
-                    className='flex justify-center h-auto p-2 w-full'
-                  >
-                    <FeaturedRestaurant fResto={randomResto} />
-                  </div>
-                ))}
-              </Carousel>
+          <div className='sm:w-5/6 w-[97%] sm:h-96 overflow-x-auto overflow-y-hidden bg-orange-100'>
+            <div className='w-full p-3 justify-start items-center grid grid-flow-col'>
+              {randomFeaturedRestaurants.map((randomResto, index) => (
+                <div key={index} className='flex justify-center p-2 '>
+                  <FeaturedRestaurant fResto={randomResto} />
+                </div>
+              ))}
             </div>
           </div>
         </div>
         <div className='w-full p-5 overflow-hidden flex justify-center items-center flex-col'>
-          <div className='flex p-2 border-b border-neutrals-500 w-9/12 justify-center items-center'>
-            <h1 className='text-4xl font-semibold text-neutrals-700'>
+          <div className='flex p-2 border-b border-neutrals-500 sm:w-5/6 w-[97%] justify-center items-center'>
+            <h1 className='lg:text-4xl md:text-2xl text-xl font-semibold text-neutrals-700'>
               DINING DISCOVERIES
             </h1>
           </div>
-          <div className='w-full  max-h-[500px] overflow-y-auto'>
+          <div className='w-full  max-h-[600px] overflow-y-auto'>
             {postLoading ? (
               <div className='flex items-center justify-center h-full'>
                 <LoadingSpinner />
@@ -211,7 +199,7 @@ const MainDashboard = () => {
                 <div className='text-red-600 text-lg'>{postError}</div>
               </div>
             ) : (
-              <div className='flex w-full flex-col space-y-5 px-20'>
+              <div className='flex w-full flex-col space-y-5 lg:px-20 md:px-16 sm:px-12 px-2'>
                 {posts.map((post) => (
                   <div
                     key={post._id}
@@ -223,7 +211,7 @@ const MainDashboard = () => {
                       </h1>
                     </div>
                     <div className='w-full flex justify-center'>
-                      <div className='grid grid-cols-3 w-full p-2 overflow-y-auto'>
+                      <div className='grid sm:grid-cols-3 grid-cols-2 w-full p-2 overflow-y-auto'>
                         {post.video && (
                           <video
                             src={post.video.secure_url}
@@ -242,16 +230,16 @@ const MainDashboard = () => {
                       </div>
                     </div>
                     <div className='w-full p-2'>
-                      <h2 className='text-2xl text-orange-500 font-bold'>
+                      <h2 className='sm:text-2xl text-xl text-orange-500 font-bold'>
                         {post.resName}
                       </h2>
-                      <div className='text-orange-500 border-r'>
+                      <div className='text-orange-500 border-r sm:text-xl text-sm'>
                         {formatDate(post.createdAt)}
                       </div>
 
                       <div
                         dangerouslySetInnerHTML={{ __html: post.description }}
-                        className='text-justify text-neutrals-500 mt-2'
+                        className='text-justify text-neutrals-500 mt-2 sm:text-md text-sm'
                       />
                       <div className='w-full flex justify-center items-center'>
                         <div className='border p-3 flex justify-center items-center px-3 rounded-lg border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-TextColor transition-all w-32'>

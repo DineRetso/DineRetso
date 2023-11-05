@@ -9,10 +9,48 @@ const User = require("../Models/User_Model.js");
 const Dine = require("../Models/AdminModel.js");
 const Posting = require("../Models/PostingModels.js");
 const Payments = require("../Models/PaymentModel.js");
+const Audit = require("../Models/AuditModel.js");
 const { generateAdminToken, isAdminAuth, isAdmin } = require("../utils.js");
 
 const adminRouter = express.Router();
 dotenv.config();
+
+adminRouter.get(
+  "/getDine",
+  isAdminAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { id } = req.query;
+    try {
+      const dine = await Dine.findById(id);
+      if (!dine) {
+        return res.status(404).send({ message: "Invalid Admin" });
+      } else {
+        res.status(200).json(dine);
+      }
+    } catch (error) {
+      res.status(500).send({ message: "Internal server error: " + error });
+      console.error(error);
+    }
+  })
+);
+adminRouter.get(
+  "/getAudits",
+  isAdminAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const audits = await Audit.find();
+      if (!audits) {
+        res.status(404).send({ message: "No Audit Available" });
+      } else {
+        res.status(200).json(audits);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  })
+);
 
 adminRouter.post(
   "/dineInfo",
@@ -35,6 +73,7 @@ adminRouter.post(
   "/admin-login",
   expressAsyncHandler(async (req, res) => {
     const dine = await Dine.findOne({ username: req.body.username });
+
     if (dine) {
       const lockoutDuration = 5 * 60 * 1000;
       const currentTime = new Date();
@@ -52,6 +91,10 @@ adminRouter.post(
           dine.lastFailedLogin = undefined;
         }
         await dine.save();
+        const auditLog = new Audit({
+          action: `Successful login`,
+        });
+        await auditLog.save();
         res.json({
           _id: dine._id,
           name: dine.name,
@@ -63,10 +106,14 @@ adminRouter.post(
         dine.attempt += 1;
         dine.lastFailedLogin = new Date();
         await dine.save();
+        const auditLog = new Audit({
+          action: `Attempted login`,
+        });
+        await auditLog.save();
         res.status(401).send({ message: "Invalid Password!" });
       }
     } else {
-      res.status(401).send({ message: "Invalid Email or password!" });
+      res.status(401).send({ message: "Invalid User or password!" });
     }
   })
 );
@@ -121,6 +168,10 @@ adminRouter.post(
       pendingResto.reasonCancelled = req.body.reasonCancelled;
       pendingResto.isConfirmed = "Cancelled";
       await pendingResto.save();
+      const auditLog = new Audit({
+        action: `Cancelled registration of ${pendingResto.resName}`,
+      });
+      await auditLog.save();
       res.status(201).json({ message: "Restaurant cancellation success!" });
     } catch (error) {
       res.status(500).json({ message: "Restaurant Cancellation Failed!" });
@@ -167,6 +218,10 @@ adminRouter.post(
       //update restaurant registration
       resto.isConfirmed = "Confirmed";
       await resto.save();
+      const auditLog = new Audit({
+        action: `Confirmed registration of ${resto.resName}`,
+      });
+      await auditLog.save();
       res
         .status(201)
         .json({ message: "Restaurant has been saved to directory!" });
@@ -279,7 +334,7 @@ adminRouter.post("/create", async (req, res) => {
       igLink,
       webLink,
       category,
-      images: images, // Store Cloudinary image URLs
+      images: images,
     });
 
     // Save the blog post to the database
@@ -397,18 +452,22 @@ function sendEmailPosting(userEmails, blogPost) {
         to: userEmail,
         subject: "New Blog Post Created",
         html: `
-          <p>Hello,</p>
-          <p>A new blog post "${
-            blogPost.title
-          }" has been created for your restaurant "${blogPost.resName}".</p>
+          <p>From "${blogPost.resName}"</p>
+          <p>Title: "${blogPost.title}"</p>
+          ${
+            blogPost.video &&
+            ` <img src="${blogPost.video.secure_url}" alt="Video Thumbnail" />`
+          }
           ${
             blogPost.images.length != 0 &&
             `<img src="${blogPost.images[0].secure_url}" alt="Blog Post Image" />`
           }
           <p><strong>Description:</strong></p>
           ${blogPost.description}
-          <p>Read the post <a href="URL_TO_THE_POST">here</a>.</p>
-          <p>Thank you for using our service.</p>
+          <p>Read the post <a href="http://192.168.1.19:3000/ViewRestoPost/${
+            blogPost._id
+          }/email">here</a>.</p>
+         
         `,
       };
 
@@ -465,6 +524,10 @@ adminRouter.put(
 
       updatedPost.expectedVisit = successfulEmailRecipients.length;
       await updatedPost.save();
+      const auditLog = new Audit({
+        action: `Created Post of ${updatedPost.resName}`,
+      });
+      await auditLog.save();
       res.status(200).json({ message: "Post Updated" });
     } catch (error) {
       console.error(error);
@@ -487,7 +550,10 @@ adminRouter.put(
       updatedPost.status = "Cancelled";
 
       await updatedPost.save();
-
+      const auditLog = new Audit({
+        action: `Cancelled Post of ${updatedPost.resName}`,
+      });
+      await auditLog.save();
       res.status(200).json({ message: "Post Updated" });
     } catch (error) {
       console.error(error);

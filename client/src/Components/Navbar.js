@@ -10,16 +10,12 @@ const Navbar = () => {
   const [isScrolledUp, setIsScrolledUp] = useState(false);
 
   useEffect(() => {
-    // Function to handle scroll event
     const handleScroll = () => {
-      // Check if the user has scrolled up
       setIsScrolledUp(window.scrollY > 0);
     };
 
-    // Attach the scroll event listener
     window.addEventListener("scroll", handleScroll);
 
-    // Clean up the listener when the component unmounts
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
@@ -37,11 +33,11 @@ const Navbar = () => {
 
   // Example menu options
   const menuOptions = [
-    { text: "Home", link: "/" },
-    { text: "Restaurants", link: "/Restaurants" },
-    { text: "Menu", link: "/Menus" },
-    { text: "Services", link: "/dineretso-services" },
-    { text: "About", link: "/AboutUs" },
+    { text: "Home", link: "/", icon: "home" },
+    { text: "Restaurants", link: "/Restaurants", icon: "restaurant" },
+    { text: "Menu", link: "/Menus", icon: "room_service" },
+    { text: "Services", link: "/dineretso-services", icon: "build" },
+    { text: "About", link: "/AboutUs", icon: "info" },
     ...(userInfo
       ? [
           {
@@ -50,10 +46,16 @@ const Navbar = () => {
               ? `/dineretso-restaurant/${userInfo.myRestaurant}/dashboard`
               : `/user/profile/${userInfo._id}`,
             target: userInfo.isOwner ? "_blank" : "",
+            icon: "person",
           },
-          { text: "Logout", onClick: signoutHandler, isButton: true },
+          {
+            text: "Logout",
+            onClick: signoutHandler,
+            isButton: true,
+            icon: "logout",
+          },
         ]
-      : [{ text: "Login", link: "/login" }]),
+      : [{ text: "Login", link: "/login", icon: "login" }]),
   ];
   const navClass = isScrolledUp ? "scrolled" : "";
 
@@ -67,11 +69,11 @@ const Navbar = () => {
             <div className='flex-shrink-0'>
               <a href='/' className=''>
                 <div className='flex'>
-                  <div className='flex  justify-center items-center text-5xl'>
+                  <div className='flex justify-center items-center'>
                     <img
                       src='../Logo.png'
                       alt='DineRetso Logo'
-                      className='w-24 h-24 text-sm'
+                      className='sm:w-20 sm:h-20 w-16 h-16 text-sm'
                     />
                   </div>
                 </div>
@@ -114,23 +116,58 @@ const Navbar = () => {
           <div
             className={`${
               isMobileMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-            } transition-all duration-500 ease-in-out absolute w-full h-auto top-20 left-0 text-red-500 font-helvetica rounded-lg shadow-lg z-10`}
+            } transition-all duration-500 ease-in-out absolute top-0 left-0 'bg-orange-200 text-TextColor bg-orange-200 w-full h-screen font-inter rounded-lg shadow-lg z-10`}
           >
-            <div className='flex flex-col w-full h-full bg-green-700'>
-              {menuOptions.map((option, index) => (
-                <a
-                  key={index}
-                  href={option.link}
-                  onClick={option.onClick}
-                  target={option.target}
-                  className={`${
-                    !option.isButton
-                      ? "px-4 py-2 hover:bg-hover-text rounded-xl cursor-pointer"
-                      : "hidden"
-                  }`}
+            <div className='w-full flex flex-row h-16 justify-between items-center bg-orange-500'>
+              {" "}
+              <div className='flex justify-center items-center h-14 w-14'>
+                <img src='/Logo.png' alt='logo' className='h-10 w-10' />
+              </div>
+              <div className='pr-2'>
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className=' text-TextColor p-2  w-full'
                 >
-                  {option.text}
-                </a>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    className='w-10 h-10'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                    stroke='currentColor'
+                  >
+                    <path
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      strokeWidth='2'
+                      d='M6 18L18 6M6 6l12 12'
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div className='flex flex-col w-full h-full '>
+              <div className='flex justify-center items-center p-3 text-2xl font-semibold border-b'>
+                <h1>DineRetso</h1>
+              </div>
+              {menuOptions.map((option, index) => (
+                <div
+                  key={index}
+                  className='p-2 font-thin flex justify-start items-center hover:bg-orange-700 transition-all px-5'
+                >
+                  <i className='material-icons'>{option.icon}</i>
+                  <a
+                    href={option.link}
+                    onClick={option.onClick}
+                    target={option.target}
+                    className={`${
+                      !option.isButton
+                        ? "px-4 py-2 hover:bg-hover-text rounded-xl cursor-pointer w-full"
+                        : "hidden"
+                    }`}
+                  >
+                    {option.text}
+                  </a>
+                </div>
               ))}
               {userInfo && (
                 <button

@@ -96,7 +96,7 @@ export default function Static() {
           <div className='w-10 h-10 border flex justify-center items-center border-orange-500 rounded-md'>
             <i className='material-icons text-orange-500'>schedule</i>
           </div>
-          <h1 className='text-neutrals-500'>Total Pending Restaurant</h1>
+          <h1 className='text-neutrals-500'>Total Inactive Restaurant</h1>
           <h2 className='text-xl text-neutrals-500 font-semibold'>
             {totalInactive}
           </h2>

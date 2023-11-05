@@ -150,14 +150,7 @@ export default function Dashboard() {
     ],
   };
   const barOptions = {
-    scales: {
-      x: {
-        stacked: true,
-      },
-      y: {
-        stacked: true,
-      },
-    },
+    scales: {},
   };
 
   const showFiltering = (e) => {

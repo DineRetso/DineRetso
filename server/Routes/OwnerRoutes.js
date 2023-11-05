@@ -636,30 +636,41 @@ ownerRouter.put(
       fbLink,
       igLink,
       webLink,
+      password,
+      userId,
     } = req.body;
     try {
-      const resto = await Restaurant.findById(restoId);
-      if (!resto) {
-        return res.status(404).send({ message: "Restaurant Unavailable" });
+      const user = await User.findById(userId);
+      if (!user) {
+        res.status(404).send({ message: "User Unavailable." });
       } else {
-        resto.profileImage = profileImage;
-        resto.profileImageId = profileImageId;
-        resto.bgPhoto = bgPhoto;
-        resto.bgPhotoId = bgPhotoId;
-        resto.resName = resName;
-        resto.owner = owner;
-        resto.phoneNo = phoneNo;
-        resto.description = description;
-        resto.category = category;
-        resto.address = address;
-        resto.pinLocation = pinLocation;
-        resto.openAt = openAt;
-        resto.closeAt = closeAt;
-        resto.fbLink = fbLink;
-        resto.igLink = igLink;
-        resto.webLink = webLink;
-        await resto.save();
-        res.status(200).json({ message: "Restaurant updated" });
+        if (bcrypt.compareSync(password, user.password)) {
+          const resto = await Restaurant.findById(restoId);
+          if (!resto) {
+            return res.status(404).send({ message: "Restaurant Unavailable" });
+          } else {
+            resto.profileImage = profileImage;
+            resto.profileImageId = profileImageId;
+            resto.bgPhoto = bgPhoto;
+            resto.bgPhotoId = bgPhotoId;
+            resto.resName = resName;
+            resto.owner = owner;
+            resto.phoneNo = phoneNo;
+            resto.description = description;
+            resto.category = category;
+            resto.address = address;
+            resto.pinLocation = pinLocation;
+            resto.openAt = openAt;
+            resto.closeAt = closeAt;
+            resto.fbLink = fbLink;
+            resto.igLink = igLink;
+            resto.webLink = webLink;
+            await resto.save();
+            res.status(200).json({ message: "Restaurant updated" });
+          }
+        } else {
+          res.status(400).send({ message: "Invalid Password!" });
+        }
       }
     } catch (error) {
       console.error(error);

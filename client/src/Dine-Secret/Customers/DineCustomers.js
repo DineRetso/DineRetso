@@ -53,7 +53,7 @@ export default function DineCustomers() {
     setModalOpen(false);
   };
   return (
-    <div className='lg:ml-72 md:ml-72  sm:ml-72  p-5'>
+    <div className='lg:ml-72 md:ml-72  sm:ml-72  p-5 font-inter'>
       <div>
         <div className='flex justify-between p-2 border-b'>
           <div>
