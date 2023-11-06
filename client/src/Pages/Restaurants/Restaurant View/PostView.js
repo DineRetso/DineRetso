@@ -3,6 +3,8 @@ import { getError } from "../../../utils";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import LoadingSpinner from "../../../Components/LoadingSpinner";
+import { FacebookShareButton } from "react-share";
+import { FacebookIcon } from "react-share";
 
 export default function PostView() {
   const [loading, setLoading] = useState(false);
@@ -12,6 +14,9 @@ export default function PostView() {
   const navigate = useNavigate();
 
   const { id, postSource } = useParams();
+
+  const url =
+    "http://localhost:3000/ViewRestoPost/654758cdffee5fec6b7291df/facebook";
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -45,7 +50,7 @@ export default function PostView() {
     return formattedDate;
   }
   return (
-    <div className='w-full p-2'>
+    <div className='w-full p-2 flex justify-center'>
       {loading ? (
         <div>
           <LoadingSpinner />
@@ -53,21 +58,21 @@ export default function PostView() {
       ) : error ? (
         <div>{error}</div>
       ) : (
-        <div className='w-full flex flex-col lg:px-20 md:px-16 sm:px-12 px-2'>
+        <div className='lg:w-9/12 w-full flex flex-col lg:px-20 md:px-16 sm:px-12 px-2'>
           <div className='w-full border-b p-5 mb-5'>
-            <h1 className='text-center text-2xl text-orange-500 font-bold'>
+            <h1 className='text-2xl text-orange-500 font-bold text-center mb-3'>
               {postData.title}
             </h1>
           </div>
           <div className='w-full'>
             <div className='w-full flex justify-center'>
-              <div className='grid sm:grid-cols-3 grid-cols-2 w-full p-2 overflow-y-auto'>
+              <div className='grid sm:grid-cols-3 grid-cols-2 w-full p-2 gap-2 overflow-y-auto'>
                 {postData.video && (
                   <video
                     src={postData.video.secure_url}
                     alt='Uploaded Video'
                     controls
-                    className='max-h-[500px] max-w-full object-cover rounded-lg'
+                    className='h-80 w-full'
                   ></video>
                 )}
                 {postData.images &&
@@ -95,8 +100,25 @@ export default function PostView() {
               </div>
               <div
                 dangerouslySetInnerHTML={{ __html: postData.description }}
-                className='text-justify text-neutrals-500 mt-2 sm:text-md text-sm'
+                className='text-justify text-neutrals-500 mt-2 sm:text-xl text-sm'
               />
+              {postData.tags && (
+                <div className='flex flex-row'>
+                  <h1 className='text italic'>Tags: </h1>
+                  {postData.tags.map((tag) => (
+                    <span> {tag}</span>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div>
+              <FacebookShareButton url={url}>
+                <FacebookIcon
+                  logoFillColor='white'
+                  round={true}
+                  quote={postData.title}
+                />
+              </FacebookShareButton>
             </div>
             <div className='w-full flex justify-center items-center'>
               <div className='border p-3 flex justify-center items-center px-3 rounded-lg border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-TextColor transition-all w-32'>

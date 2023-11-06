@@ -189,7 +189,7 @@ const MainDashboard = () => {
               DINING DISCOVERIES
             </h1>
           </div>
-          <div className='w-full  max-h-[600px] overflow-y-auto'>
+          <div className='w-full max-h-[600px] overflow-y-auto flex justify-center'>
             {postLoading ? (
               <div className='flex items-center justify-center h-full'>
                 <LoadingSpinner />
@@ -199,24 +199,25 @@ const MainDashboard = () => {
                 <div className='text-red-600 text-lg'>{postError}</div>
               </div>
             ) : (
-              <div className='flex w-full flex-col space-y-5 lg:px-20 md:px-16 sm:px-12 px-2'>
+              <div className='flex lg:w-9/12 w-full flex-col space-y-5 lg:px-20 md:px-16 sm:px-12 px-2'>
                 {posts.map((post) => (
                   <div
                     key={post._id}
-                    className='flex flex-col w-full border shadow-lg p-4  justify-center items-center'
+                    className='flex flex-col w-full border shadow-lg p-4 justify-center items-center'
                   >
                     <div className='w-full flex justify-center'>
-                      <h1 className='text-2xl text-orange-500 font-bold text-justify'>
+                      <h1 className='text-2xl text-orange-500 font-bold text-center mb-3'>
                         {post.title}
                       </h1>
                     </div>
                     <div className='w-full flex justify-center'>
-                      <div className='grid sm:grid-cols-3 grid-cols-2 w-full p-2 overflow-y-auto'>
+                      <div className='grid sm:grid-cols-3 grid-cols-2 w-full p-2 sm:gap-5 gap-2 overflow-y-auto'>
                         {post.video && (
                           <video
                             src={post.video.secure_url}
                             alt='Uploaded Video'
                             controls
+                            className='h-80 w-full'
                           ></video>
                         )}
                         {post.images.map((image, index) => (
@@ -230,7 +231,7 @@ const MainDashboard = () => {
                       </div>
                     </div>
                     <div className='w-full p-2'>
-                      <h2 className='sm:text-2xl text-xl text-orange-500 font-bold'>
+                      <h2 className='sm:text-2xl text-lg text-orange-500 font-bold'>
                         {post.resName}
                       </h2>
                       <div className='text-orange-500 border-r sm:text-xl text-sm'>
@@ -239,7 +240,7 @@ const MainDashboard = () => {
 
                       <div
                         dangerouslySetInnerHTML={{ __html: post.description }}
-                        className='text-justify text-neutrals-500 mt-2 sm:text-md text-sm'
+                        className='text-justify text-neutrals-500 mt-2 sm:text-xl text-sm'
                       />
                       <div className='w-full flex justify-center items-center'>
                         <div className='border p-3 flex justify-center items-center px-3 rounded-lg border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-TextColor transition-all w-32'>
