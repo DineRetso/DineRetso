@@ -120,12 +120,13 @@ export default function RestaurantMenu() {
             );
           }
           const filteredMenus = sortedMenus.filter((menuItem) => {
+            const searchLower = searchQuery.toLowerCase();
             return (
               searchQuery === "" ||
-              menuItem.menuName.toLowerCase().includes(searchQuery) ||
-              menuItem.description.toLowerCase().includes(searchQuery) ||
-              menuItem.price.toString().includes(searchQuery) ||
-              menuItem.classification.toLowerCase().includes(searchQuery)
+              menuItem.menuName.toLowerCase().includes(searchLower) ||
+              menuItem.description.toLowerCase().includes(searchLower) ||
+              menuItem.price.toString().includes(searchLower) ||
+              menuItem.classification.toLowerCase().includes(searchLower)
             );
           });
 
@@ -144,24 +145,38 @@ export default function RestaurantMenu() {
     };
     fetchMenu();
   }, [category, searchQuery, sortRatings]);
+
   const calculateTotalRatings = (menu) => {
     let totalRatings = 0;
-    const len = menu.menuReview.length;
-    menu.menuReview.forEach((review) => {
-      totalRatings += review.rating;
-    });
-    const averageRating = totalRatings / len;
+    let len = 0;
+    if (menu.menuReview && menu.menuReview.length > 0) {
+      const approvedReviews = menu.menuReview.filter(
+        (review) => review.status === "approved"
+      );
+      approvedReviews.forEach((review) => {
+        totalRatings += review.rating;
+        len++;
+      });
+    }
+    const averageRating = len > 0 ? totalRatings / len : 0;
+
     return averageRating;
   };
   const calculateSorting = (menu) => {
     let totalRatings = 0;
-    const len = menu.menuReview.length;
+    let len = 0;
     menu.menuReview.forEach((review) => {
-      totalRatings += review.rating;
+      if (review.status === "approved") {
+        totalRatings += review.rating;
+        len++;
+      }
     });
-    const averageRating = totalRatings / len;
 
-    // Round the average rating to the nearest whole number
+    if (len === 0) {
+      return 0;
+    }
+
+    const averageRating = totalRatings / len;
     return Math.round(averageRating);
   };
 

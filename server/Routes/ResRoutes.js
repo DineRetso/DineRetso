@@ -42,7 +42,9 @@ resRouter.get(
           openAt: restaurant.openAt,
           closeAt: restaurant.closeAt,
           isSubscribed: restaurant.isSubscribed,
-          menu: restaurant.menu,
+          menu: restaurant.menu.filter(
+            (menuItem) => menuItem.isAvailable === true
+          ),
           tags: restaurant.tags,
         }));
         res.status(200).json(menuData);
@@ -345,6 +347,10 @@ resRouter.get(
       if (!specificMenuItem) {
         return res.status(404).json({ error: "Specific menu item not found" });
       }
+      const availableReviews = specificMenuItem.menuReview.filter(
+        (review) => review.status === "approved"
+      );
+      specificMenuItem.menuReview = availableReviews;
       res.json(specificMenuItem);
     } catch (error) {
       console.error(error);

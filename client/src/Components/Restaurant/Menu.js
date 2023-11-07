@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import RateMenu from "./RateMenu";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
+import { getError } from "../../utils";
 export default function Menu(props) {
   const { menu } = props;
   const [showRateMenu, setshowRateMenu] = useState(false);
@@ -13,6 +14,7 @@ export default function Menu(props) {
   const { userInfo } = state;
   const { pid } = props;
   const [menuId, setMenuId] = useState("");
+
   const handleAddMenuRate = async (
     menu,
     reviewerId,
@@ -35,16 +37,8 @@ export default function Menu(props) {
         toast.error("Failed to submit review.");
       }
     } catch (error) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        toast.error(error.response.data.message);
-      } else {
-        console.error(error);
-        toast.error("Internal Server Error. Please Contact the DineRetso!");
-      }
+      console.error(getError(error));
+      toast.error(getError(error));
     }
   };
   const handleRateClick = () => {
@@ -54,14 +48,20 @@ export default function Menu(props) {
   };
   const calculateTotalRatings = (menu) => {
     let totalRatings = 0;
-    const len = menu.menuReview.length;
-    menu.menuReview.forEach((review) => {
-      totalRatings += review.rating;
-    });
-    const averageRating = totalRatings / len;
+    let len = 0;
+    if (menu.menuReview && menu.menuReview.length > 0) {
+      const approvedReviews = menu.menuReview.filter(
+        (review) => review.status === "approved"
+      );
+      approvedReviews.forEach((review) => {
+        totalRatings += review.rating;
+        len++;
+      });
+    }
+    const averageRating = len > 0 ? totalRatings / len : 0;
+
     return averageRating;
   };
-
   return (
     <div>
       <div>

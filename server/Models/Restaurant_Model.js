@@ -27,6 +27,12 @@ const menuSchema = new mongoose.Schema(
     menuReview: [reviewSchema],
     classification: { type: String },
     isFeatured: { type: Boolean, default: false },
+    resName: {
+      type: String,
+      default: function () {
+        return this.parent().resName;
+      },
+    },
   },
   {
     timestamps: true,

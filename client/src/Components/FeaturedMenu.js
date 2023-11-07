@@ -5,14 +5,21 @@ import { useNavigate } from "react-router-dom";
 export default function FeaturedMenu(props) {
   const { fMenu } = props;
   const navigate = useNavigate();
-
+  
   const calculateTotalRatings = (menu) => {
     let totalRatings = 0;
-    const len = menu.menuReview.length || 0;
-    menu.menuReview.forEach((review) => {
-      totalRatings += review.rating;
-    });
-    const averageRating = totalRatings / len;
+    let len = 0;
+    if (menu.menuReview && menu.menuReview.length > 0) {
+      const approvedReviews = menu.menuReview.filter(
+        (review) => review.status === "approved"
+      );
+      approvedReviews.forEach((review) => {
+        totalRatings += review.rating;
+        len++;
+      });
+    }
+    const averageRating = len > 0 ? totalRatings / len : 0;
+
     return averageRating;
   };
   return (

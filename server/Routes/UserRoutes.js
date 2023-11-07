@@ -1,6 +1,7 @@
 const express = require("express");
 const nodemailer = require("nodemailer");
 const User = require("../Models/User_Model.js");
+const Restaurant = require("../Models/Restaurant_Model.js");
 const expressAsyncHandler = require("express-async-handler");
 const dotenv = require("dotenv");
 const bcrypt = require("bcryptjs");
@@ -30,6 +31,78 @@ userRouter.get(
       res
         .status(500)
         .send({ message: "Internal Server Error! Please Try again later!" });
+    }
+  })
+);
+userRouter.get(
+  "/getUserProfile/:userId",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const { userId } = req.params;
+    try {
+      const response = await User.findById(userId);
+      const restaurants = await Restaurant.find({});
+      const userReviews = [];
+      restaurants.forEach((restaurant) => {
+        if (restaurant) {
+          const userRestoReviews = restaurant.restoReview.filter(
+            (review) => review.reviewerId === userId
+          );
+          const userMenuReviews = [];
+          restaurant.menu.forEach((menu) => {
+            const menuReviews = menu.menuReview.filter(
+              (review) => review.reviewerId === userId
+            );
+            userMenuReviews.push(...menuReviews);
+          });
+          userReviews.push(...userRestoReviews, ...userMenuReviews);
+        }
+      });
+      if (response) {
+        const responseData = {
+          user: response,
+          userReviews: userReviews,
+        };
+        res.status(200).json(responseData);
+      } else {
+        res.status(404).send({ message: "User Unavailable" });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Internal Server Error: " + error });
+    }
+  })
+);
+
+userRouter.put(
+  "/updateUserProfile/:userId",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const { userId } = req.params;
+    const { fName, lName, image, imagePublicId, password, address, mobileNo } =
+      req.body;
+    try {
+      console.log(userId);
+      const user = await User.findById(userId);
+      if (user) {
+        if (bcrypt.compareSync(password, user.password)) {
+          user.fName = fName;
+          user.lName = lName;
+          user.image = image;
+          user.imagePublicId = imagePublicId;
+          user.address = address;
+          user.mobileNo = mobileNo;
+          await user.save();
+          res.status(200).json({ message: "Profile updated successfully" });
+        } else {
+          res.status(400).send({ message: "Invalid Password!" });
+        }
+      } else {
+        res.status(404).send({ message: "User Unavailable." });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Internal Server Error: " + error });
     }
   })
 );

@@ -69,10 +69,12 @@ const MainDashboard = () => {
           );
           const featuredMenus = subscribedRestaurants.flatMap(
             (subscribedResto) =>
-              subscribedResto.menu.map((menu) => ({
-                ...menu,
-                owner: subscribedResto.resName,
-              }))
+              subscribedResto.menu
+                .filter((menu) => menu.isAvailable === true)
+                .map((menu) => ({
+                  ...menu,
+                  owner: subscribedResto.resName,
+                }))
           );
           setSubscribedMenus(shuffleArray(featuredMenus));
           setRandomFeaturedRestaurants(
