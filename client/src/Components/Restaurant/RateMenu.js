@@ -23,9 +23,11 @@ export default function RateMenu({ onClose, onRateMenu, rateMenu }) {
 
   return (
     <div className='fixed flex inset-0 items-center justify-center z-50 top-0 left-0 sm:left-auto w-full sm:w-3/4 h-screen'>
-      <div className='bg-TextColor flex flex-col justify-center items-center p-5 sm:p-10 rounded-md w-full sm:w-1/2 border border-orange-500'>
-        <h2 className='text-2xl font-semibold mb-4'>Rate the Menu</h2>
-        <div className='mb-4'>
+      <div className='bg-TextColor flex flex-col justify-center items-center p-2 sm:p-5 rounded-md w-full sm:w-1/2 border border-orange-500'>
+        <h2 className='text-2xl font-semibold mb-4'>
+          Rate {rateMenu.menuName}
+        </h2>
+        <div className='mb-4 w-full'>
           <p>How would you rate this menu?</p>
           <Rating
             name='half-rating'
@@ -37,15 +39,15 @@ export default function RateMenu({ onClose, onRateMenu, rateMenu }) {
             precision={0.5}
           />
         </div>
-        <div className='mb-4'>
-          <p>Additional Feedback (optional):</p>
+        <div className='w-full mb-4'>
+          <p>Additional Feedback:</p>
           <textarea
             rows='4'
-            cols='50'
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder='Write your feedback here...'
             required
+            className='w-full p-2 border border-gray-400 rounded-md'
           />
         </div>
         <button
@@ -54,11 +56,13 @@ export default function RateMenu({ onClose, onRateMenu, rateMenu }) {
         >
           Submit Rating
         </button>
-        <div
-          className='border border-orange-500 flex justify-center items-center w-3/4 hover:bg-orange-500 text-orange-500 hover:text-TextColor transition-all duration-300 p-2 rounded-md'
-          onClick={onClose}
-        >
-          Close
+        <div className='mt-4'>
+          <button
+            className='border border-orange-500 bg-orange-500 text-white hover:bg-orange-600 hover:text-TextColor transition-all duration-300 px-4 py-2 rounded-md'
+            onClick={onClose}
+          >
+            Close
+          </button>
         </div>
       </div>
     </div>

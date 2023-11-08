@@ -1,7 +1,6 @@
 import React, { useContext, useRef, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import bcrypt from "bcryptjs";
 import LoadingSpinner from "../Components/LoadingSpinner";
 import { toast } from "react-toastify";
 import SignupTermsandConditions from "../Components/SignupTermsandConditions";
@@ -48,14 +47,25 @@ const Signup = () => {
     const regex = /^(?:\+639|\b09)[0-9]{9}$/;
     return regex.test(mobileNo);
   };
+  const expirationTime = new Date().getTime() + 60 * 60 * 1000;
+  const userData = {
+    fName,
+    lName,
+    address,
+    mobileNo,
+    email,
+    password,
+    otp,
+    expiration: expirationTime,
+  };
+
   const sendOTPEmail = async () => {
     try {
       setLoading(true);
-      await axios.post(`/api/users/send-otp`, {
-        email,
-        otp,
-      });
+      const response = await axios.post(`/api/users/send-otp`, userData);
       setLoading(false);
+      const newSignupId = response.data.newSignup._id;
+      localStorage.setItem("signupData", JSON.stringify({ newSignupId }));
       toast.info("OTP sent successfully to your email.");
       navigate("/verifyOTP");
     } catch (error) {
@@ -89,20 +99,7 @@ const Signup = () => {
       cofirm.current.focus();
       return;
     }
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const hashedOTP = await bcrypt.hash(otp, 10);
-    const expirationTime = new Date().getTime() + 60 * 60 * 1000;
-    const userData = {
-      fName,
-      lName,
-      address,
-      mobileNo,
-      email,
-      password: hashedPassword,
-      otp: hashedOTP,
-      expiration: expirationTime,
-    };
-    localStorage.setItem("signupData", JSON.stringify(userData));
+
     if (email) {
       sendOTPEmail();
     } else {

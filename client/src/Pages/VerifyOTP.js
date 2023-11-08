@@ -1,27 +1,45 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Store } from "../Store";
 import Axios from "axios";
-import bcrypt from "bcryptjs";
 import { toast } from "react-toastify";
 import { getError } from "../utils";
+import axios from "axios";
 
 export default function VerifyOTP() {
   const [enteredOTP, setEnteredOTP] = useState("");
   const [remainingTime, setRemain] = useState(0);
+  const [error, setError] = useState("");
+  const [userData, setUserData] = useState({});
   const signupData = JSON.parse(localStorage.getItem("signupData"));
-
+  const id = signupData.newSignupId;
   const navigate = useNavigate();
-
+  useEffect(() => {
+    const fetchOTP = async () => {
+      console.log(id);
+      try {
+        const response = await axios.get(`/api/users/getOtp?id=${id}`);
+        if (response.status === 200) {
+          setUserData(response.data);
+        } else {
+          setError("Invalid User Details.");
+        }
+      } catch (error) {
+        console.error(getError(error));
+        setError(getError(error));
+      }
+    };
+    fetchOTP();
+  }, [id]);
+  console.log(userData);
   const calculateRemainingTime = useCallback(() => {
-    if (signupData) {
+    if (userData && userData.expiration) {
       const now = new Date().getTime();
-      const expirationTime = signupData.expiration;
+      const expirationTime = new Date(userData.expiration).getTime(); // Parse the expiration time
       const timeDiff = expirationTime - now;
       return Math.max(0, Math.floor(timeDiff / 1000));
     }
     return 0;
-  }, [signupData]);
+  }, [userData]);
 
   const verifyOTP = async (e) => {
     e.preventDefault();
@@ -40,39 +58,39 @@ export default function VerifyOTP() {
       return;
     }
 
-    if (bcrypt.compareSync(enteredOTP, signupData.otp)) {
-      try {
-        const response = await Axios.post(`/api/users/signup`, {
-          fName: signupData.fName,
-          lName: signupData.lName,
-          address: signupData.address,
-          mobileNo: signupData.mobileNo,
-          email: signupData.email,
-          password: signupData.password,
-        });
-        if (response.status === 201) {
-          toast.success(response.data.message);
-          localStorage.removeItem("signupData");
-          window.location.href = "/login";
-        } else {
-          toast.error("Failed to create account.");
-          localStorage.removeItem("signupData");
-          window.location.href = "/login";
-        }
-      } catch (error) {
-        toast.error(getError(error));
+    try {
+      const response = await Axios.post(`/api/users/signup`, {
+        fName: userData.fName,
+        lName: userData.lName,
+        address: userData.address,
+        mobileNo: userData.mobileNo,
+        email: userData.email,
+        enteredOTP,
+        otp: userData.otp,
+        password: userData.password,
+      });
+      if (response.status === 201) {
+        toast.success(response.data.message);
         localStorage.removeItem("signupData");
-        navigate("/signup");
+        window.location.href = "/login";
+      } else if (response.status === 404) {
+        toast.error("Invalid OTP");
+        localStorage.removeItem("signupData");
+        window.location.href = "/login";
+      } else {
+        toast.error("Failed to create account.");
+        localStorage.removeItem("signupData");
+        window.location.href = "/login";
       }
-    } else {
-      toast.error("Invalid OTP Verification!");
+    } catch (error) {
+      toast.error(getError(error));
       localStorage.removeItem("signupData");
       navigate("/signup");
     }
   };
 
   useEffect(() => {
-    if (signupData) {
+    if (userData) {
       const interval = setInterval(() => {
         const timeLeft = calculateRemainingTime();
         setRemain(timeLeft);
@@ -83,7 +101,7 @@ export default function VerifyOTP() {
 
   return (
     <div className='flex items-center justify-center h-screen font-sans'>
-      <div className='w-1/2 rounded-md p-16 border h-96 shadow bg-orange-100 '>
+      <div className='sm:w-1/2 w-4/5 rounded-md p-16 border h-96 shadow bg-orange-100 '>
         <form onSubmit={verifyOTP}>
           <div className='mb-4'>
             <label className='flex items-center justify-center text-first-text font-bold mb-2'>

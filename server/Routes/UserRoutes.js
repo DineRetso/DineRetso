@@ -2,6 +2,7 @@ const express = require("express");
 const nodemailer = require("nodemailer");
 const User = require("../Models/User_Model.js");
 const Restaurant = require("../Models/Restaurant_Model.js");
+const SData = require("../Models/SignupModel.js");
 const expressAsyncHandler = require("express-async-handler");
 const dotenv = require("dotenv");
 const bcrypt = require("bcryptjs");
@@ -110,7 +111,16 @@ userRouter.put(
 userRouter.post(
   "/send-otp",
   expressAsyncHandler(async (req, res) => {
-    const { email, otp } = req.body;
+    const {
+      email,
+      otp,
+      fName,
+      lName,
+      address,
+      mobileNo,
+      password,
+      expiration,
+    } = req.body;
 
     try {
       const transporter = nodemailer.createTransport({
@@ -143,8 +153,20 @@ userRouter.post(
       };
       const info = await transporter.sendMail(mailOption);
       console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-
-      res.status(200).json({ message: "Email sent successfully" });
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const hashedOTP = await bcrypt.hash(otp, 10);
+      const newSignup = new SData({
+        fName,
+        lName,
+        address,
+        mobileNo,
+        email,
+        password: hashedPassword,
+        otp: hashedOTP,
+        expiration,
+      });
+      await newSignup.save();
+      res.status(200).json({ message: "Email sent successfully", newSignup });
     } catch (error) {
       console.error("Error sending email:", error);
       res.status(500).json({ message: "Error sending email" });
@@ -167,30 +189,62 @@ userRouter.post(
     }
   })
 );
+userRouter.get(
+  "/getOtp",
+  expressAsyncHandler(async (req, res) => {
+    const id = req.query.id;
+    console.log(id);
+    try {
+      const signupdata = await SData.findById(id);
+      if (!signupdata) {
+        return res.status(400).send({ message: "Invalid OTP" });
+      } else {
+        res.status(200).json(signupdata);
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Internal Server Error: " + error });
+    }
+  })
+);
 userRouter.post(
   "/signup",
   expressAsyncHandler(async (req, res) => {
-    const { fName, lName, address, mobileNo, email, password } = req.body;
+    const {
+      fName,
+      lName,
+      address,
+      mobileNo,
+      email,
+      password,
+      enteredOTP,
+      otp,
+    } = req.body;
     // Check if email already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       res.status(400).json({ message: "Email already exists" });
       return;
     }
-    try {
-      const newUser = new User({
-        fName,
-        lName,
-        address,
-        mobileNo,
-        email,
-        password,
-      });
-      const user = await newUser.save();
-      res.status(201).json({ message: "Your account has been saved!" });
-    } catch (error) {
-      console.error("Error creating user:", error);
-      res.status(500).json({ message: "Error creating user" });
+    if (bcrypt.compareSync(enteredOTP, otp)) {
+      try {
+        const newUser = new User({
+          fName,
+          lName,
+          address,
+          mobileNo,
+          email,
+          password,
+        });
+        const user = await newUser.save();
+        res.status(201).json({ message: "Your account has been saved!" });
+      } catch (error) {
+        console.error("Error creating user:", error);
+        res.status(500).json({ message: "Error creating user" });
+      }
+    } else {
+      res.status(404).send({ message: "Invalid OTP" });
+      return;
     }
   })
 );

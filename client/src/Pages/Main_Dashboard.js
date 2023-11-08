@@ -215,12 +215,14 @@ const MainDashboard = () => {
                     <div className='w-full flex justify-center'>
                       <div className='grid sm:grid-cols-3 grid-cols-2 w-full p-2 sm:gap-5 gap-2 overflow-y-auto'>
                         {post.video && (
-                          <video
-                            src={post.video.secure_url}
-                            alt='Uploaded Video'
-                            controls
-                            className='h-80 w-full'
-                          ></video>
+                          <div className='sm:col-span-2'>
+                            <video
+                              src={post.video.secure_url}
+                              alt='Uploaded Video'
+                              controls
+                              className='w-full rounded-lg shadow-md'
+                            ></video>
+                          </div>
                         )}
                         {post.images.map((image, index) => (
                           <img

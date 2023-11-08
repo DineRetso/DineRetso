@@ -1,6 +1,6 @@
 {
   "name": "client",
-  "proxy": "http://192.168.100.90:5000",
+  "proxy": "http://192.168.1.19:5000",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -14,9 +14,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.4.0",
-    "bcryptjs": "^2.4.3",
     "chart.js": "^4.4.0",
-    "crypto-browserify": "^3.12.0",
     "date-fns": "^2.30.0",
     "latest": "^0.2.0",
     "leaflet": "^1.9.4",

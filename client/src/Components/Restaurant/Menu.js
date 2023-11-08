@@ -86,7 +86,7 @@ export default function Menu(props) {
           {menu.menuName}
         </h1>
         <h2 className='text-xl text-neutrals-700'>₱{menu.price}</h2>
-        <div className='flex justify-between items-center'>
+        <div className='flex flex-col justify-center items-start'>
           <Rating
             name='read-only'
             size='medium'
@@ -94,13 +94,13 @@ export default function Menu(props) {
             precision={0.1}
             readOnly
           />
-          <div className='p-2'>
+          <div className='p-2 flex justify-center items-center w-full'>
             {userInfo ? (
-              <div>
+              <div className='text-center bg-orange w-full h-full rounded-md bg-orange-300'>
                 <button onClick={handleRateClick}>Rate Now</button>
               </div>
             ) : (
-              <div>
+              <div className='text-center bg-orange w-full h-full rounded-md bg-orange-300'>
                 <button
                   onClick={() => toast.info("Please login to rate this menu!")}
                 >
