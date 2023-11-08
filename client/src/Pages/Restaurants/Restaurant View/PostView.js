@@ -66,14 +66,16 @@ export default function PostView() {
           </div>
           <div className='w-full'>
             <div className='w-full flex justify-center'>
-              <div className='grid sm:grid-cols-3 grid-cols-2 w-full p-2 gap-2 overflow-y-auto'>
+              <div className='grid sm:grid-cols-3 grid-cols-2 w-full p-2 gap-2'>
                 {postData.video && (
-                  <video
-                    src={postData.video.secure_url}
-                    alt='Uploaded Video'
-                    controls
-                    className='h-80 w-full'
-                  ></video>
+                  <div className='col-span-4'>
+                    <video
+                      src={postData.video.secure_url}
+                      alt='Uploaded Video'
+                      controls
+                      className='w-full rounded-lg shadow-md'
+                    ></video>
+                  </div>
                 )}
                 {postData.images &&
                   postData.images.map((image, index) => (

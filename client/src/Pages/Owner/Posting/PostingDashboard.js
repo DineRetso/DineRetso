@@ -46,7 +46,7 @@ export default function PostingDashboard() {
     };
     fetchPosts();
   }, [userInfo.myRestaurant, userInfo.token, setPost, setResto, pStatus]);
-  const remainingPosts = resto.postCount;
+  const remainingPosts = 15 - resto.postCount;
 
   const filteredPosts = posts.filter((post) => {
     const searchLower = searchQuery.toLowerCase();

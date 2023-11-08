@@ -215,7 +215,7 @@ const MainDashboard = () => {
                     <div className='w-full flex justify-center'>
                       <div className='grid sm:grid-cols-3 grid-cols-2 w-full p-2 sm:gap-5 gap-2 overflow-y-auto'>
                         {post.video && (
-                          <div className='sm:col-span-2'>
+                          <div className='col-span-4'>
                             <video
                               src={post.video.secure_url}
                               alt='Uploaded Video'

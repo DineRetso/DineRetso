@@ -19,7 +19,7 @@ export default function Posts({ post }) {
       <div className='w-full flex justify-center'>
         <div className='grid sm:grid-cols-3 grid-cols-2 w-full p-2 sm:gap-5 gap-2 '>
           {post.video && (
-            <div className='sm:col-span-2'>
+            <div className='sm:col-span-4 w-full'>
               <video
                 src={post.video.secure_url}
                 alt='Uploaded Video'

@@ -107,15 +107,26 @@ export default function ViewOwnerPosting() {
               className='text-justify text-gray-700 p-2'
             />
           </div>
-          <div className='w-full grid grid-cols-3 gap-3 p-5'>
-            {postData.images.map((image, index) => (
-              <img
-                key={index}
-                src={image.secure_url}
-                alt={`post-${index}`}
-                className='w-96 max-h-[200px] rounded-lg'
-              />
-            ))}
+          <div className='grid sm:grid-cols-3 grid-cols-2 w-full p-2 gap-2'>
+            {postData.video && (
+              <div className='col-span-4'>
+                <video
+                  src={postData.video.secure_url}
+                  alt='Uploaded Video'
+                  controls
+                  className='w-full rounded-lg shadow-md'
+                ></video>
+              </div>
+            )}
+            {postData.images &&
+              postData.images.map((image, index) => (
+                <img
+                  key={index}
+                  src={image.secure_url}
+                  alt={`post`}
+                  className='w-full h-auto rounded-lg'
+                />
+              ))}
           </div>
           <div className='w-full flex justify-center space-x-2'>
             <div className='border p-3 flex justify-center items-center px-3 rounded-lg border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-TextColor transition-all w-32'>
