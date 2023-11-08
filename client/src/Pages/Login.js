@@ -54,7 +54,7 @@ const Login = () => {
       navigate("/login");
     }
   };
-  //redirect to homepage once already signin
+  
   useEffect(() => {
     if (userInfo) {
       navigate(redirect);
@@ -118,7 +118,6 @@ const Login = () => {
                   >
                     Forgot Password
                   </button>
-
                   <div className='text-center'>
                     <p className='mt-2'>Don't have an account?</p>
                     <a href='/signup' className=''>
@@ -126,6 +125,11 @@ const Login = () => {
                         Sign up here!
                       </p>
                     </a>
+                    <div className='text-center text-xs'>
+                    <Link to={"/"}>
+                    <p className=' text-orange-500'>Go back to homepage.</p>
+                    </Link>
+                  </div>
                   </div>
                 </form>
               </div>
