@@ -18,7 +18,6 @@ import OwnerRoute from "./Components/Routes/OwnerRoute";
 import Service_Dashboard from "./Pages/Restaurants/Register/Service_Dashboard";
 import ProtectedRoute from "./Components/Routes/ProtectedRoute";
 import UserProfile from "./Pages/Profile/UserProfile";
-import QRCodeGenerator from "./Pages/QRCodeGenerrator";
 import OwnerView from "./Pages/Restaurants/Restaurant View/OwnerView";
 import AdminLogin from "./Dine-Secret/AdminLogin";
 import Dashboard from "./Dine-Secret/Dashboard";
@@ -285,7 +284,7 @@ function App() {
                 <Navbar />
                 <Routes>
                   <Route path='/' element={<MainDashboard />} />
-                  <Route path='/qr' element={<QRCodeGenerator />} />
+                 
 
                   <Route path='/Restaurants' element={<Restaurant />} />
                   <Route path='/AboutUs' element={<AboutUs />} />
