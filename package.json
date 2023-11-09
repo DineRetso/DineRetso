@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/DineRetso/DineRetso/issues"
   },
-  "homepage": "https://github.com/DineRetso/DineRetso#readme"
+  "homepage": "https://github.com/DineRetso/DineRetso#readme",
+  "dependencies": {
+    "nodejs": "^0.0.0"
+  }
 }
