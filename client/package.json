@@ -34,7 +34,7 @@
     "web-vitals": "^2.1.4"
   },
   "options": {
-    "allowedHosts": ["localhost", ".localhost"],
+    "allowedHosts": ["localhost", ".localhost", "dineretso.com"],
     "proxy": "https://localhost:4251/"
   },
   "scripts": {
