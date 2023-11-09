@@ -13,6 +13,7 @@ const AdminRoutes = require("./Routes/AdminRoutes.js");
 const OwnerRoutes = require("./Routes/OwnerRoutes.js");
 const Dine = require("./Models/AdminModel.js");
 const PaymentRoutes = require("./Routes/PaymentRoutes.js");
+const path = require("path");
 
 dotenv.config();
 mongoose
@@ -37,6 +38,16 @@ app.use("/api/restaurant", ResRoutes);
 app.use("/api/admin", AdminRoutes);
 app.use("/api/owner", OwnerRoutes);
 app.use("/api/payment", PaymentRoutes);
+
+const __dirname = path.resolve();
+app.use(express.static(path.join(__dirname, "/client/buil")));
+app.get("*", (req, res) =>
+  res.sendFile(path.join(__dirname, "client/build/index.html"))
+);
+
+app.use((err, req, res, next) => {
+  res.status(500).send({message: err.message});
+})
 
 // // Add sample admin user data.
 // const createSampleAdminUser = async () => {
