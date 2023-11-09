@@ -31,7 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
-app.use(express.static(path.join(__dirname, "/client/build")));
+
 
 app.use("/api/users", UserRoutes);
 app.use("/api/image", ImageRoutes);
@@ -40,12 +40,14 @@ app.use("/api/admin", AdminRoutes);
 app.use("/api/owner", OwnerRoutes);
 app.use("/api/payment", PaymentRoutes);
 
+app.use(express.static(path.join(__dirname, "/client/build")));
+
 app.get("*", (req, res) =>
-  res.sendFile(path.join(__dirname, "/client/build/index.html"))
+  res.sendFile(path.join(__dirname, "/client/build", "index.html"))
 );
 
 app.use((err, req, res, next) => {
-  res.status(500).send({message: err.message});
+  res.status(500).send({message: err.message});"
 })
 
 const port = process.env.PORT;
