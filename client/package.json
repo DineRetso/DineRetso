@@ -1,6 +1,5 @@
 {
   "name": "client",
-  "proxy": "http://localhost:3890",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -33,6 +32,10 @@
     "react-toastify": "^9.1.3",
     "reactjs-popup": "^2.0.5",
     "web-vitals": "^2.1.4"
+  },
+  "options": {
+    "allowedHosts": ["localhost", ".localhost"],
+    "proxy": "https://localhost:3890/"
   },
   "scripts": {
     "start": "react-scripts start",
