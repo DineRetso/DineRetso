@@ -39,8 +39,7 @@ app.use("/api/admin", AdminRoutes);
 app.use("/api/owner", OwnerRoutes);
 app.use("/api/payment", PaymentRoutes);
 
-const __dirname = path.resolve();
-app.use(express.static(path.join(__dirname, "/client/buil")));
+app.use(express.static(path.join(__dirname, "/client/build")));
 app.get("*", (req, res) =>
   res.sendFile(path.join(__dirname, "client/build/index.html"))
 );
