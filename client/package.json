@@ -1,6 +1,7 @@
 {
   "name": "client",
   "version": "0.1.0",
+  "proxy": "https://localhost:4251/",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -33,11 +34,7 @@
     "reactjs-popup": "^2.0.5",
     "web-vitals": "^2.1.4"
   },
-  "options": {
-    "allowedHosts": ["localhost", ".localhost", "dineretso.com"],
-    "proxy": "https://localhost:4251/"
-  },
-  "scripts": {
+    "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
