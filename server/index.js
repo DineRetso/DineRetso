@@ -48,28 +48,6 @@ app.use((err, req, res, next) => {
   res.status(500).send({message: err.message});
 })
 
-// // Add sample admin user data.
-// const createSampleAdminUser = async () => {
-//   const sampleAdminUserData = {
-//     name: "Admin User",
-//     username: "admin",
-//     email: "johnaxelcortez21@gmail.com",
-//     phoneNo: "09771530826",
-//     address: "Bagabag, Nueva Vizcaya",
-//     password: bcrypt.hashSync("#Sevirtoz21", 10), // Replace with a secure password hash.
-//   };
-
-//   const existingUser = await Dine.findOne({
-//     userName: sampleAdminUserData.userName,
-//   });
-//   if (!existingUser) {
-//     const adminUser = new Dine(sampleAdminUserData);
-//     await adminUser.save();
-//     console.log("Sample admin user created successfully.");
-//   }
-// };
-
-// createSampleAdminUser();
 const port = process.env.PORT;
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
